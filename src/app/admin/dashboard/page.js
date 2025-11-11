@@ -4,6 +4,10 @@ import { createAdminClient } from '@/lib/appwrite/server';
 import { appwriteConfig } from '@/lib/appwrite/config';
 import { Query } from 'node-appwrite';
 
+// Force dynamic rendering - required for cookie-based authentication
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getDashboardStats() {
   const { databases } = createAdminClient();
 
