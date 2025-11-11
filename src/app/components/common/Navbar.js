@@ -138,11 +138,20 @@ export default function Navbar() {
           <span className={`block h-0.5 w-6 bg-white mt-1.5 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
         </button>
 
-        {/* Mobile Menu - Full Screen Overlay */}
+        {/* Mobile Menu Overlay - Dark backdrop for better focus */}
+        {isOpen && (
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 transition-opacity duration-300"
+            onClick={closeMenu}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Mobile Menu - Solid Background Drawer */}
         <div
           className={`${
-            isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-          } lg:hidden fixed top-0 right-0 w-full h-screen bg-dark/98 backdrop-blur-lg transition-all duration-300 ease-in-out flex flex-col justify-center items-center space-y-6 text-white text-center z-40`}
+            isOpen ? 'translate-x-0' : 'translate-x-full'
+          } lg:hidden fixed top-0 right-0 w-full h-screen bg-black transition-all duration-300 ease-in-out flex flex-col justify-center items-center space-y-6 text-white text-center z-40 shadow-2xl`}
         >
           <Link href="/" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
             Accueil
