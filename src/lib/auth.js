@@ -6,34 +6,48 @@ import { ADMIN_TEAM_ID } from './appwrite/config';
 
 export async function getLoggedInUser() {
   try {
+    console.log('👤 Getting logged in user...');
     const cookieStore = await cookies();
     const session = cookieStore.get('session');
     
     if (!session) {
+      console.log('❌ No session cookie found');
       return null;
     }
 
+    console.log('✅ Session cookie found, creating client...');
     const { account } = createSessionClient(session.value);
     const user = await account.get();
+    console.log('✅ User retrieved:', user.email);
     
     return user;
   } catch (error) {
+    console.error('❌ getLoggedInUser error:', error.message);
     return null;
   }
 }
 
 export async function isAdmin() {
   try {
+    console.log('🔐 Checking admin status...');
     const user = await getLoggedInUser();
-    if (!user) return false;
+    if (!user) {
+      console.log('❌ No user logged in');
+      return false;
+    }
 
+    console.log('👥 Checking team membership for user:', user.email);
     const { teams } = createAdminClient();
     const memberships = await teams.listMemberships(ADMIN_TEAM_ID);
     
-    return memberships.memberships.some(
+    const isAdminUser = memberships.memberships.some(
       membership => membership.userId === user.$id
     );
+    
+    console.log(isAdminUser ? '✅ User is admin' : '❌ User is not admin');
+    return isAdminUser;
   } catch (error) {
+    console.error('❌ isAdmin error:', error.message);
     return false;
   }
 }
@@ -48,9 +62,14 @@ export async function requireAdmin() {
 
 export async function signIn(email, password) {
   try {
+    console.log('🔧 Creating admin client...');
     const { account } = createAdminClient();
-    const session = await account.createEmailPasswordSession(email, password);
     
+    console.log('🔑 Creating email/password session...');
+    const session = await account.createEmailPasswordSession(email, password);
+    console.log('✅ Session created:', session.$id);
+    
+    console.log('🍪 Setting session cookie...');
     const cookieStore = await cookies();
     cookieStore.set('session', session.secret, {
       httpOnly: true,
@@ -59,9 +78,11 @@ export async function signIn(email, password) {
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: '/',
     });
+    console.log('✅ Cookie set successfully');
 
     return { success: true };
   } catch (error) {
+    console.error('❌ SignIn error:', error);
     return { success: false, error: error.message };
   }
 }

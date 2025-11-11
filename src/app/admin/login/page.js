@@ -17,16 +17,21 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
+      console.log('🔐 Attempting login...', { email });
       const result = await signIn(email, password);
+      console.log('📝 Login result:', result);
       
       if (result.success) {
+        console.log('✅ Login successful, redirecting...');
         router.push('/admin/dashboard');
         router.refresh();
       } else {
+        console.error('❌ Login failed:', result.error);
         setError(result.error || 'Login failed. Please check your credentials.');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      console.error('💥 Login error:', err);
+      setError(`An error occurred: ${err.message || 'Please try again.'}`);
     } finally {
       setLoading(false);
     }
