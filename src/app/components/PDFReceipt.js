@@ -88,6 +88,32 @@ const styles = StyleSheet.create({
     color: colors.textLight,
     marginTop: 2,
   },
+
+  // Gym Contact Info
+  gymContactSection: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTop: `1px solid ${colors.lightGray}`,
+  },
+
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 3,
+  },
+
+  contactBullet: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.primary,
+    marginRight: 6,
+  },
+
+  contactText: {
+    fontSize: 7,
+    color: colors.textLight,
+  },
   
   receiptInfo: {
     alignItems: 'flex-end',
@@ -459,6 +485,26 @@ const PDFReceipt = ({ data }) => {
                 <Text style={styles.brandTagline}>
                   Gym & Fitness Center
                 </Text>
+                
+                {/* Contact Information */}
+                <View style={styles.gymContactSection}>
+                  <View style={styles.contactRow}>
+                    <View style={styles.contactBullet} />
+                    <Text style={styles.contactText}>zybodybuildingstudio@gmail.com</Text>
+                  </View>
+                  <View style={styles.contactRow}>
+                    <View style={styles.contactBullet} />
+                    <Text style={styles.contactText}>58 800 554 / 72 266 744</Text>
+                  </View>
+                  <View style={styles.contactRow}>
+                    <View style={styles.contactBullet} />
+                    <Text style={styles.contactText}>Instagram: @ZYBodybuilding</Text>
+                  </View>
+                  <View style={styles.contactRow}>
+                    <View style={styles.contactBullet} />
+                    <Text style={styles.contactText}>Facebook: ZY Bodybuilding</Text>
+                  </View>
+                </View>
               </View>
             </View>
 
@@ -577,9 +623,20 @@ const PDFReceipt = ({ data }) => {
             Merci pour votre confiance!
           </Text>
 
+          <View style={{ marginTop: 8, marginBottom: 8, alignItems: 'center' }}>
+            <Text style={{ fontSize: 8, color: colors.textLight, marginBottom: 3 }}>
+              • zybodybuildingstudio@gmail.com
+            </Text>
+            <Text style={{ fontSize: 8, color: colors.textLight, marginBottom: 3 }}>
+              • 58 800 554 / 72 266 744
+            </Text>
+            <Text style={{ fontSize: 8, color: colors.textLight, marginBottom: 3 }}>
+              • Instagram & Facebook: ZY Bodybuilding
+            </Text>
+          </View>
+
           <Text style={styles.disclaimer}>
-            Ce reçu est généré électroniquement et constitue une preuve de paiement valide.{'\n'}
-            Pour toute question, veuillez nous contacter à contact@zybodybuilding.tn
+            Ce reçu est généré électroniquement et constitue une preuve de paiement valide.
           </Text>
         </View>
       </Page>
