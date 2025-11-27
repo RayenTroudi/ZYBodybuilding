@@ -45,8 +45,8 @@ const Hero = () => {
             <Image
               src={image.src}
               alt={image.alt}
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: 'cover' }}
               priority={index === 0} 
               quality={75} 
             />

@@ -1,27 +1,66 @@
 'use client';
 
 import { useState } from 'react';
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaGlobe } from 'react-icons/fa';
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaGlobe, FaCheckCircle, FaSms } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     message: '',
+    smsOptIn: false,
   });
 
+  // Phone verification state
+  const [phoneVerificationStep, setPhoneVerificationStep] = useState('input'); // 'input', 'code', 'verified'
+  const [verificationCode, setVerificationCode] = useState('');
+  const [sendingCode, setSendingCode] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState(null);
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
+  };
+
+  const handleSendVerificationCode = async () => {
+    setVerificationMessage({ type: 'info', text: 'Phone verification feature removed. Proceeding without verification.' });
+    setPhoneVerificationStep('verified');
+  };
+
+  const handleVerifyCode = async () => {
+    setVerificationMessage({ type: 'info', text: 'Phone verification feature removed. Proceeding without verification.' });
+    setPhoneVerificationStep('verified');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (formData.smsOptIn && phoneVerificationStep !== 'verified') {
+      setVerificationMessage({ type: 'error', text: 'Please verify your phone number first' });
+      return;
+    }
+
+    // Submit form data
+    console.log('Form submitted:', formData);
     alert("Formulaire soumis !");
+
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+      smsOptIn: false,
+    });
+    setPhoneVerificationStep('input');
+    setVerificationCode('');
+    setVerificationMessage(null);
   };
 
   const containerVariants = {
@@ -29,7 +68,7 @@ const Contact = () => {
     animate: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15, 
+        staggerChildren: 0.15,
       },
     },
   };
@@ -115,6 +154,122 @@ const Contact = () => {
                   className="input-field w-full px-4 py-3 sm:py-4 text-base sm:text-lg"
                 />
               </div>
+
+              {/* SMS Opt-in Checkbox */}
+              <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+                <label className="flex items-start cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="smsOptIn"
+                    checked={formData.smsOptIn}
+                    onChange={handleInputChange}
+                    className="mt-1 mr-3 w-5 h-5 text-primary focus:ring-primary rounded"
+                  />
+                  <div>
+                    <span className="text-base font-medium flex items-center gap-2">
+                      <FaSms className="text-primary" />
+                      Recevoir des notifications SMS
+                    </span>
+                    <p className="text-sm text-gray-400 mt-1">
+                      Recevez des rappels de cours, offres spéciales et notifications importantes
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              {/* Phone Number Field (shown if SMS opt-in is checked) */}
+              {formData.smsOptIn && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="space-y-3"
+                >
+                  <label htmlFor="phone" className="block text-base sm:text-lg font-medium mb-2">
+                    Numéro de téléphone
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="+216 12 345 678"
+                      disabled={phoneVerificationStep === 'verified'}
+                      required={formData.smsOptIn}
+                      className="input-field flex-1 px-4 py-3 sm:py-4 text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    />
+                    {phoneVerificationStep === 'input' && (
+                      <button
+                        type="button"
+                        onClick={handleSendVerificationCode}
+                        disabled={sendingCode || !formData.phone}
+                        className="btn-primary px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap disabled:opacity-50"
+                      >
+                        {sendingCode ? 'Envoi...' : 'Vérifier'}
+                      </button>
+                    )}
+                    {phoneVerificationStep === 'verified' && (
+                      <div className="flex items-center px-4 bg-green-900/20 border border-green-500 rounded-lg">
+                        <FaCheckCircle className="text-green-500 text-xl" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Verification Code Input */}
+                  {phoneVerificationStep === 'code' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="space-y-2"
+                    >
+                      <label className="block text-sm font-medium">Code de vérification</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={verificationCode}
+                          onChange={(e) => setVerificationCode(e.target.value)}
+                          placeholder="123456"
+                          maxLength={6}
+                          className="input-field flex-1 px-4 py-3 text-base sm:text-lg tracking-widest text-center"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleVerifyCode}
+                          disabled={verifying || !verificationCode}
+                          className="btn-primary px-4 sm:px-6 py-3 whitespace-nowrap disabled:opacity-50"
+                        >
+                          {verifying ? 'Vérification...' : 'Confirmer'}
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleSendVerificationCode}
+                        disabled={sendingCode}
+                        className="text-sm text-primary hover:underline"
+                      >
+                        Renvoyer le code
+                      </button>
+                    </motion.div>
+                  )}
+
+                  {/* Verification Messages */}
+                  {verificationMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-3 rounded-lg text-sm ${
+                        verificationMessage.type === 'success'
+                          ? 'bg-green-900/20 border border-green-500 text-green-500'
+                          : 'bg-red-900/20 border border-red-500 text-red-500'
+                      }`}
+                    >
+                      {verificationMessage.text}
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+
               <div>
                 <label htmlFor="message" className="block text-base sm:text-lg font-medium mb-2">Message</label>
                 <textarea
