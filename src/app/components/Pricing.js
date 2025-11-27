@@ -31,6 +31,15 @@ const Pricing = () => {
     return `${parseFloat(price).toLocaleString('fr-TN')} TND`;
   };
 
+  // Get period label based on duration
+  const getPeriodLabel = (duration) => {
+    if (duration <= 7) return 'Par semaine';
+    if (duration >= 28 && duration <= 31) return 'Par mois';
+    if (duration >= 84 && duration <= 93) return 'Par 3 mois';
+    if (duration >= 365 && duration <= 366) return 'Par an';
+    return `Pour ${duration} jours`;
+  };
+
   if (loading) {
     return (
       <div id="pricing" className="bg-dark text-white flex flex-col items-center section-padding">
@@ -110,10 +119,7 @@ const Pricing = () => {
                     {formatPrice(plan.price)}
                   </div>
                   <div className="text-neutral-400 text-sm sm:text-base">
-                    {plan.type === 'Monthly' ? 'Par mois' : 
-                     plan.type === 'Yearly' ? 'Par an' : 
-                     plan.type === 'Weekly' ? 'Par semaine' : 
-                     plan.type}
+                    {getPeriodLabel(plan.duration)}
                   </div>
                   <div className="text-neutral-500 text-xs sm:text-sm mt-2">
                     Durée: {plan.duration} jour{plan.duration > 1 ? 's' : ''}

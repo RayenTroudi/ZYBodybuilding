@@ -26,6 +26,15 @@ const colors = {
   textLight: '#666666',
 };
 
+// Get period type label based on duration
+const getPeriodType = (duration) => {
+  if (duration <= 7) return 'Hebdomadaire';
+  if (duration >= 28 && duration <= 31) return 'Mensuel';
+  if (duration >= 84 && duration <= 93) return 'Trimestriel';
+  if (duration >= 365 && duration <= 366) return 'Annuel';
+  return 'Personnalisé';
+};
+
 // Create styles inspired by Tailwind CSS
 const styles = StyleSheet.create({
   page: {
@@ -499,19 +508,9 @@ const PDFReceipt = ({ data }) => {
           <View style={styles.planCard}>
             <Text style={styles.planName}>{plan.name}</Text>
             <View style={styles.planDetailsRow}>
-              <Text style={styles.planLabel}>Type:</Text>
-              <Text style={styles.planValue}>
-                {plan.type === 'Monthly' ? 'Mensuel' :
-                 plan.type === 'Yearly' ? 'Annuel' :
-                 plan.type === 'Weekly' ? 'Hebdomadaire' : plan.type}
-              </Text>
-            </View>
-            <View style={styles.planDetailsRow}>
               <Text style={styles.planLabel}>Durée:</Text>
               <Text style={styles.planValue}>
-                {plan.duration} {plan.type === 'Monthly' ? 'mois' :
-                                 plan.type === 'Yearly' ? 'an(s)' :
-                                 plan.type === 'Weekly' ? 'semaine(s)' : 'jour(s)'}
+                {plan.duration} jour{plan.duration > 1 ? 's' : ''}
               </Text>
             </View>
 

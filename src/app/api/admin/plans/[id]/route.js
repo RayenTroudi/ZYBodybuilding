@@ -35,7 +35,18 @@ export async function PATCH(request, { params }) {
     const { databases } = createAdminClient();
 
     const updateData = { ...data };
-    if (data.duration) updateData.duration = parseInt(data.duration);
+    if (data.duration) {
+      const duration = parseInt(data.duration);
+      updateData.duration = duration;
+      
+      // Auto-generate type based on duration for backward compatibility
+      let type = 'Custom';
+      if (duration <= 7) type = 'Weekly';
+      else if (duration >= 28 && duration <= 31) type = 'Monthly';
+      else if (duration >= 84 && duration <= 93) type = '3-Month';
+      else if (duration >= 365 && duration <= 366) type = 'Yearly';
+      updateData.type = type;
+    }
     if (data.price) updateData.price = parseFloat(data.price);
 
     const plan = await databases.updateDocument(
@@ -47,6 +58,7 @@ export async function PATCH(request, { params }) {
 
     return NextResponse.json(plan);
   } catch (error) {
+    console.error('Error updating plan:', error);
     return NextResponse.json(
       { error: error.message },
       { status: error.message.includes('Unauthorized') ? 401 : 500 }

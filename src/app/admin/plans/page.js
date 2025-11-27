@@ -15,7 +15,6 @@ export default function PlansPage() {
     description: '',
     duration: '',
     price: '',
-    type: 'Monthly',
     isActive: true,
   });
 
@@ -66,7 +65,6 @@ export default function PlansPage() {
           description: '',
           duration: '',
           price: '',
-          type: 'Monthly',
           isActive: true,
         });
         fetchPlans();
@@ -87,7 +85,6 @@ export default function PlansPage() {
       description: plan.description || '',
       duration: plan.duration,
       price: plan.price,
-      type: plan.type,
       isActive: plan.isActive,
     });
     setShowModal(true);
@@ -147,7 +144,6 @@ export default function PlansPage() {
               description: '',
               duration: '',
               price: '',
-              type: 'Monthly',
               isActive: true,
             });
             setShowModal(true);
@@ -182,7 +178,6 @@ export default function PlansPage() {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                  <p className="text-sm text-gray-400 mt-1">{plan.type}</p>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -267,22 +262,6 @@ export default function PlansPage() {
                   className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Brief description of the plan..."
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Type
-                </label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <option value="Monthly">Monthly</option>
-                  <option value="3-Month">3-Month</option>
-                  <option value="Yearly">Yearly</option>
-                  <option value="Custom">Custom</option>
-                </select>
               </div>
 
               <div>

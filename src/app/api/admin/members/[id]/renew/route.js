@@ -20,12 +20,18 @@ export async function POST(request, { params }) {
       id
     );
 
-    // Calculate new end date
-    const currentEndDate = new Date(member.subscriptionEndDate);
+    // Calculate new dates
     const now = new Date();
+    let startDate = new Date();
     
-    // If subscription is expired, start from now, otherwise extend from current end date
-    const startDate = currentEndDate < now ? now : currentEndDate;
+    // If member has a valid end date and it's in the future, extend from there
+    if (member.subscriptionEndDate) {
+      const currentEndDate = new Date(member.subscriptionEndDate);
+      if (!isNaN(currentEndDate.getTime()) && currentEndDate > now) {
+        startDate = currentEndDate;
+      }
+    }
+    
     const newEndDate = new Date(startDate);
     newEndDate.setDate(newEndDate.getDate() + parseInt(planDuration));
 
@@ -37,10 +43,9 @@ export async function POST(request, { params }) {
       {
         planId,
         planName,
-        subscriptionStartDate: startDate.toISOString(),
         subscriptionEndDate: newEndDate.toISOString(),
         status: 'Active',
-        totalPaid: parseFloat(member.totalPaid) + parseFloat(amount),
+        totalPaid: parseFloat(member.totalPaid || 0) + parseFloat(amount),
       }
     );
 
@@ -62,8 +67,9 @@ export async function POST(request, { params }) {
       }
     );
 
-    return NextResponse.json(updatedMember);
+    return NextResponse.json({ member: updatedMember });
   } catch (error) {
+    console.error('Error renewing membership:', error);
     return NextResponse.json(
       { error: error.message },
       { status: error.message.includes('Unauthorized') ? 401 : 500 }

@@ -4,6 +4,12 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import dynamic from 'next/dynamic';
+
+// Dynamically import PDFReceipt to avoid SSR issues
+const PDFReceipt = dynamic(() => import('@/app/components/PDFReceipt'), {
+  ssr: false,
+});
 
 export default function MemberDetailPage({ params }) {
   const { id } = use(params);
@@ -19,6 +25,9 @@ export default function MemberDetailPage({ params }) {
     planId: '',
     paymentMethod: 'Cash',
   });
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [receiptData, setReceiptData] = useState(null);
+  const [generatingPDF, setGeneratingPDF] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -74,15 +83,84 @@ export default function MemberDetailPage({ params }) {
       });
 
       if (response.ok) {
+        const result = await response.json();
         setShowRenewModal(false);
-        fetchMemberDetails();
+        await fetchMemberDetails();
+        
+        // Prepare receipt data
+        const endDate = new Date(result.member.subscriptionEndDate);
+        const startDate = new Date();
+        
+        setReceiptData({
+          member: result.member,
+          plan: selectedPlan,
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          payment: selectedPlan.price,
+          paymentMethod: renewData.paymentMethod,
+          timestamp: new Date().toISOString(),
+        });
+        
+        setShowReceipt(true);
         showToast('Membership renewed successfully!', 'success');
       } else {
-        showToast('Failed to renew membership', 'error');
+        const errorData = await response.json();
+        console.error('Renewal error:', errorData);
+        showToast(`Failed to renew: ${errorData.error || 'Unknown error'}`, 'error');
       }
     } catch (error) {
       console.error('Error renewing membership:', error);
-      showToast('Failed to renew membership', 'error');
+      showToast(`Failed to renew membership: ${error.message}`, 'error');
+    }
+  };
+
+  const generatePDF = async () => {
+    if (!receiptData) return;
+    
+    setGeneratingPDF(true);
+    
+    try {
+      const { pdf } = await import('@react-pdf/renderer');
+      const { default: PDFReceiptComponent } = await import('@/app/components/PDFReceipt');
+      
+      const blob = await pdf(<PDFReceiptComponent data={receiptData} />).toBlob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Receipt_${receiptData.member.memberId}_${receiptData.member.name.replace(/\s+/g, '_')}.pdf`;
+      link.click();
+      
+      URL.revokeObjectURL(url);
+      
+      showToast('PDF downloaded successfully!', 'success');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      showToast('Failed to generate PDF', 'error');
+    } finally {
+      setGeneratingPDF(false);
+    }
+  };
+
+  const handlePrint = async () => {
+    if (!receiptData) return;
+
+    try {
+      const { pdf } = await import('@react-pdf/renderer');
+      const { default: PDFReceiptComponent } = await import('@/app/components/PDFReceipt');
+      
+      const blob = await pdf(<PDFReceiptComponent data={receiptData} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      
+      const printWindow = window.open(url);
+      if (printWindow) {
+        printWindow.onload = () => {
+          printWindow.print();
+        };
+      }
+    } catch (error) {
+      console.error('Error printing:', error);
+      showToast('Failed to open print dialog', 'error');
     }
   };
 
@@ -393,6 +471,85 @@ export default function MemberDetailPage({ params }) {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Receipt Modal */}
+      {showReceipt && receiptData && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Receipt Generated</h2>
+              <button
+                onClick={() => setShowReceipt(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="bg-gray-700 rounded-lg p-6 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+                  <span className="text-2xl">✅</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Renewal Successful!</h3>
+                  <p className="text-gray-400 text-sm">Member ID: {receiptData.member.memberId}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-400">Member Name</p>
+                  <p className="text-white font-medium">{receiptData.member.name}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">Plan</p>
+                  <p className="text-white font-medium">{receiptData.plan.name}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">Duration</p>
+                  <p className="text-white font-medium">{receiptData.plan.duration} days</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">Amount</p>
+                  <p className="text-white font-medium">${receiptData.payment}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">Start Date</p>
+                  <p className="text-white font-medium">{format(new Date(receiptData.startDate), 'MMM dd, yyyy')}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">End Date</p>
+                  <p className="text-white font-medium">{format(new Date(receiptData.endDate), 'MMM dd, yyyy')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handlePrint}
+                className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                🖨️ Print Receipt
+              </button>
+              <button
+                onClick={generatePDF}
+                disabled={generatingPDF}
+                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {generatingPDF ? '⏳ Generating...' : '📥 Download PDF'}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setShowReceipt(false)}
+              className="w-full mt-3 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

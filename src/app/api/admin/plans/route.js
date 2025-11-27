@@ -43,13 +43,23 @@ export async function POST(request) {
     const data = await request.json();
     const { databases } = createAdminClient();
 
+    const duration = parseInt(data.duration);
+    
+    // Auto-generate type based on duration for backward compatibility
+    let type = 'Custom';
+    if (duration <= 7) type = 'Weekly';
+    else if (duration >= 28 && duration <= 31) type = 'Monthly';
+    else if (duration >= 84 && duration <= 93) type = '3-Month';
+    else if (duration >= 365 && duration <= 366) type = 'Yearly';
+
     const plan = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.plansCollectionId,
       ID.unique(),
       {
         ...data,
-        duration: parseInt(data.duration),
+        type,
+        duration,
         price: parseFloat(data.price),
         isActive: data.isActive !== false,
       }
@@ -57,6 +67,7 @@ export async function POST(request) {
 
     return NextResponse.json(plan, { status: 201 });
   } catch (error) {
+    console.error('Error creating plan:', error);
     return NextResponse.json(
       { error: error.message },
       { status: error.message.includes('Unauthorized') ? 401 : 500 }
