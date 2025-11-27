@@ -1,6 +1,4 @@
 {
-  "name": "check-subscription-expiry",
-  "version": "1.0.0",
   "crons": [
     {
       "path": "/api/cron/check-expiry",
