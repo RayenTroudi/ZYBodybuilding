@@ -19,6 +19,26 @@ const nextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  // Image configuration for external images
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+        pathname: '/api/portraits/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cloud.appwrite.io',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fra.cloud.appwrite.io',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

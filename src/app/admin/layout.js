@@ -22,6 +22,9 @@ export default function AdminLayout({ children }) {
     { name: 'Members', href: '/admin/members', icon: '👥' },
     { name: 'Payments', href: '/admin/payments', icon: '💳' },
     { name: 'Plans', href: '/admin/plans', icon: '📋' },
+    { name: 'Programs', href: '/admin/programs', icon: '🏋️' },
+    { name: 'Trainers', href: '/admin/trainers', icon: '👨‍🏫' },
+    { name: 'Classes', href: '/admin/classes', icon: '📅' },
     { name: 'SMS', href: '/admin/sms', icon: '📱' },
   ];
 

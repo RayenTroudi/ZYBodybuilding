@@ -1,9 +1,30 @@
 import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Read .env.local file
+const envPath = join(__dirname, '..', '.env.local');
+const envFile = readFileSync(envPath, 'utf-8');
+const envVars = {};
+
+envFile.split('\n').forEach(line => {
+  const trimmedLine = line.trim();
+  if (trimmedLine && !trimmedLine.startsWith('#')) {
+    const [key, ...valueParts] = trimmedLine.split('=');
+    if (key && valueParts.length) {
+      envVars[key.trim()] = valueParts.join('=').trim();
+    }
+  }
+});
 
 const client = new Client()
-  .setEndpoint('https://cloud.appwrite.io/v1')
-  .setProject('690ce00900173a1d9ac7')
-  .setKey('standard_06281a25e8d6f2ea2dc4a5c0bfdb760ec27017f4297fd6753e8e46a5edc500c9009a5c1e8c213d8acc7c9a92faa5b5b086c0b6bf479f1c68bf3d3e959be292eaa339a011fd619220cb07fdf02c2cee9fac2059c33b19434ecc5f185018c7d071654cd1f944efddbe68f015cbe27b496f0e66defe8c4f79553956a3e924ebb6b4');
+  .setEndpoint(envVars.NEXT_PUBLIC_APPWRITE_ENDPOINT)
+  .setProject(envVars.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+  .setKey(envVars.APPWRITE_API_KEY);
 
 const databases = new Databases(client);
 
@@ -52,7 +73,7 @@ async function setupDatabase() {
       await databases.createIntegerAttribute(DATABASE_ID, PLANS_COLLECTION_ID, 'duration', true); // in days
       await databases.createFloatAttribute(DATABASE_ID, PLANS_COLLECTION_ID, 'price', true);
       await databases.createStringAttribute(DATABASE_ID, PLANS_COLLECTION_ID, 'type', 50, true); // Monthly, 3-Month, Yearly
-      await databases.createBooleanAttribute(DATABASE_ID, PLANS_COLLECTION_ID, 'isActive', true, true);
+      await databases.createBooleanAttribute(DATABASE_ID, PLANS_COLLECTION_ID, 'isActive', false, true);
       
       console.log('✅ Plans attributes created');
     } catch (error) {

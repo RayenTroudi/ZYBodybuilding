@@ -1,14 +1,35 @@
 import { Client, Databases, Query } from 'node-appwrite';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Read .env.local file
+const envPath = join(__dirname, '..', '.env.local');
+const envFile = readFileSync(envPath, 'utf-8');
+const envVars = {};
+
+envFile.split('\n').forEach(line => {
+  const trimmedLine = line.trim();
+  if (trimmedLine && !trimmedLine.startsWith('#')) {
+    const [key, ...valueParts] = trimmedLine.split('=');
+    if (key && valueParts.length) {
+      envVars[key.trim()] = valueParts.join('=').trim();
+    }
+  }
+});
 
 const client = new Client()
-  .setEndpoint('https://cloud.appwrite.io/v1')
-  .setProject('690ce00900173a1d9ac7')
-  .setKey('standard_06281a25e8d6f2ea2dc4a5c0bfdb760ec27017f4297fd6753e8e46a5edc500c9009a5c1e8c213d8acc7c9a92faa5b5b086c0b6bf479f1c68bf3d3e959be292eaa339a011fd619220cb07fdf02c2cee9fac2059c33b19434ecc5f185018c7d071654cd1f944efddbe68f015cbe27b496f0e66defe8c4f79553956a3e924ebb6b4');
+  .setEndpoint(envVars.NEXT_PUBLIC_APPWRITE_ENDPOINT)
+  .setProject(envVars.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+  .setKey(envVars.APPWRITE_API_KEY);
 
 const databases = new Databases(client);
 
-const DATABASE_ID = 'gym_management_db';
-const MEMBERS_COLLECTION_ID = 'members';
+const DATABASE_ID = envVars.NEXT_PUBLIC_DATABASE_ID;
+const MEMBERS_COLLECTION_ID = envVars.NEXT_PUBLIC_MEMBERS_COLLECTION_ID;
 
 async function checkExpiredSubscriptions() {
   try {

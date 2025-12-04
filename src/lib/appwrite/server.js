@@ -1,4 +1,4 @@
-import { Client, Account, Databases, Teams, Users } from 'node-appwrite';
+import { Client, Account, Databases, Teams, Users, Storage } from 'node-appwrite';
 import { appwriteConfig } from './config';
 
 // Server-side Appwrite client with API key
@@ -14,6 +14,7 @@ export function createAdminClient() {
     databases: new Databases(client),
     teams: new Teams(client),
     users: new Users(client),
+    storage: new Storage(client),
   };
 }
 
