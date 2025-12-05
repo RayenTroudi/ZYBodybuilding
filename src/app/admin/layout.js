@@ -25,7 +25,7 @@ export default function AdminLayout({ children }) {
     { name: 'Programs', href: '/admin/programs', icon: '🏋️' },
     { name: 'Trainers', href: '/admin/trainers', icon: '👨‍🏫' },
     { name: 'Classes', href: '/admin/classes', icon: '📅' },
-    { name: 'SMS', href: '/admin/sms', icon: '📱' },
+    { name: 'Email', href: '/admin/email', icon: '📧' },
   ];
 
   // Don't show layout on login page

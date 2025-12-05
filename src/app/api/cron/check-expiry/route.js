@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { checkExpiringSubscriptions } from '@/lib/orange/subscriptionExpiry';
+import { checkExpiringSubscriptions } from '@/lib/resend/subscriptionExpiry';
 
 export const dynamic = 'force-dynamic';
 

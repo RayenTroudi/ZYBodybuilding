@@ -15,8 +15,8 @@ const config = {
 
   // Coverage
   collectCoverageFrom: [
-    'src/lib/twilio/**/*.js',
-    'src/app/api/sms/**/*.js',
+    'src/lib/resend/**/*.js',
+    'src/app/api/email/**/*.js',
     '!**/*.config.js',
     '!**/node_modules/**',
   ],
