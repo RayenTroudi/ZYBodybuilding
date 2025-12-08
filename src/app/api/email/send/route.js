@@ -127,8 +127,22 @@ export async function POST(request) {
       );
     }
     
+    // Process content - convert newlines to HTML paragraphs
+    let processedHtml = html;
+    
+    // If content doesn't contain HTML tags, convert plain text to HTML
+    if (!html.includes('<') && !html.includes('>')) {
+      // Split by double newlines for paragraphs
+      const paragraphs = html.split('\n\n').filter(p => p.trim());
+      processedHtml = paragraphs.map(p => {
+        // Convert single newlines to <br> within paragraphs
+        const withBreaks = p.trim().replace(/\n/g, '<br>');
+        return `<p>${withBreaks}</p>`;
+      }).join('\n');
+    }
+    
     // Sanitize HTML
-    const sanitizedHtml = sanitizeHtml(html);
+    const sanitizedHtml = sanitizeHtml(processedHtml);
     
     // Wrap content in branded template
     const brandedHtml = getGenericEmailHtml(subjectValidation.subject, sanitizedHtml);

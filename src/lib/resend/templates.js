@@ -1,6 +1,6 @@
 /**
  * Email HTML Templates
- * Beautiful branded email templates matching ZY Bodybuilding website
+ * Beautiful branded email templates matching ZY Bodybuilding receipt design
  */
 
 const BRAND_COLORS = {
@@ -8,14 +8,17 @@ const BRAND_COLORS = {
   primaryDark: '#B80C02',
   accent: '#C30B02',
   black: '#000000',
-  gray: '#1a1a1a',
-  lightGray: '#2a2a2a',
-  textGray: '#9ca3af',
+  darkGray: '#1a1a1a',
+  mediumGray: '#4a4a4a',
+  lightGray: '#e5e5e5',
+  veryLightGray: '#f5f5f5',
   white: '#ffffff',
+  text: '#333333',
+  textLight: '#666666',
 };
 
 /**
- * Base email template with header and footer
+ * Base email template with header and footer - matching receipt design
  */
 function getEmailTemplate(content) {
   return `
@@ -26,182 +29,309 @@ function getEmailTemplate(content) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZY Bodybuilding</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background-color: #000000;
-      color: #ffffff;
+      background-color: #f5f5f5;
+      color: #333333;
+    }
+    .email-wrapper {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
     }
     .email-container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
-      background-color: #000000;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
     }
     .header {
       background: linear-gradient(135deg, ${BRAND_COLORS.primary} 0%, ${BRAND_COLORS.primaryDark} 100%);
-      padding: 40px 20px;
+      padding: 40px 30px;
+      border-bottom: 3px solid ${BRAND_COLORS.primaryDark};
+    }
+    .logo-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background-color: #ffffff;
+      border-radius: 50%;
+      padding: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .logo-text {
       text-align: center;
     }
-    .logo {
-      font-size: 48px;
+    .brand-name {
+      font-size: 36px;
       font-weight: 900;
-      letter-spacing: 2px;
-      margin: 0;
+      letter-spacing: 1px;
       color: #ffffff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
-    .logo-accent {
+    .brand-name-accent {
       color: #ffffff;
       font-weight: 900;
     }
     .tagline {
-      font-size: 14px;
-      color: rgba(255,255,255,0.9);
-      margin: 10px 0 0 0;
-      letter-spacing: 3px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.95);
+      margin: 8px 0 0 0;
+      letter-spacing: 2px;
       text-transform: uppercase;
     }
     .content {
-      background-color: ${BRAND_COLORS.gray};
       padding: 40px 30px;
+      background-color: #ffffff;
     }
     .content h1 {
       color: ${BRAND_COLORS.primary};
-      font-size: 32px;
+      font-size: 28px;
       margin: 0 0 20px 0;
       font-weight: 700;
+      border-bottom: 2px solid ${BRAND_COLORS.lightGray};
+      padding-bottom: 15px;
     }
     .content h2 {
-      color: #ffffff;
-      font-size: 24px;
-      margin: 30px 0 15px 0;
+      color: ${BRAND_COLORS.text};
+      font-size: 20px;
+      margin: 25px 0 12px 0;
       font-weight: 600;
     }
     .content p {
-      color: ${BRAND_COLORS.textGray};
-      font-size: 16px;
-      line-height: 1.6;
-      margin: 0 0 15px 0;
+      color: ${BRAND_COLORS.textLight};
+      font-size: 15px;
+      line-height: 1.7;
+      margin: 0 0 12px 0;
     }
     .content ul {
-      color: ${BRAND_COLORS.textGray};
-      font-size: 16px;
+      color: ${BRAND_COLORS.textLight};
+      font-size: 15px;
       line-height: 1.8;
-      padding-left: 20px;
+      padding-left: 25px;
       margin: 15px 0;
     }
     .content li {
-      margin: 8px 0;
+      margin: 10px 0;
+    }
+    .content li strong {
+      color: ${BRAND_COLORS.text};
     }
     .highlight-box {
-      background: linear-gradient(135deg, ${BRAND_COLORS.primary} 0%, ${BRAND_COLORS.accent} 100%);
-      border-radius: 12px;
+      background: linear-gradient(135deg, ${BRAND_COLORS.primary} 0%, ${BRAND_COLORS.primaryDark} 100%);
+      border-radius: 10px;
       padding: 30px;
-      margin: 30px 0;
+      margin: 25px 0;
       text-align: center;
-      box-shadow: 0 4px 20px rgba(204, 19, 3, 0.3);
+      box-shadow: 0 4px 15px rgba(204, 19, 3, 0.2);
     }
     .highlight-box h2 {
       color: #ffffff;
-      font-size: 48px;
-      margin: 0 0 10px 0;
+      font-size: 42px;
+      margin: 0 0 8px 0;
       font-weight: 900;
     }
     .highlight-box p {
       color: rgba(255,255,255,0.95);
-      font-size: 18px;
+      font-size: 16px;
       margin: 0;
+      font-weight: 500;
     }
     .info-box {
-      background-color: ${BRAND_COLORS.lightGray};
+      background-color: ${BRAND_COLORS.veryLightGray};
       border-left: 4px solid ${BRAND_COLORS.primary};
       border-radius: 8px;
-      padding: 20px;
+      padding: 20px 25px;
       margin: 20px 0;
     }
     .info-box p {
-      margin: 5px 0;
-      color: #ffffff;
+      margin: 8px 0;
+      color: ${BRAND_COLORS.text};
+      font-size: 15px;
+      line-height: 1.6;
     }
     .info-box strong {
       color: ${BRAND_COLORS.primary};
+      font-weight: 600;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid ${BRAND_COLORS.lightGray};
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .info-label {
+      color: ${BRAND_COLORS.textLight};
+      font-weight: 500;
+    }
+    .info-value {
+      color: ${BRAND_COLORS.text};
+      font-weight: 600;
     }
     .button {
       display: inline-block;
-      background: linear-gradient(135deg, ${BRAND_COLORS.primary} 0%, ${BRAND_COLORS.accent} 100%);
+      background: linear-gradient(135deg, ${BRAND_COLORS.primary} 0%, ${BRAND_COLORS.primaryDark} 100%);
       color: #ffffff;
       text-decoration: none;
-      padding: 16px 40px;
+      padding: 14px 35px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 15px;
       margin: 20px 0;
-      box-shadow: 0 4px 15px rgba(204, 19, 3, 0.4);
+      box-shadow: 0 4px 12px rgba(204, 19, 3, 0.3);
       transition: transform 0.2s;
     }
     .footer {
-      background-color: #000000;
-      padding: 30px 20px;
+      background-color: ${BRAND_COLORS.darkGray};
+      padding: 30px 30px 25px;
+      border-top: 3px solid ${BRAND_COLORS.primary};
+    }
+    .footer-content {
       text-align: center;
-      border-top: 1px solid ${BRAND_COLORS.lightGray};
+    }
+    .footer h3 {
+      color: #ffffff;
+      font-size: 18px;
+      margin: 0 0 15px 0;
+      font-weight: 700;
+    }
+    .contact-info {
+      margin: 15px 0;
+    }
+    .contact-item {
+      color: ${BRAND_COLORS.textLight};
+      font-size: 13px;
+      margin: 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .contact-item::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background-color: ${BRAND_COLORS.primary};
+      border-radius: 50%;
+      display: inline-block;
     }
     .footer p {
-      color: ${BRAND_COLORS.textGray};
-      font-size: 14px;
-      margin: 5px 0;
+      color: ${BRAND_COLORS.textLight};
+      font-size: 12px;
+      margin: 8px 0;
     }
     .footer a {
       color: ${BRAND_COLORS.primary};
       text-decoration: none;
     }
-    .social-links {
-      margin: 20px 0;
+    .copyright {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid ${BRAND_COLORS.mediumGray};
+      color: ${BRAND_COLORS.textLight};
+      font-size: 11px;
     }
-    .social-links a {
-      display: inline-block;
-      margin: 0 10px;
-      color: ${BRAND_COLORS.textGray};
-      text-decoration: none;
-      font-size: 24px;
+    .greeting {
+      color: ${BRAND_COLORS.text};
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    .signature {
+      margin-top: 35px;
+      padding-top: 20px;
+      border-top: 1px solid ${BRAND_COLORS.lightGray};
+    }
+    .signature p {
+      color: ${BRAND_COLORS.text};
+      font-weight: 600;
+      margin: 5px 0;
+    }
+    .signature .team {
+      color: ${BRAND_COLORS.primary};
+      font-weight: 700;
     }
     @media only screen and (max-width: 600px) {
+      .email-wrapper {
+        padding: 20px 10px;
+      }
       .content {
         padding: 30px 20px;
       }
-      .logo {
-        font-size: 36px;
-      }
-      .content h1 {
+      .brand-name {
         font-size: 28px;
       }
+      .content h1 {
+        font-size: 24px;
+      }
       .highlight-box h2 {
-        font-size: 36px;
+        font-size: 32px;
+      }
+      .info-row {
+        flex-direction: column;
+        gap: 5px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="email-container">
-    <!-- Header with Logo -->
-    <div class="header">
-      <h1 class="logo"><span class="logo-accent">ZY</span> BODYBUILDING</h1>
-      <p class="tagline">Transform Your Body</p>
-    </div>
+  <div class="email-wrapper">
+    <div class="email-container">
+      <!-- Header with Logo - Matching Receipt Design -->
+      <div class="header">
+        <div class="logo-section">
+          <img src="https://zybodybuilding.space/images/logoNobg.png" alt="ZY Bodybuilding Logo" class="logo-img">
+          <div class="logo-text">
+            <h1 class="brand-name"><span class="brand-name-accent">ZY</span> BODYBUILDING</h1>
+            <p class="tagline">Transform Your Body</p>
+          </div>
+        </div>
+      </div>
 
-    <!-- Content -->
-    <div class="content">
-      ${content}
-    </div>
+      <!-- Content -->
+      <div class="content">
+        ${content}
+        
+        <!-- Signature -->
+        <div class="signature">
+          <p>Cordialement,</p>
+          <p class="team">L'équipe ZY Bodybuilding</p>
+          <p style="font-size: 13px; color: ${BRAND_COLORS.textLight}; margin-top: 5px;">Votre Partenaire Fitness</p>
+        </div>
+      </div>
 
-    <!-- Footer -->
-    <div class="footer">
-      <p><strong style="color: #ffffff;">ZY Bodybuilding</strong></p>
-      <p>Tunisia</p>
-      <p>📞 +216 123 456 78 | 📧 contact@zybodybuilding.tn</p>
-      <p style="margin-top: 20px; font-size: 12px;">
-        © ${new Date().getFullYear()} ZY Bodybuilding. Tous droits réservés.
-      </p>
+      <!-- Footer - Matching Receipt Design -->
+      <div class="footer">
+        <div class="footer-content">
+          <h3>ZY BODYBUILDING</h3>
+          <div class="contact-info">
+            <div class="contact-item">Tunisia</div>
+            <div class="contact-item">📞 +216 123 456 78</div>
+            <div class="contact-item">📧 contact@zybodybuilding.space</div>
+          </div>
+          <div class="copyright">
+            © ${new Date().getFullYear()} ZY Bodybuilding. Tous droits réservés.
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </body>
@@ -214,22 +344,28 @@ function getEmailTemplate(content) {
  */
 export function getWelcomeEmailHtml(memberName) {
   const content = `
-    <h1>Bienvenue ${memberName}! 💪</h1>
-    <p>Nous sommes ravis de vous accueillir dans la famille <strong style="color: ${BRAND_COLORS.primary};">ZY Bodybuilding</strong>!</p>
+    <p class="greeting">Bonjour ${memberName || '{memberName}'},</p>
     
-    <p>Votre parcours vers un corps plus fort et plus sain commence maintenant. Voici ce qui vous attend:</p>
+    <h1>Bienvenue chez ZY Bodybuilding! 💪</h1>
     
-    <ul>
-      <li><strong>Équipements de pointe</strong> - Machines et poids de qualité professionnelle</li>
-      <li><strong>Entraîneurs experts</strong> - Accompagnement personnalisé pour atteindre vos objectifs</li>
-      <li><strong>Cours variés</strong> - Planning flexible adapté à votre emploi du temps</li>
-      <li><strong>Communauté motivante</strong> - Entourez-vous de passionnés de fitness</li>
-    </ul>
+    <p>Nous sommes ravis de vous accueillir dans notre famille. Votre parcours vers un corps plus fort et plus sain commence maintenant!</p>
+    
+    <div class="info-box">
+      <h2 style="margin-top: 0; font-size: 18px; color: ${BRAND_COLORS.primary};">Ce qui vous attend:</h2>
+      <ul style="margin: 15px 0; padding-left: 20px;">
+        <li><strong>Équipements de pointe</strong> - Machines et poids de qualité professionnelle</li>
+        <li><strong>Entraîneurs experts</strong> - Accompagnement personnalisé pour vos objectifs</li>
+        <li><strong>Cours variés</strong> - Planning flexible adapté à votre emploi du temps</li>
+        <li><strong>Communauté motivante</strong> - Entourez-vous de passionnés de fitness</li>
+      </ul>
+    </div>
 
-    <p style="margin-top: 30px;">Prêt à commencer? Consultez notre planning de cours et réservez votre première séance!</p>
-
-    <p style="margin-top: 40px; color: #ffffff;"><strong>L'équipe ZY Bodybuilding</strong><br>
-    <span style="color: ${BRAND_COLORS.primary};">Votre Partenaire Fitness</span></p>
+    <p>Nous avons hâte de vous voir et de vous accompagner dans votre transformation!</p>
+    
+    <p style="margin-top: 25px;"><strong>Prochaines étapes:</strong></p>
+    <p>• Consultez notre planning de cours<br>
+    • Rencontrez nos entraîneurs<br>
+    • Commencez votre première séance</p>
   `;
   
   return getEmailTemplate(content);
@@ -244,18 +380,24 @@ export function getClassReminderEmailHtml(className, date, time) {
     <p>N'oubliez pas votre cours à venir!</p>
 
     <div class="info-box">
-      <h2 style="margin: 0 0 15px 0; font-size: 24px;">${className}</h2>
-      <p><strong>📅 Date:</strong> ${date}</p>
-      <p><strong>🕐 Heure:</strong> ${time}</p>
+      <h2 style="margin: 0 0 20px 0; font-size: 22px; color: ${BRAND_COLORS.primary};">${className || '{className}'}</h2>
+      <div class="info-row">
+        <span class="info-label">📅 Date:</span>
+        <span class="info-value">${date || '{date}'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">🕐 Heure:</span>
+        <span class="info-value">${time || '{time}'}</span>
+      </div>
     </div>
 
     <p>Nous avons hâte de vous voir! 💪</p>
 
-    <p style="margin-top: 30px; font-size: 14px; color: ${BRAND_COLORS.textGray};">
-      <em>Conseil: Arrivez 10 minutes en avance pour vous échauffer</em>
-    </p>
-
-    <p style="margin-top: 30px; color: #ffffff;"><strong>L'équipe ZY Bodybuilding</strong></p>
+    <div style="background-color: ${BRAND_COLORS.veryLightGray}; padding: 15px; border-radius: 8px; margin-top: 25px;">
+      <p style="margin: 0; font-size: 14px; color: ${BRAND_COLORS.textLight};">
+        💡 <strong>Conseil:</strong> Arrivez 10 minutes en avance pour vous échauffer et préparer votre équipement.
+      </p>
+    </div>
   `;
   
   return getEmailTemplate(content);
@@ -266,21 +408,31 @@ export function getClassReminderEmailHtml(className, date, time) {
  */
 export function getPaymentReminderEmailHtml(memberName, amount, dueDate) {
   const content = `
+    <p class="greeting">Bonjour ${memberName || '{memberName}'},</p>
+    
     <h1>Rappel de Paiement 💳</h1>
-    <p>Bonjour ${memberName},</p>
     
     <p>Ceci est un rappel amical concernant votre paiement d'adhésion.</p>
 
     <div class="info-box">
-      <p><strong>💰 Montant dû:</strong> ${amount}</p>
-      <p><strong>📅 Date d'échéance:</strong> ${dueDate}</p>
+      <div class="info-row">
+        <span class="info-label">💰 Montant dû:</span>
+        <span class="info-value">${amount || '{amount}'}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">📅 Date d'échéance:</span>
+        <span class="info-value">${dueDate || '{dueDate}'}</span>
+      </div>
     </div>
 
-    <p>Veuillez renouveler votre adhésion pour continuer à profiter de nos services sans interruption.</p>
+    <p>Pour continuer à profiter de nos services sans interruption, veuillez effectuer votre paiement avant la date d'échéance.</p>
 
-    <p>Visitez notre salle ou contactez-nous si vous avez des questions.</p>
+    <h2>Moyens de paiement acceptés:</h2>
+    <p>• En salle (espèces ou carte bancaire)<br>
+    • Virement bancaire<br>
+    • Paiement mobile</p>
 
-    <p style="margin-top: 30px; color: #ffffff;"><strong>L'équipe ZY Bodybuilding</strong></p>
+    <p style="margin-top: 25px;">Pour toute question concernant votre paiement, n'hésitez pas à nous contacter.</p>
   `;
   
   return getEmailTemplate(content);
@@ -290,27 +442,30 @@ export function getPaymentReminderEmailHtml(memberName, amount, dueDate) {
  * Membership Expiring Email Template
  */
 export function getMembershipExpiringEmailHtml(memberName, daysRemaining) {
+  const days = daysRemaining || '{daysRemaining}';
   const content = `
+    <p class="greeting">Bonjour ${memberName || '{memberName}'},</p>
+    
     <h1>Votre Adhésion Expire Bientôt ⏰</h1>
-    <p>Bonjour ${memberName},</p>
 
     <div class="highlight-box">
-      <h2>${daysRemaining}</h2>
-      <p>Jour${daysRemaining !== 1 ? 's' : ''} restant${daysRemaining !== 1 ? 's' : ''}</p>
+      <h2>${days}</h2>
+      <p>Jour${days !== 1 && days !== '1' ? 's' : ''} restant${days !== 1 && days !== '1' ? 's' : ''}</p>
     </div>
 
-    <p>Ne laissez pas votre parcours fitness s'arrêter! Renouvelez dès aujourd'hui pour continuer à accéder à:</p>
+    <p>Ne laissez pas votre parcours fitness s'arrêter! Renouvelez dès aujourd'hui pour continuer à profiter de tous nos services.</p>
 
-    <ul>
-      <li><strong>Toutes les installations de la salle</strong></li>
-      <li><strong>Cours collectifs</strong></li>
-      <li><strong>Séances de coaching personnalisé</strong></li>
-      <li><strong>Événements exclusifs membres</strong></li>
-    </ul>
+    <div class="info-box">
+      <h2 style="margin-top: 0; font-size: 18px; color: ${BRAND_COLORS.primary};">Ce que vous conservez en renouvelant:</h2>
+      <ul style="margin: 15px 0; padding-left: 20px;">
+        <li><strong>Accès illimité</strong> à toutes les installations</li>
+        <li><strong>Tous les cours collectifs</strong> inclus</li>
+        <li><strong>Coaching personnalisé</strong> sur demande</li>
+        <li><strong>Événements exclusifs</strong> réservés aux membres</li>
+      </ul>
+    </div>
 
-    <p style="margin-top: 30px;">Visitez-nous ou contactez notre équipe pour renouveler votre adhésion.</p>
-
-    <p style="margin-top: 30px; color: #ffffff;"><strong>L'équipe ZY Bodybuilding</strong></p>
+    <p style="margin-top: 25px;">Pour renouveler votre adhésion, passez nous voir à la salle ou contactez-nous directement.</p>
   `;
   
   return getEmailTemplate(content);
@@ -321,21 +476,28 @@ export function getMembershipExpiringEmailHtml(memberName, daysRemaining) {
  */
 export function getPromoEmailHtml(promoTitle, promoDescription, discount, validUntil) {
   const content = `
-    <h1>🎉 ${promoTitle}</h1>
-    <p>${promoDescription}</p>
+    <h1>🎉 ${promoTitle || '{promoTitle}'}</h1>
+    <p style="font-size: 16px;">${promoDescription || '{promoDescription}'}</p>
 
     <div class="highlight-box">
-      <h2>${discount}% OFF</h2>
-      <p style="font-size: 20px; font-weight: 600;">Offre à Durée Limitée</p>
+      <h2>${discount || '{discount}'}% OFF</h2>
+      <p style="font-size: 18px; font-weight: 600;">Offre à Durée Limitée</p>
     </div>
 
     <div class="info-box">
-      <p><strong>⏰ Valable jusqu'au:</strong> ${validUntil}</p>
+      <div class="info-row">
+        <span class="info-label">⏰ Valable jusqu'au:</span>
+        <span class="info-value">${validUntil || '{validUntil}'}</span>
+      </div>
     </div>
 
-    <p style="font-size: 18px; margin-top: 30px;">Ne manquez pas cette opportunité exceptionnelle! Visitez-nous dès aujourd'hui pour profiter de cette offre spéciale.</p>
+    <p style="margin-top: 25px;">Ne manquez pas cette opportunité exceptionnelle! Cette offre est valable pour:</p>
+    
+    <p>• Nouvelles adhésions<br>
+    • Renouvellements anticipés<br>
+    • Abonnements longue durée</p>
 
-    <p style="margin-top: 40px; color: #ffffff;"><strong>L'équipe ZY Bodybuilding</strong></p>
+    <p style="margin-top: 25px; font-weight: 600;">Visitez-nous dès aujourd'hui pour profiter de cette promotion!</p>
   `;
   
   return getEmailTemplate(content);
@@ -347,8 +509,9 @@ export function getPromoEmailHtml(promoTitle, promoDescription, discount, validU
 export function getGenericEmailHtml(subject, bodyHtml) {
   const content = `
     <h1>${subject}</h1>
-    ${bodyHtml}
-    <p style="margin-top: 40px; color: #ffffff;"><strong>L'équipe ZY Bodybuilding</strong></p>
+    <div style="margin: 20px 0;">
+      ${bodyHtml}
+    </div>
   `;
   
   return getEmailTemplate(content);

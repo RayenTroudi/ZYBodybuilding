@@ -5,6 +5,10 @@ import ConditionalLayout from './ConditionalLayout';
 export const metadata = {
   title: 'ZY Bodybuilding - Gym & Fitness Center',
   description: 'ZY Bodybuilding - Votre salle de musculation et fitness en Tunisie. Transformez votre corps avec nos programmes personnalisés.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({ children }) {

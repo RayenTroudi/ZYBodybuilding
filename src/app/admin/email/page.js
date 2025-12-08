@@ -13,33 +13,94 @@ const EMAIL_TEMPLATES = {
   welcome: {
     name: 'Email de Bienvenue',
     subject: 'Bienvenue chez ZY Bodybuilding!',
-    html: `<p>Bienvenue dans la famille ZY Bodybuilding!</p>
-<p>Votre parcours fitness commence maintenant. Profitez de nos équipements de pointe, entraîneurs experts et cours variés.</p>
-<p><strong>Variables disponibles:</strong> {memberName}</p>`,
+    html: `Bonjour {memberName},
+
+Nous sommes ravis de vous accueillir dans notre famille. Votre parcours vers un corps plus fort et plus sain commence maintenant!
+
+Ce qui vous attend:
+• Équipements de pointe - Machines et poids de qualité professionnelle
+• Entraîneurs experts - Accompagnement personnalisé pour vos objectifs
+• Cours variés - Planning flexible adapté à votre emploi du temps
+• Communauté motivante - Entourez-vous de passionnés de fitness
+
+Nous avons hâte de vous voir et de vous accompagner dans votre transformation!
+
+Prochaines étapes:
+• Consultez notre planning de cours
+• Rencontrez nos entraîneurs
+• Commencez votre première séance
+
+Variables: Remplacez {memberName} par le nom du membre`,
   },
   classReminder: {
     name: 'Rappel de Cours',
     subject: 'Rappel: Votre Cours Aujourd\'hui',
-    html: `<p>N'oubliez pas votre cours à venir!</p>
-<p><strong>Variables disponibles:</strong> {className}, {date}, {time}</p>`,
+    html: `N'oubliez pas votre cours à venir!
+
+Cours: {className}
+Date: {date}
+Heure: {time}
+
+Nous avons hâte de vous voir! 💪
+
+💡 Conseil: Arrivez 10 minutes en avance pour vous échauffer et préparer votre équipement.
+
+Variables: {className}, {date}, {time}`,
   },
   paymentReminder: {
     name: 'Rappel de Paiement',
     subject: 'Rappel de Paiement - ZY Bodybuilding',
-    html: `<p>Rappel amical concernant votre paiement d'adhésion.</p>
-<p><strong>Variables disponibles:</strong> {memberName}, {amount}, {dueDate}</p>`,
+    html: `Bonjour {memberName},
+
+Ceci est un rappel amical concernant votre paiement d'adhésion.
+
+Montant dû: {amount}
+Date d'échéance: {dueDate}
+
+Pour continuer à profiter de nos services sans interruption, veuillez effectuer votre paiement avant la date d'échéance.
+
+Moyens de paiement acceptés:
+• En salle (espèces ou carte bancaire)
+• Virement bancaire
+• Paiement mobile
+
+Variables: {memberName}, {amount}, {dueDate}`,
   },
   promo: {
     name: 'Offre Promotionnelle',
     subject: '🎉 Offre Spéciale chez ZY Bodybuilding',
-    html: `<p>Profitez de notre offre exceptionnelle!</p>
-<p><strong>Variables disponibles:</strong> {promoTitle}, {promoDescription}, {discount}, {validUntil}</p>`,
+    html: `🎉 {promoTitle}
+
+{promoDescription}
+
+PROMOTION: {discount}% OFF
+Offre à Durée Limitée
+
+Valable jusqu'au: {validUntil}
+
+Ne manquez pas cette opportunité exceptionnelle! Cette offre est valable pour:
+• Nouvelles adhésions
+• Renouvellements anticipés
+• Abonnements longue durée
+
+Variables: {promoTitle}, {promoDescription}, {discount}, {validUntil}`,
   },
   membershipExpiring: {
     name: 'Adhésion Expire Bientôt',
     subject: 'Votre Adhésion Expire Bientôt',
-    html: `<p>Votre adhésion arrive à expiration. Renouvelez dès aujourd'hui!</p>
-<p><strong>Variables disponibles:</strong> {memberName}, {daysRemaining}</p>`,
+    html: `Bonjour {memberName},
+
+Votre adhésion arrive à expiration dans {daysRemaining} jour(s).
+
+Ne laissez pas votre parcours fitness s'arrêter! Renouvelez dès aujourd'hui pour continuer à profiter de tous nos services.
+
+Ce que vous conservez en renouvelant:
+• Accès illimité à toutes les installations
+• Tous les cours collectifs inclus
+• Coaching personnalisé sur demande
+• Événements exclusifs réservés aux membres
+
+Variables: {memberName}, {daysRemaining}`,
   },
   custom: {
     name: 'Email Personnalisé',
@@ -260,7 +321,6 @@ export default function EmailManagementPage() {
             </div>
 
             {/* Email Body (HTML) */}
-            {/* Email Body (HTML) */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Contenu de l'Email
@@ -270,13 +330,22 @@ export default function EmailManagementPage() {
                 onChange={(e) => setEmailHtml(e.target.value)}
                 placeholder="Entrez le contenu de votre email (texte simple, pas besoin de HTML complexe)..."
                 required
-                rows={8}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                rows={10}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm font-mono"
               />
-              <p className="mt-2 text-xs text-gray-400">
-                ℹ️ Le contenu sera automatiquement formaté avec le design de ZY Bodybuilding (logo, couleurs, etc.)
-              </p>
-              <p className="text-xs text-gray-500">{emailHtml.length} caractères</p>
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-gray-400">
+                  ℹ️ Le contenu sera automatiquement formaté avec le design de ZY Bodybuilding (logo, couleurs, en-tête, pied de page).
+                </p>
+                <p className="text-xs text-yellow-400">
+                  📝 <strong>Variables disponibles:</strong> Utilisez {'{memberName}'}, {'{amount}'}, {'{dueDate}'}, etc. dans votre texte. 
+                  Exemple: "Bonjour {'{memberName}'}, votre paiement de {'{amount}'} est dû le {'{dueDate}'}."
+                </p>
+                <p className="text-xs text-gray-400">
+                  Le texte sera converti automatiquement en HTML (paragraphes, sauts de ligne, etc.)
+                </p>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">{emailHtml.length} caractères</p>
             </div>
             {/* Send Button */}
             <button

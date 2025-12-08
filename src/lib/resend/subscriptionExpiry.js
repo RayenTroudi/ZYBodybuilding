@@ -25,16 +25,16 @@ export async function checkExpiringSubscriptions() {
     // Calculate date thresholds
     const now = new Date();
     const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const fourDaysFromNow = new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000);
     
-    // Find members expiring in 3 or 7 days
+    // Find members expiring in exactly 3 days
     const expiringMembers = await db.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.membersCollectionId,
       [
         Query.equal('status', 'active'),
-        Query.lessThanEqual('endDate', sevenDaysFromNow.toISOString()),
-        Query.greaterThanEqual('endDate', now.toISOString()),
+        Query.lessThan('endDate', fourDaysFromNow.toISOString()),
+        Query.greaterThanEqual('endDate', threeDaysFromNow.toISOString()),
         Query.limit(100),
       ]
     );
@@ -56,8 +56,8 @@ export async function checkExpiringSubscriptions() {
         const endDate = new Date(member.endDate);
         const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
 
-        // Only send notifications for 3 or 7 days
-        if (daysRemaining !== 3 && daysRemaining !== 7) {
+        // Only send notification for 3 days before expiry
+        if (daysRemaining !== 3) {
           results.skipped++;
           continue;
         }
@@ -72,8 +72,8 @@ export async function checkExpiringSubscriptions() {
           continue;
         }
 
-        // Check if we already sent notification for this threshold
-        const lastNotificationKey = `lastExpiryNotification_${daysRemaining}days`;
+        // Check if we already sent notification
+        const lastNotificationKey = 'lastExpiryNotification_3days';
         const lastNotification = member[lastNotificationKey];
         
         if (lastNotification) {
