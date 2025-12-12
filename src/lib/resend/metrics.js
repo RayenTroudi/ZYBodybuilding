@@ -1,5 +1,6 @@
 /**
  * Email Metrics Tracking
+ * Uses in-memory storage since collection may not exist
  */
 
 import { createAdminClient } from '@/lib/appwrite/server';
@@ -7,6 +8,9 @@ import { appwriteConfig } from '@/lib/appwrite/config';
 import { ID, Query } from 'node-appwrite';
 
 const METRICS_COLLECTION_ID = 'email_metrics';
+
+// In-memory metrics storage (will reset on server restart)
+const inMemoryMetrics = [];
 
 /**
  * Record email metric in database
@@ -20,13 +24,34 @@ export async function recordEmailMetric({
   duration = 0,
   metadata = {},
 }) {
+  // Store in memory
+  const metric = {
+    $id: ID.unique(),
+    recipientEmail: to,
+    emailType: type,
+    status,
+    messageId,
+    error,
+    duration,
+    metadata: JSON.stringify(metadata),
+    sentAt: new Date().toISOString(),
+  };
+  
+  inMemoryMetrics.push(metric);
+  
+  // Keep only last 1000 metrics in memory
+  if (inMemoryMetrics.length > 1000) {
+    inMemoryMetrics.shift();
+  }
+  
+  // Try to save to database (optional)
   try {
     const { databases: db } = createAdminClient();
     
     await db.createDocument(
       appwriteConfig.databaseId,
       METRICS_COLLECTION_ID,
-      ID.unique(),
+      metric.$id,
       {
         recipientEmail: to,
         emailType: type,
@@ -35,15 +60,15 @@ export async function recordEmailMetric({
         error,
         duration,
         metadata: JSON.stringify(metadata),
-        sentAt: new Date().toISOString(),
+        sentAt: metric.sentAt,
       }
     );
   } catch (error) {
-    // Silently skip metrics if collection doesn't exist
+    // Silently skip database storage if collection doesn't exist
     if (error.code === 404) {
-      console.log('Email metrics collection not found - skipping metrics recording');
+      console.log('Email metrics collection not found - using in-memory storage only');
     } else {
-      console.error('Failed to record email metric:', error);
+      console.error('Failed to record email metric to database:', error);
     }
     // Don't throw - metrics failure shouldn't break email sending
   }
@@ -53,6 +78,7 @@ export async function recordEmailMetric({
  * Get email metrics for a time period
  */
 export async function getEmailMetrics(startDate, endDate) {
+  // First, try to get from database
   try {
     const { databases: db } = createAdminClient();
     
@@ -69,13 +95,18 @@ export async function getEmailMetrics(startDate, endDate) {
 
     return result.documents;
   } catch (error) {
-    // Return empty array if collection doesn't exist
+    // Fall back to in-memory metrics
     if (error.code === 404) {
-      console.log('Email metrics collection not found - returning empty metrics');
+      console.log('Email metrics collection not found - using in-memory metrics');
     } else {
-      console.error('Failed to fetch email metrics:', error);
+      console.error('Failed to fetch email metrics from database:', error);
     }
-    return [];
+    
+    // Filter in-memory metrics by date range
+    return inMemoryMetrics.filter(metric => {
+      const metricDate = new Date(metric.sentAt);
+      return metricDate >= startDate && metricDate <= endDate;
+    });
   }
 }
 
