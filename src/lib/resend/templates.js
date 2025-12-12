@@ -60,9 +60,10 @@ function getEmailTemplate(content) {
     }
     .logo-section {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
     }
     .logo-img {
       width: 60px;
@@ -299,10 +300,10 @@ function getEmailTemplate(content) {
       <div class="header">
         <div class="logo-section">
           <img src="https://zybodybuilding.space/images/logoNobg.png" alt="ZY Bodybuilding Logo" class="logo-img">
-          <div class="logo-text">
-            <h1 class="brand-name"><span class="brand-name-accent">ZY</span> BODYBUILDING</h1>
-            <p class="tagline">Transform Your Body</p>
-          </div>
+        </div>
+        <div class="logo-text">
+          <h1 class="brand-name"><span class="brand-name-accent">ZY</span> BODYBUILDING</h1>
+          <p class="tagline">Transform Your Body</p>
         </div>
       </div>
 
