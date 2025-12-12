@@ -352,6 +352,13 @@ export function getWelcomeEmailHtml(memberName) {
     
     <p>Nous sommes ravis de vous accueillir dans notre famille. Votre parcours vers un corps plus fort et plus sain commence maintenant!</p>
     
+    <!-- Optional: Add gym image -->
+    <div style="text-align: center; margin: 25px 0;">
+      <img src="https://zybodybuilding.space/images/fitness1.jpg" 
+           alt="ZY Bodybuilding Gym" 
+           style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    </div>
+    
     <div class="info-box">
       <h2 style="margin-top: 0; font-size: 18px; color: ${BRAND_COLORS.primary};">Ce qui vous attend:</h2>
       <ul style="margin: 15px 0; padding-left: 20px;">
