@@ -299,7 +299,7 @@ function getEmailTemplate(content) {
       <!-- Header with Logo - Matching Receipt Design -->
       <div class="header">
         <div class="logo-section">
-          <img src="https://zybodybuilding.space/images/logoNobg.png" alt="ZY Bodybuilding Logo" class="logo-img">
+          <img src="https://zybodybuilding.space/images/logo.PNG" alt="ZY Bodybuilding Logo" class="logo-img">
         </div>
         <div class="logo-text">
           <h1 class="brand-name"><span class="brand-name-accent">ZY</span> BODYBUILDING</h1>
