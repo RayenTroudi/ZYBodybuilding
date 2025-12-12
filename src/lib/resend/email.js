@@ -69,6 +69,15 @@ export async function sendEmail({
           subject,
           html,
           text: text || stripHtml(html),
+          headers: {
+            'X-Entity-Ref-ID': `${Date.now()}-${Math.random().toString(36).substring(7)}`,
+          },
+          tags: [
+            {
+              name: 'category',
+              value: type || 'general',
+            },
+          ],
         });
 
         // Check if result has error

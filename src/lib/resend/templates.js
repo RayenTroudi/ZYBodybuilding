@@ -328,7 +328,8 @@ function getEmailTemplate(content) {
             <div class="contact-item">📧 contact@zybodybuilding.space</div>
           </div>
           <div class="copyright">
-            © ${new Date().getFullYear()} ZY Bodybuilding. Tous droits réservés.
+            © ${new Date().getFullYear()} ZY Bodybuilding. Tous droits réservés.<br>
+            <a href="https://zybodybuilding.space/contact" style="color: #CC1303; text-decoration: none; font-size: 11px;">Nous contacter</a>
           </div>
         </div>
       </div>
