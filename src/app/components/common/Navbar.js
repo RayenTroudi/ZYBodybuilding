@@ -179,7 +179,7 @@ export default function Navbar() {
               Connexion
             </Link>
             <Link 
-              href="/admin/login" 
+              href="/register" 
               className="btn-primary text-lg text-center transform hover:scale-105 duration-200"
               onClick={closeMenu}
             >
@@ -215,7 +215,7 @@ export default function Navbar() {
               Connexion
             </Link>
             <Link 
-              href="/admin/login" 
+              href="/register" 
               className="btn-primary text-center"
             >
               S'inscrire
