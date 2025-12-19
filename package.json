@@ -13,7 +13,9 @@
     "setup-db": "node scripts/setup-database.js",
     "seed-data": "node scripts/seed-data.js",
     "create-admin": "node scripts/create-admin.js",
-    "check-expired": "node scripts/check-expired.js"
+    "check-expired": "node scripts/check-expired.js",
+    "setup-users": "node scripts/setup-users-collection.js",
+    "make-admin": "node scripts/make-admin.js"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.1",

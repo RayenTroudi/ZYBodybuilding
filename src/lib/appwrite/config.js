@@ -14,6 +14,7 @@ export const appwriteConfig = {
   trainersCollectionId: process.env.NEXT_PUBLIC_TRAINERS_COLLECTION_ID,
   classesCollectionId: process.env.NEXT_PUBLIC_CLASSES_COLLECTION_ID,
   trainerImagesBucketId: process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID,
+  usersCollectionId: process.env.NEXT_PUBLIC_USERS_COLLECTION_ID,
 };
 
 export const ADMIN_TEAM_ID = 'admin_team';

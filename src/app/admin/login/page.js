@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/lib/auth';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -94,6 +95,12 @@ export default function AdminLoginPage() {
 
           <div className="mt-6 text-center text-sm text-gray-400">
             <p>Authorized personnel only</p>
+            <p className="mt-2">
+              Don't have an account?{' '}
+              <Link href="/register" className="text-red-500 hover:text-red-400 font-medium">
+                Register here
+              </Link>
+            </p>
           </div>
         </div>
       </div>

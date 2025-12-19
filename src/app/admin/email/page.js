@@ -197,101 +197,82 @@ export default function EmailManagementPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Email Management</h1>
-        <p className="text-gray-400">Send emails to members and track delivery status</p>
-      </div>
-
-      {/* Metrics Cards */}
-      {metrics && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-gray-400 text-sm font-medium">Total Sent (7 days)</h3>
-              <FaChartBar className="text-blue-500" />
+    <div className="min-h-screen bg-gray-900 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="bg-red-500/10 p-3 rounded-xl border border-red-500/20">
+              <FaPaperPlane className="text-red-500 text-2xl" />
             </div>
-            <p className="text-3xl font-bold text-white">{metrics.stats?.total || 0}</p>
-          </div>
-
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-gray-400 text-sm font-medium">Successful</h3>
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Email Management</h1>
+              <p className="text-gray-400 text-sm mt-1">Send customized emails to your members</p>
             </div>
-            <p className="text-3xl font-bold text-green-500">{metrics.stats?.sent || 0}</p>
-          </div>
-
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-gray-400 text-sm font-medium">Failed</h3>
-              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-            </div>
-            <p className="text-3xl font-bold text-red-500">{metrics.stats?.failed || 0}</p>
-          </div>
-
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-gray-400 text-sm font-medium">Avg. Duration</h3>
-              <FaHistory className="text-purple-500" />
-            </div>
-            <p className="text-3xl font-bold text-white">
-              {metrics.stats?.avgDuration ? `${Math.round(metrics.stats.avgDuration)}ms` : '0ms'}
-            </p>
           </div>
         </div>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Send Email Form */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center">
-            <FaPaperPlane className="mr-2" />
-            Send Email
-          </h2>
+        {/* Email Form Card */}
+        <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-4 border-b border-red-800">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <FaPaperPlane className="text-white" />
+              Compose Email
+            </h2>
+          </div>
 
-          <form onSubmit={handleSendEmail} className="space-y-4">
-            {/* Template Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Template
-              </label>
-              <select
-                value={selectedTemplate}
-                onChange={(e) => handleTemplateChange(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                {Object.entries(EMAIL_TEMPLATES).map(([key, template]) => (
-                  <option key={key} value={key}>
-                    {template.name}
-                  </option>
-                ))}
-              </select>
+          <form onSubmit={handleSendEmail} className="p-6 space-y-6">
+            {/* Template and Type Selection - Two Column Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Template Selection */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                  <span className="text-red-400">📋</span>
+                  Select Template
+                </label>
+                <select
+                  value={selectedTemplate}
+                  onChange={(e) => handleTemplateChange(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500 cursor-pointer"
+                >
+                  {Object.entries(EMAIL_TEMPLATES).map(([key, template]) => (
+                    <option key={key} value={key}>
+                      {template.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Email Type */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                  <span className="text-red-400">🏷️</span>
+                  Email Type
+                </label>
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500 cursor-pointer"
+                >
+                  {Object.entries(EMAIL_TYPES).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            {/* Email Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Type
-              </label>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                {Object.entries(EMAIL_TYPES).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Divider */}
+            <div className="border-t border-gray-700"></div>
 
             {/* Recipient Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Recipient Email *
+              <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                <span className="text-red-400">✉️</span>
+                Recipient Email
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -299,14 +280,16 @@ export default function EmailManagementPage() {
                 onChange={(e) => setRecipientEmail(e.target.value)}
                 placeholder="recipient@example.com"
                 required
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500"
               />
             </div>
 
             {/* Subject */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Subject *
+              <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                <span className="text-red-400">📝</span>
+                Subject
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -315,53 +298,74 @@ export default function EmailManagementPage() {
                 placeholder="Email subject"
                 required
                 maxLength={200}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500"
               />
-              <p className="mt-1 text-xs text-gray-500">{subject.length}/200 characters</p>
+              <div className="flex justify-between mt-2">
+                <p className="text-xs text-gray-400">Keep it clear and concise</p>
+                <p className="text-xs text-gray-500 font-mono">{subject.length}/200</p>
+              </div>
             </div>
 
-            {/* Email Body (HTML) */}
+            {/* Email Body */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Contenu de l'Email
+              <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                <span className="text-red-400">📄</span>
+                Email Content
+                <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={emailHtml}
                 onChange={(e) => setEmailHtml(e.target.value)}
                 placeholder="Entrez le contenu de votre email (texte simple, pas besoin de HTML complexe)..."
                 required
-                rows={10}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm font-mono"
+                rows={12}
+                className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500 text-sm font-mono resize-y"
               />
-              <div className="mt-2 space-y-1">
-                <p className="text-xs text-gray-400">
-                  ℹ️ Le contenu sera automatiquement formaté avec le design de ZY Bodybuilding (logo, couleurs, en-tête, pied de page).
-                </p>
-                <p className="text-xs text-yellow-400">
-                  📝 <strong>Variables disponibles:</strong> Utilisez {'{memberName}'}, {'{amount}'}, {'{dueDate}'}, etc. dans votre texte. 
-                  Exemple: "Bonjour {'{memberName}'}, votre paiement de {'{amount}'} est dû le {'{dueDate}'}."
-                </p>
-                <p className="text-xs text-gray-400">
-                  Le texte sera converti automatiquement en HTML (paragraphes, sauts de ligne, etc.)
-                </p>
+              
+              {/* Helper Information Box */}
+              <div className="mt-3 bg-gray-700/50 border border-gray-600 rounded-lg p-4 space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-blue-400 mt-0.5">ℹ️</span>
+                  <p className="text-xs text-gray-300">
+                    Le contenu sera automatiquement formaté avec le design de ZY Bodybuilding (logo, couleurs, en-tête, pied de page).
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-yellow-400 mt-0.5">📝</span>
+                  <p className="text-xs text-gray-300">
+                    <strong className="text-yellow-300">Variables disponibles:</strong> {'{memberName}'}, {'{amount}'}, {'{dueDate}'}, etc. 
+                    <br />
+                    <span className="text-gray-400 italic">Exemple: "Bonjour {'{memberName}'}, votre paiement de {'{amount}'} est dû."</span>
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">✓</span>
+                  <p className="text-xs text-gray-400">
+                    Le texte sera converti automatiquement en HTML (paragraphes, sauts de ligne, etc.)
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-gray-500 mt-2">{emailHtml.length} caractères</p>
+              
+              <p className="text-xs text-gray-500 mt-2 font-mono text-right">{emailHtml.length} caractères</p>
             </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-700"></div>
             {/* Send Button */}
             <button
               type="submit"
               disabled={isSending || !recipientEmail || !subject || !emailHtml}
-              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
             >
               {isSending ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Sending...
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                  <span>Sending Email...</span>
                 </>
               ) : (
                 <>
-                  <FaPaperPlane className="mr-2" />
-                  Send Email
+                  <FaPaperPlane className="text-lg" />
+                  <span>Send Email</span>
                 </>
               )}
             </button>
@@ -369,78 +373,35 @@ export default function EmailManagementPage() {
             {/* Send Result */}
             {sendResult && (
               <div
-                className={`p-4 rounded-lg ${
+                className={`p-4 rounded-lg border-2 ${
                   sendResult.success
-                    ? 'bg-green-900/20 border border-green-500'
-                    : 'bg-red-900/20 border border-red-500'
+                    ? 'bg-green-900/20 border-green-500'
+                    : 'bg-red-900/20 border-red-500'
                 }`}
               >
                 {sendResult.success ? (
-                  <div>
-                    <p className="text-green-400 font-semibold mb-1">✓ Email sent successfully!</p>
-                    <p className="text-sm text-gray-400">Message ID: {sendResult.data?.messageId}</p>
+                  <div className="space-y-2">
+                    <p className="text-green-400 font-bold text-lg flex items-center gap-2">
+                      <span className="text-2xl">✓</span>
+                      Email sent successfully!
+                    </p>
+                    <p className="text-sm text-gray-300">
+                      <span className="text-gray-400">Message ID:</span>{' '}
+                      <span className="font-mono text-green-300">{sendResult.data?.messageId}</span>
+                    </p>
                   </div>
                 ) : (
-                  <div>
-                    <p className="text-red-400 font-semibold mb-1 flex items-center">
-                      <FaExclamationTriangle className="mr-2" />
+                  <div className="space-y-2">
+                    <p className="text-red-400 font-bold text-lg flex items-center gap-2">
+                      <FaExclamationTriangle className="text-xl" />
                       Failed to send email
                     </p>
-                    <p className="text-sm text-gray-400">{sendResult.error}</p>
+                    <p className="text-sm text-gray-300">{sendResult.error}</p>
                   </div>
                 )}
               </div>
             )}
           </form>
-        </div>
-
-        {/* Recent Emails */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center">
-            <FaHistory className="mr-2" />
-            Recent Emails
-          </h2>
-
-          {metrics && metrics.metrics && metrics.metrics.length > 0 ? (
-            <div className="space-y-3 max-h-[600px] overflow-y-auto">
-              {metrics.metrics.slice(0, 20).map((metric, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-700 rounded-lg p-4 border border-gray-600"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <p className="text-white font-medium truncate">{metric.recipientEmail}</p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {new Date(metric.sentAt).toLocaleString()}
-                      </p>
-                    </div>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        metric.status === 'sent'
-                          ? 'bg-green-900/50 text-green-400'
-                          : 'bg-red-900/50 text-red-400'
-                      }`}
-                    >
-                      {metric.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span className="capitalize">{metric.emailType}</span>
-                    {metric.duration && <span>{metric.duration}ms</span>}
-                  </div>
-                  {metric.error && (
-                    <p className="text-xs text-red-400 mt-2">{metric.error}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <FaHistory className="mx-auto text-5xl text-gray-600 mb-4" />
-              <p className="text-gray-400">No emails sent yet</p>
-            </div>
-          )}
         </div>
       </div>
     </div>

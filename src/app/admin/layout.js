@@ -19,6 +19,7 @@ export default function AdminLayout({ children }) {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
+    { name: 'Users', href: '/admin/users', icon: '👤' },
     { name: 'Members', href: '/admin/members', icon: '👥' },
     { name: 'Payments', href: '/admin/payments', icon: '💳' },
     { name: 'Plans', href: '/admin/plans', icon: '📋' },
