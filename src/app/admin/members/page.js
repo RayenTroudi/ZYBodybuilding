@@ -2,14 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 
 export default function MembersPage() {
+  const router = useRouter();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState(null);
+  const [showYearDialog, setShowYearDialog] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [pendingFile, setPendingFile] = useState(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultMessage, setResultMessage] = useState(null);
 
   useEffect(() => {
     fetchMembers();
@@ -70,8 +79,227 @@ export default function MembersPage() {
     a.click();
   };
 
+  const handleFileSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+      setResultMessage({
+        title: 'Invalid File Type',
+        type: 'error',
+        message: 'Please select an Excel file (.xlsx or .xls)',
+        stats: null,
+        errors: null
+      });
+      setShowResultModal(true);
+      event.target.value = '';
+      return;
+    }
+
+    // Store file and show year dialog
+    setPendingFile(file);
+    setSelectedYear(new Date().getFullYear());
+    setShowYearDialog(true);
+    
+    // Reset file input
+    event.target.value = '';
+  };
+
+  const handleCancelImport = () => {
+    setShowYearDialog(false);
+    setPendingFile(null);
+  };
+
+  const handleConfirmImport = async () => {
+    if (!pendingFile) return;
+
+    setShowYearDialog(false);
+    setImporting(true);
+    setImportResult(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', pendingFile);
+      formData.append('year', selectedYear.toString());
+
+      const response = await fetch('/api/admin/members/import', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Import failed');
+      }
+
+      setImportResult(data);
+      
+      // Refresh members list first
+      await fetchMembers();
+      
+      // Then refresh all data including dashboard statistics
+      router.refresh();
+
+      // Prepare result message
+      if (data.results.errors && data.results.errors.length > 0) {
+        const errorDetails = data.results.errors.slice(0, 5).map(e => `Row ${e.row}: ${e.error}`).join('\n');
+        setResultMessage({
+          title: 'Import Completed with Errors',
+          type: 'warning',
+          stats: data.results,
+          errors: errorDetails
+        });
+      } else {
+        setResultMessage({
+          title: 'Import Completed Successfully!',
+          type: 'success',
+          stats: data.results,
+          errors: null
+        });
+      }
+      
+      // Reset importing state before showing modal
+      setImporting(false);
+      setPendingFile(null);
+      setShowResultModal(true);
+    } catch (error) {
+      console.error('Import error:', error);
+      setImporting(false);
+      setPendingFile(null);
+      setResultMessage({
+        title: 'Import Failed',
+        type: 'error',
+        message: error.message,
+        stats: null,
+        errors: null
+      });
+      setShowResultModal(true);
+    }
+  };
+
   return (
     <div className="space-y-6 p-4 sm:p-6">
+      {/* Result Modal */}
+      {showResultModal && resultMessage && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                {resultMessage.type === 'success' && (
+                  <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-2xl">✓</span>
+                  </div>
+                )}
+                {resultMessage.type === 'warning' && (
+                  <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-2xl">⚠</span>
+                  </div>
+                )}
+                {resultMessage.type === 'error' && (
+                  <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-2xl">✕</span>
+                  </div>
+                )}
+                <h3 className="text-xl font-bold text-white">{resultMessage.title}</h3>
+              </div>
+              <button
+                onClick={() => setShowResultModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            {resultMessage.stats && (
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <p className="text-gray-400 text-sm">Total Rows</p>
+                  <p className="text-2xl font-bold text-white">{resultMessage.stats.total}</p>
+                </div>
+                <div className="bg-green-500/20 rounded-lg p-4">
+                  <p className="text-gray-400 text-sm">Successful</p>
+                  <p className="text-2xl font-bold text-green-500">{resultMessage.stats.success}</p>
+                </div>
+                <div className="bg-red-500/20 rounded-lg p-4">
+                  <p className="text-gray-400 text-sm">Failed</p>
+                  <p className="text-2xl font-bold text-red-500">{resultMessage.stats.failed}</p>
+                </div>
+                <div className="bg-yellow-500/20 rounded-lg p-4">
+                  <p className="text-gray-400 text-sm">Duplicates</p>
+                  <p className="text-2xl font-bold text-yellow-500">{resultMessage.stats.duplicates}</p>
+                </div>
+              </div>
+            )}
+
+            {resultMessage.message && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-4">
+                <p className="text-red-400">{resultMessage.message}</p>
+              </div>
+            )}
+
+            {resultMessage.errors && (
+              <div className="bg-gray-700 rounded-lg p-4 mb-4">
+                <p className="text-gray-400 text-sm font-semibold mb-2">First Errors:</p>
+                <pre className="text-xs text-gray-300 whitespace-pre-wrap">{resultMessage.errors}</pre>
+              </div>
+            )}
+
+            <button
+              onClick={() => setShowResultModal(false)}
+              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Year Selection Dialog */}
+      {showYearDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold text-white mb-4">Select Data Year</h3>
+            <p className="text-gray-400 mb-6">
+              What year does this Excel file data belong to?
+            </p>
+            
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Year
+              </label>
+              <input
+                type="number"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                min="2000"
+                max="2100"
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Dates without a year (e.g., "04-août") will use this year
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelImport}
+                className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmImport}
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                Import
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header - Responsive */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -79,6 +307,18 @@ export default function MembersPage() {
           <p className="text-sm sm:text-base text-gray-400">Manage gym memberships</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
+          <label className="relative cursor-pointer">
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleFileSelect}
+              disabled={importing}
+              className="hidden"
+            />
+            <span className={`block px-4 py-2 ${importing ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg transition-colors text-sm sm:text-base w-full sm:w-auto text-center`}>
+              {importing ? '⏳ Importing...' : '📤 Import Excel'}
+            </span>
+          </label>
           <button
             onClick={exportToCSV}
             className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm sm:text-base w-full sm:w-auto"
