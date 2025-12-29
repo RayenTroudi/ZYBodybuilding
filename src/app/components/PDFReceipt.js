@@ -438,6 +438,8 @@ const PDFReceipt = ({ data }) => {
     payment,
     paymentMethod,
     timestamp,
+    includeAssurance = false,
+    assuranceAmount = 0,
   } = data;
 
   const formatDate = (dateString) => {
@@ -460,6 +462,7 @@ const PDFReceipt = ({ data }) => {
     return amount * 0.19; // 19% TVA
   };
 
+  const membershipAmount = parseFloat(payment) - assuranceAmount;
   const tax = calculateTax(parseFloat(payment));
   const subtotal = parseFloat(payment) - tax;
 
@@ -592,9 +595,22 @@ const PDFReceipt = ({ data }) => {
               </Text>
               <Text style={[styles.tableCell, styles.col2]}>1</Text>
               <Text style={[styles.tableCell, styles.tableCellBold, styles.col3]}>
-                {formatPrice(payment)}
+                {formatPrice(membershipAmount)}
               </Text>
             </View>
+
+            {/* Assurance Row */}
+            {includeAssurance && (
+              <View style={[styles.tableRow, styles.tableRowAlt]}>
+                <Text style={[styles.tableCell, styles.col1]}>
+                  Assurance
+                </Text>
+                <Text style={[styles.tableCell, styles.col2]}>1</Text>
+                <Text style={[styles.tableCell, styles.tableCellBold, styles.col3]}>
+                  {formatPrice(assuranceAmount)}
+                </Text>
+              </View>
+            )}
           </View>
 
           {/* Summary */}

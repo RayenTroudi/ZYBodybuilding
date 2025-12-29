@@ -30,6 +30,7 @@ export default function NewMemberPage() {
     subscriptionStartDate: new Date().toISOString().split('T')[0],
     initialPayment: '',
     paymentMethod: 'Cash',
+    includeAssurance: false,
   });
   const router = useRouter();
 
@@ -91,6 +92,8 @@ export default function NewMemberPage() {
           payment: formData.initialPayment,
           paymentMethod: formData.paymentMethod,
           timestamp: new Date().toISOString(),
+          includeAssurance: formData.includeAssurance,
+          assuranceAmount: formData.includeAssurance ? 20 : 0,
         });
         
         setShowReceipt(true);
@@ -178,6 +181,7 @@ export default function NewMemberPage() {
       subscriptionStartDate: new Date().toISOString().split('T')[0],
       initialPayment: '',
       paymentMethod: 'Cash',
+      includeAssurance: false,
     });
   };
 
@@ -336,7 +340,21 @@ export default function NewMemberPage() {
                     <span className="text-gray-600">Méthode de Paiement:</span>
                     <span className="font-semibold text-gray-900">{receiptData.paymentMethod}</span>
                   </div>
-                  <div className="flex justify-between text-lg">
+                  <div className="pt-2 border-t border-green-200 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Abonnement ({receiptData.plan.name}):</span>
+                      <span className="font-semibold text-gray-900">
+                        {(parseFloat(receiptData.payment) - (receiptData.includeAssurance ? 20 : 0)).toFixed(2)} TND
+                      </span>
+                    </div>
+                    {receiptData.includeAssurance && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">🛡️ Assurance:</span>
+                        <span className="font-semibold text-blue-600">20.00 TND</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-between text-lg pt-2 border-t-2 border-green-300">
                     <span className="text-gray-800 font-bold">Montant Total:</span>
                     <span className="font-bold text-green-600">
                       {parseFloat(receiptData.payment).toLocaleString('fr-TN', {
@@ -492,7 +510,17 @@ export default function NewMemberPage() {
               </label>
               <select
                 value={formData.planId}
-                onChange={(e) => setFormData({ ...formData, planId: e.target.value })}
+                onChange={(e) => {
+                  const plan = plans.find(p => p.$id === e.target.value);
+                  const planPrice = plan ? parseFloat(plan.price) : 0;
+                  const assuranceFee = formData.includeAssurance ? 20 : 0;
+                  const totalAmount = planPrice + assuranceFee;
+                  setFormData({ 
+                    ...formData, 
+                    planId: e.target.value,
+                    initialPayment: totalAmount > 0 ? totalAmount.toString() : ''
+                  });
+                }}
                 required
                 className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
               >
@@ -559,7 +587,7 @@ export default function NewMemberPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold text-gray-300 mb-2">
-                Payment Amount
+                Payment Amount (Auto-calculated)
               </label>
               <input
                 type="number"
@@ -568,10 +596,10 @@ export default function NewMemberPage() {
                 onChange={(e) => setFormData({ ...formData, initialPayment: e.target.value })}
                 min="0"
                 className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                placeholder={selectedPlan ? `${selectedPlan.price}` : '0.00'}
+                placeholder={selectedPlan ? `${parseFloat(selectedPlan.price) + (formData.includeAssurance ? 20 : 0)}` : '0.00'}
               />
               <p className="text-xs text-gray-500 mt-2">
-                💡 Leave blank if no payment received yet
+                💡 Updates automatically when plan or assurance is selected
               </p>
             </div>
 
@@ -589,6 +617,65 @@ export default function NewMemberPage() {
                 <option value="Online">🌐 Online</option>
               </select>
             </div>
+
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl cursor-pointer hover:bg-blue-500/20 transition-all">
+                <input
+                  type="checkbox"
+                  checked={formData.includeAssurance}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    const planPrice = selectedPlan ? parseFloat(selectedPlan.price) : 0;
+                    const assuranceFee = checked ? 20 : 0;
+                    const totalAmount = planPrice + assuranceFee;
+                    setFormData({ 
+                      ...formData, 
+                      includeAssurance: checked,
+                      initialPayment: totalAmount > 0 ? totalAmount.toString() : formData.initialPayment
+                    });
+                  }}
+                  className="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
+                />
+                <div className="flex-1">
+                  <span className="text-white font-semibold">🛡️ Include Assurance</span>
+                  <p className="text-sm text-gray-400 mt-1">
+                    Add insurance coverage for 20 DT
+                  </p>
+                </div>
+                {formData.includeAssurance && (
+                  <span className="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-lg">
+                    +20 DT
+                  </span>
+                )}
+              </label>
+            </div>
+
+            {/* Payment Summary */}
+            {selectedPlan && formData.initialPayment && (
+              <div className="md:col-span-2 p-5 bg-gradient-to-br from-green-500/10 to-emerald-600/5 border border-green-500/20 rounded-xl">
+                <h3 className="font-bold text-white mb-3 flex items-center gap-2">
+                  <span>💰</span> Payment Breakdown
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Plan ({selectedPlan.name}):</span>
+                    <span className="text-white font-semibold">{selectedPlan.price} DT</span>
+                  </div>
+                  {formData.includeAssurance && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">🛡️ Assurance:</span>
+                      <span className="text-blue-400 font-semibold">20.00 DT</span>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t border-green-500/30 flex justify-between">
+                    <span className="text-white font-bold">Total Amount:</span>
+                    <span className="text-green-400 font-bold text-lg">
+                      {parseFloat(formData.initialPayment).toFixed(2)} DT
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

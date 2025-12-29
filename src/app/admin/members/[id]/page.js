@@ -25,6 +25,14 @@ export default function MemberDetailPage({ params }) {
     planId: '',
     paymentMethod: 'Cash',
   });
+  const [editData, setEditData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    emergencyContact: '',
+  });
+  const [saving, setSaving] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
   const [generatingPDF, setGeneratingPDF] = useState(false);
@@ -40,10 +48,26 @@ export default function MemberDetailPage({ params }) {
       setLoading(true);
       const response = await fetch(`/api/admin/members/${id}`);
       const data = await response.json();
+      
+      if (!data.member) {
+        console.error('No member data received:', data);
+        showToast('Failed to load member details', 'error');
+        return;
+      }
+      
       setMember(data.member);
       setPayments(data.payments || []);
+      // Initialize edit data with member details
+      setEditData({
+        name: data.member.name || '',
+        email: data.member.email || '',
+        phone: data.member.phone || '',
+        address: data.member.address || '',
+        emergencyContact: data.member.emergencyContact || '',
+      });
     } catch (error) {
       console.error('Error fetching member:', error);
+      showToast('Failed to load member details', 'error');
     } finally {
       setLoading(false);
     }
@@ -185,6 +209,34 @@ export default function MemberDetailPage({ params }) {
     }
   };
 
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      const response = await fetch(`/api/admin/members/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editData),
+      });
+
+      if (response.ok) {
+        const updatedMember = await response.json();
+        setMember(updatedMember);
+        setShowEditModal(false);
+        showToast('Member updated successfully!', 'success');
+      } else {
+        const errorData = await response.json();
+        showToast(`Failed to update: ${errorData.error || 'Unknown error'}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error updating member:', error);
+      showToast(`Failed to update member: ${error.message}`, 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white p-8 flex items-center justify-center">
@@ -227,6 +279,12 @@ export default function MemberDetailPage({ params }) {
           </div>
         </div>
         <div className="flex gap-3">
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            ✏️ Edit
+          </button>
           <button
             onClick={() => setShowRenewModal(true)}
             className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
@@ -288,8 +346,15 @@ export default function MemberDetailPage({ params }) {
               ) : (
                 payments.map((payment) => (
                   <div key={payment.$id} className="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
-                    <div>
-                      <p className="text-white font-medium">{payment.planName}</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-white font-medium">{payment.planName}</p>
+                        {payment.includesAssurance && (
+                          <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded border border-blue-500/30">
+                            🛡️ +Assurance
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-400">
                         {format(new Date(payment.paymentDate), 'MMM dd, yyyy')} • {payment.paymentMethod}
                       </p>
@@ -367,6 +432,17 @@ export default function MemberDetailPage({ params }) {
                     : 'N/A'}
                 </p>
               </div>
+              {member.hasAssurance && (
+                <div className="pt-3 border-t border-gray-700">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                    <span className="text-xl">🛡️</span>
+                    <div>
+                      <p className="text-blue-400 text-sm font-semibold">Assurance Active</p>
+                      <p className="text-xs text-gray-400">{member.assuranceAmount} DT</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -425,6 +501,111 @@ export default function MemberDetailPage({ params }) {
                   className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
                 >
                   Renew
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Member Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full border border-gray-700 my-8">
+            <h2 className="text-2xl font-bold text-white mb-6">Edit Member</h2>
+            <form onSubmit={handleEdit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter member name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={editData.email}
+                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="member@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Phone <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={editData.phone}
+                    onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="+1234567890"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Emergency Contact
+                  </label>
+                  <input
+                    type="tel"
+                    value={editData.emergencyContact}
+                    onChange={(e) => setEditData({ ...editData, emergencyContact: e.target.value })}
+                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="+1234567890"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Address
+                </label>
+                <textarea
+                  value={editData.address}
+                  onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter full address"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  disabled={saving}
+                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {saving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    '💾 Save Changes'
+                  )}
                 </button>
               </div>
             </form>
