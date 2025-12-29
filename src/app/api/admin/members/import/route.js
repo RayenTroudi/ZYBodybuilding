@@ -37,13 +37,41 @@ export async function POST(request) {
     const workbook = XLSX.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(worksheet);
-
-    if (data.length === 0) {
+    
+    // First, try to detect if there are headers by reading as objects
+    const dataWithHeaders = XLSX.utils.sheet_to_json(worksheet);
+    
+    if (dataWithHeaders.length === 0) {
       return NextResponse.json(
         { error: 'Excel file is empty' },
         { status: 400 }
       );
+    }
+    
+    // Check if first row looks like headers
+    const firstRow = dataWithHeaders[0];
+    const firstRowKeys = Object.keys(firstRow);
+    const likelyHeaders = ['ID', 'DURATION', 'AMOUNT', 'START_DATE', 'END_DATE', 'NAME', 'PHONE'];
+    const hasHeaders = likelyHeaders.some(header => 
+      firstRowKeys.some(key => key.toUpperCase() === header)
+    );
+    
+    let data;
+    if (hasHeaders) {
+      // Use the object format (keys are column names)
+      data = dataWithHeaders;
+    } else {
+      // No headers detected - read as array format
+      data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      // Filter out empty rows
+      data = data.filter(row => row && row.length > 0 && row.some(cell => cell !== null && cell !== undefined && cell !== ''));
+      
+      if (data.length === 0) {
+        return NextResponse.json(
+          { error: 'Excel file is empty' },
+          { status: 400 }
+        );
+      }
     }
 
     const { databases } = createAdminClient();
@@ -55,29 +83,77 @@ export async function POST(request) {
       duplicates: 0
     };
 
-    // Validate column names from first row
-    const firstRow = data[0];
-    const requiredColumns = ['ID', 'DURATION', 'AMOUNT', 'START_DATE', 'END_DATE', 'NAME', 'PHONE'];
-    const missingColumns = requiredColumns.filter(col => !(col in firstRow));
+    let columnMap = {};
+    let startIndex = 0;
     
-    if (missingColumns.length > 0) {
-      return NextResponse.json(
-        { error: `Missing required columns: ${missingColumns.join(', ')}` },
-        { status: 400 }
-      );
+    if (hasHeaders) {
+      // First row is headers - create mapping from object keys
+      const firstDataRow = data[0];
+      Object.keys(firstDataRow).forEach(key => {
+        columnMap[key.toUpperCase()] = key;
+      });
+      startIndex = 0;
+    } else {
+      // No headers - data is array format
+      // Each row is [col0, col1, col2, ...]
+      // Map by index: 0=ID, 1=DURATION, 2=AMOUNT, etc.
+      columnMap = {
+        'ID': 0,
+        'DURATION': 1,
+        'AMOUNT': 2,
+        'START_DATE': 3,
+        'END_DATE': 4,
+        'NAME': 5,
+        'PHONE': 6,
+        'EMAIL': 7,
+        'ADDRESS': 8,
+        'EMERGENCY_CONTACT': 9
+      };
+      startIndex = 0;
     }
 
     // Process each row
-    for (let i = 0; i < data.length; i++) {
+    for (let i = startIndex; i < data.length; i++) {
       const row = data[i];
       
+      let rowData;
+      if (hasHeaders) {
+        // Access by column name
+        rowData = {
+          ID: row[columnMap['ID']],
+          DURATION: row[columnMap['DURATION']],
+          AMOUNT: row[columnMap['AMOUNT']],
+          START_DATE: row[columnMap['START_DATE']],
+          END_DATE: row[columnMap['END_DATE']],
+          NAME: row[columnMap['NAME']],
+          PHONE: row[columnMap['PHONE']],
+          EMAIL: row[columnMap['EMAIL']],
+          ADDRESS: row[columnMap['ADDRESS']],
+          EMERGENCY_CONTACT: row[columnMap['EMERGENCY_CONTACT']]
+        };
+      } else {
+        // Access by array index
+        rowData = {
+          ID: row[0],
+          DURATION: row[1],
+          AMOUNT: row[2],
+          START_DATE: row[3],
+          END_DATE: row[4],
+          NAME: row[5],
+          PHONE: row[6],
+          EMAIL: row[7],
+          ADDRESS: row[8],
+          EMERGENCY_CONTACT: row[9]
+        };
+      }
+      
       try {
-        // Validate required fields
-        if (!row.ID || !row.NAME || !row.PHONE || !row.DURATION || !row.AMOUNT || !row.START_DATE || !row.END_DATE) {
+        // Validate required fields (allow empty strings to be caught)
+        if (!rowData.ID || !rowData.NAME || !rowData.DURATION || !rowData.AMOUNT || !rowData.START_DATE) {
           results.failed++;
           results.errors.push({
             row: i + 2, // +2 because Excel rows start at 1 and we have header
-            error: 'Missing required fields'
+            error: 'Missing required fields (ID, NAME, DURATION, AMOUNT, START_DATE are required)'
           });
           continue;
         }
@@ -86,14 +162,14 @@ export async function POST(request) {
         const existingMembers = await databases.listDocuments(
           appwriteConfig.databaseId,
           appwriteConfig.membersCollectionId,
-          [Query.equal('memberId', String(row.ID))]
+          [Query.equal('memberId', String(rowData.ID))]
         );
 
         if (existingMembers.documents.length > 0) {
           results.duplicates++;
           results.errors.push({
             row: i + 2,
-            error: `Member with ID ${row.ID} already exists`
+            error: `Member with ID ${rowData.ID} already exists`
           });
           continue;
         }
@@ -104,16 +180,22 @@ export async function POST(request) {
         
         // Helper function to parse various date formats
         const parseDate = (dateValue) => {
-          if (!dateValue) return null;
+          if (!dateValue || dateValue === '') return null;
           
           // Handle Excel date serial numbers
           if (typeof dateValue === 'number') {
-            const parsed = XLSX.SSF.parse_date_code(dateValue);
-            // Use baseYear and ignore the year from Excel serial
-            return new Date(baseYear, parsed.m - 1, parsed.d, 12, 0, 0, 0);
+            try {
+              const parsed = XLSX.SSF.parse_date_code(dateValue);
+              if (!parsed) return null;
+              // Use baseYear and ignore the year from Excel serial
+              return new Date(baseYear, parsed.m - 1, parsed.d, 12, 0, 0, 0);
+            } catch (e) {
+              return null;
+            }
           }
           
           const dateStr = String(dateValue).trim();
+          if (!dateStr) return null;
           
           // Handle French month abbreviations (e.g., "04-août", "05-sept")
           const frenchMonths = {
@@ -173,15 +255,20 @@ export async function POST(request) {
         };
         
         try {
-          startDate = parseDate(row.START_DATE);
-          endDate = parseDate(row.END_DATE);
+          startDate = parseDate(rowData.START_DATE);
+          endDate = rowData.END_DATE ? parseDate(rowData.END_DATE) : null;
 
           if (!startDate || isNaN(startDate.getTime())) {
-            throw new Error(`Invalid START_DATE format: "${row.START_DATE}"`);
+            throw new Error(`Invalid START_DATE format: "${rowData.START_DATE}"`);
           }
           
+          // If no end date provided, calculate based on duration
           if (!endDate || isNaN(endDate.getTime())) {
-            throw new Error(`Invalid END_DATE format: "${row.END_DATE}"`);
+            // Default to 1 month if duration parsing fails
+            const durationMatch = String(rowData.DURATION).match(/(\d+)\s*mois/i);
+            const months = durationMatch ? parseInt(durationMatch[1]) : 1;
+            endDate = new Date(startDate);
+            endDate.setMonth(endDate.getMonth() + months);
           }
         } catch (dateError) {
           results.failed++;
@@ -193,7 +280,7 @@ export async function POST(request) {
         }
 
         // Validate amount is a number
-        const amount = parseFloat(row.AMOUNT);
+        const amount = parseFloat(rowData.AMOUNT);
         if (isNaN(amount)) {
           results.failed++;
           results.errors.push({
@@ -210,18 +297,20 @@ export async function POST(request) {
 
         // Create member document
         const memberData = {
-          memberId: String(row.ID),
-          name: String(row.NAME),
-          phone: String(row.PHONE),
-          email: row.EMAIL || `member${row.ID}@gym.com`, // Optional, generate if not provided
+          memberId: String(rowData.ID),
+          name: String(rowData.NAME),
+          phone: String(rowData.PHONE || 'N/A'),
+          email: rowData.EMAIL || `member${rowData.ID}@gym.com`, // Optional, generate if not provided
           planId: 'imported_plan',
-          planName: `${row.DURATION}`,
+          planName: `${rowData.DURATION}`,
           subscriptionStartDate: startDate.toISOString(),
           subscriptionEndDate: endDate.toISOString(),
           status: status,
           totalPaid: amount,
-          address: row.ADDRESS || '',
-          emergencyContact: row.EMERGENCY_CONTACT || ''
+          address: rowData.ADDRESS || '',
+          emergencyContact: rowData.EMERGENCY_CONTACT || '',
+          hasAssurance: false,
+          assuranceAmount: 0
         };
 
         const member = await databases.createDocument(
