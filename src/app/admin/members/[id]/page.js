@@ -32,6 +32,12 @@ export default function MemberDetailPage({ params }) {
     phone: '',
     address: '',
     emergencyContact: '',
+    planId: '',
+    subscriptionStartDate: '',
+    subscriptionEndDate: '',
+    status: '',
+    hasAssurance: false,
+    assuranceAmount: 0,
   });
   const [saving, setSaving] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
@@ -65,6 +71,12 @@ export default function MemberDetailPage({ params }) {
         phone: data.member.phone || '',
         address: data.member.address || '',
         emergencyContact: data.member.emergencyContact || '',
+        planId: data.member.planId || '',
+        subscriptionStartDate: data.member.subscriptionStartDate ? new Date(data.member.subscriptionStartDate).toISOString().split('T')[0] : '',
+        subscriptionEndDate: data.member.subscriptionEndDate ? new Date(data.member.subscriptionEndDate).toISOString().split('T')[0] : '',
+        status: data.member.status || 'Active',
+        hasAssurance: data.member.hasAssurance || false,
+        assuranceAmount: data.member.assuranceAmount || 0,
       });
     } catch (error) {
       console.error('Error fetching member:', error);
@@ -215,17 +227,44 @@ export default function MemberDetailPage({ params }) {
     setSaving(true);
 
     try {
+      // Get the selected plan name if plan was changed
+      const selectedPlan = plans.find(p => p.$id === editData.planId);
+      
+      // Calculate totalPaid adjustment based on assurance change
+      let newTotalPaid = member.totalPaid;
+      
+      // If assurance status changed, adjust total paid
+      if (editData.hasAssurance !== member.hasAssurance) {
+        if (editData.hasAssurance) {
+          // Assurance was added - increase total
+          newTotalPaid += editData.assuranceAmount;
+        } else {
+          // Assurance was removed - decrease total
+          newTotalPaid -= member.assuranceAmount;
+        }
+      }
+      
+      const updateData = {
+        ...editData,
+        planName: selectedPlan ? selectedPlan.name : member.planName,
+        subscriptionStartDate: new Date(editData.subscriptionStartDate).toISOString(),
+        subscriptionEndDate: new Date(editData.subscriptionEndDate).toISOString(),
+        totalPaid: newTotalPaid,
+      };
+
       const response = await fetch(`/api/admin/members/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editData),
+        body: JSON.stringify(updateData),
       });
 
       if (response.ok) {
         const updatedMember = await response.json();
-        setMember(updatedMember);
+        invalidateCache('/api/admin/members'); // Invalidate cache
         setShowEditModal(false);
         showToast('Member updated successfully!', 'success');
+        // Refresh member details to ensure all data is current
+        await fetchMemberDetails();
       } else {
         const errorData = await response.json();
         showToast(`Failed to update: ${errorData.error || 'Unknown error'}`, 'error');
@@ -512,77 +551,183 @@ export default function MemberDetailPage({ params }) {
       {/* Edit Member Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full border border-gray-700 my-8">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-4xl w-full border border-gray-700 my-8">
             <h2 className="text-2xl font-bold text-white mb-6">Edit Member</h2>
-            <form onSubmit={handleEdit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={editData.name}
-                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter member name"
-                  />
-                </div>
+            <form onSubmit={handleEdit} className="space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 pb-2 border-b border-gray-700">Personal Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={editData.name}
+                      onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter member name"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={editData.email}
-                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="member@example.com"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={editData.email}
+                      onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="member@example.com"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Phone <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={editData.phone}
-                    onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                    required
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="+1234567890"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={editData.phone}
+                      onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="+1234567890"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Emergency Contact
-                  </label>
-                  <input
-                    type="tel"
-                    value={editData.emergencyContact}
-                    onChange={(e) => setEditData({ ...editData, emergencyContact: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="+1234567890"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Emergency Contact
+                    </label>
+                    <input
+                      type="tel"
+                      value={editData.emergencyContact}
+                      onChange={(e) => setEditData({ ...editData, emergencyContact: e.target.value })}
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="+1234567890"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Address
+                    </label>
+                    <textarea
+                      value={editData.address}
+                      onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                      rows={2}
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter full address"
+                    />
+                  </div>
                 </div>
               </div>
 
+              {/* Subscription Information */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Address
+                <h3 className="text-lg font-semibold text-white mb-4 pb-2 border-b border-gray-700">Subscription Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Plan <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={editData.planId}
+                      onChange={(e) => {
+                        const selectedPlan = plans.find(p => p.$id === e.target.value);
+                        setEditData({ 
+                          ...editData, 
+                          planId: e.target.value,
+                          planName: selectedPlan ? selectedPlan.name : ''
+                        });
+                      }}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Choose a plan...</option>
+                      {plans.map((plan) => (
+                        <option key={plan.$id} value={plan.$id}>
+                          {plan.name} - ${plan.price} ({plan.duration} days)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Status <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={editData.status}
+                      onChange={(e) => setEditData({ ...editData, status: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Expired">Expired</option>
+                      <option value="Pending">Pending</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Start Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={editData.subscriptionStartDate}
+                      onChange={(e) => setEditData({ ...editData, subscriptionStartDate: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      End Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={editData.subscriptionEndDate}
+                      onChange={(e) => setEditData({ ...editData, subscriptionEndDate: e.target.value })}
+                      required
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Assurance */}
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 pb-2 border-b border-gray-700">Assurance</h3>
+                <label className="flex items-center gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg cursor-pointer hover:bg-blue-500/20 transition-all">
+                  <input
+                    type="checkbox"
+                    checked={editData.hasAssurance}
+                    onChange={(e) => setEditData({ 
+                      ...editData, 
+                      hasAssurance: e.target.checked,
+                      assuranceAmount: e.target.checked ? 20 : 0
+                    })}
+                    className="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="flex-1">
+                    <span className="text-white font-semibold">🛡️ Has Assurance</span>
+                    <p className="text-sm text-gray-400 mt-1">
+                      Member has insurance coverage (20 DT)
+                    </p>
+                  </div>
+                  {editData.hasAssurance && (
+                    <span className="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-lg">
+                      20 DT
+                    </span>
+                  )}
                 </label>
-                <textarea
-                  value={editData.address}
-                  onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter full address"
-                />
               </div>
 
               <div className="flex gap-3 pt-4">
