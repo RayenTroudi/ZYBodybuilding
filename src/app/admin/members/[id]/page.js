@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import dynamic from 'next/dynamic';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 
 // Dynamically import PDFReceipt to avoid SSR issues
 const PDFReceipt = dynamic(() => import('@/app/components/PDFReceipt'), {
@@ -75,8 +76,7 @@ export default function MemberDetailPage({ params }) {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch('/api/admin/plans?activeOnly=true');
-      const data = await response.json();
+      const data = await cachedFetch('/api/admin/plans?activeOnly=true', {}, 300000); // 5 min cache
       setPlans(data.documents || []);
     } catch (error) {
       console.error('Error fetching plans:', error);
@@ -110,6 +110,7 @@ export default function MemberDetailPage({ params }) {
         const result = await response.json();
         setShowRenewModal(false);
         await fetchMemberDetails();
+        invalidateCache('/api/admin/members'); // Invalidate members cache
         
         // Prepare receipt data
         const endDate = new Date(result.member.subscriptionEndDate);

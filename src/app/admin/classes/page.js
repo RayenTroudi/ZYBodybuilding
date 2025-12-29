@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
@@ -21,13 +22,10 @@ export default function ClassesPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [classesRes, trainersRes] = await Promise.all([
-        fetch('/api/admin/classes'),
-        fetch('/api/admin/trainers'),
+      const [classesData, trainersData] = await Promise.all([
+        cachedFetch('/api/admin/classes', {}, 60000), // 1 min cache
+        cachedFetch('/api/admin/trainers', {}, 300000), // 5 min cache
       ]);
-      
-      const classesData = await classesRes.json();
-      const trainersData = await trainersRes.json();
       
       if (classesData.success) setClasses(classesData.classes);
       if (trainersData.success) setTrainers(trainersData.trainers);
@@ -48,6 +46,7 @@ export default function ClassesPage() {
       });
 
       if (response.ok) {
+        invalidateCache('/api/admin/classes');
         fetchData();
         showToast(`Class ${classItem.isActive ? 'deactivated' : 'activated'}`, 'success');
       }
@@ -63,6 +62,7 @@ export default function ClassesPage() {
       });
 
       if (response.ok) {
+        invalidateCache('/api/admin/classes');
         fetchData();
         showToast('Class deleted successfully', 'success');
         setDeleteModal({ show: false, classItem: null });

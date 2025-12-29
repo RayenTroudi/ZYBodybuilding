@@ -23,6 +23,10 @@ export async function GET(request) {
     return NextResponse.json({
       success: true,
       classes: classes.documents
+    }, {
+      headers: {
+        'Cache-Control': 'private, max-age=60, stale-while-revalidate=120'
+      }
     });
   } catch (error) {
     console.error('Error fetching classes:', error);

@@ -43,7 +43,11 @@ export async function GET(request) {
       members.total = members.documents.length;
     }
 
-    return NextResponse.json(members);
+    return NextResponse.json(members, {
+      headers: {
+        'Cache-Control': 'private, max-age=30, stale-while-revalidate=60'
+      }
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error.message },

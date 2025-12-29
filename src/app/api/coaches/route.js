@@ -3,6 +3,8 @@ import { createAdminClient } from '@/lib/appwrite/server';
 import { appwriteConfig } from '@/lib/appwrite/config';
 import { Query } from 'node-appwrite';
 
+export const revalidate = 300; // Revalidate every 5 minutes
+
 // GET /api/coaches - Fetch all active coaches
 export async function GET(request) {
   try {
@@ -21,6 +23,10 @@ export async function GET(request) {
       success: true,
       coaches: coaches.documents,
       total: coaches.total
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+      }
     });
   } catch (error) {
     console.error('Error fetching coaches:', error);

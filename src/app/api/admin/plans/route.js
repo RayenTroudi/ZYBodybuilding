@@ -26,7 +26,11 @@ export async function GET(request) {
       queries
     );
 
-    return NextResponse.json(plans);
+    return NextResponse.json(plans, {
+      headers: {
+        'Cache-Control': 'private, max-age=60, stale-while-revalidate=120'
+      }
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error.message },

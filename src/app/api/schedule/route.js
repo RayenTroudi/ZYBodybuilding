@@ -3,6 +3,8 @@ import { createAdminClient } from '@/lib/appwrite/server';
 import { appwriteConfig } from '@/lib/appwrite/config';
 import { Query } from 'node-appwrite';
 
+export const revalidate = 180; // Revalidate every 3 minutes
+
 // GET /api/schedule - Fetch all active sessions with course and coach data
 export async function GET(request) {
   try {
@@ -60,6 +62,10 @@ export async function GET(request) {
       success: true,
       sessions: enrichedSessions,
       total: sessions.total
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=360'
+      }
     });
   } catch (error) {
     console.error('Error fetching schedule:', error);

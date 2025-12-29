@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 
 export default function PlansPage() {
   const [plans, setPlans] = useState([]);
@@ -25,8 +26,7 @@ export default function PlansPage() {
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/plans');
-      const data = await response.json();
+      const data = await cachedFetch('/api/admin/plans', {}, 120000); // 2 min cache
       setPlans(data.documents || []);
     } catch (error) {
       console.error('Error fetching plans:', error);
@@ -58,6 +58,7 @@ export default function PlansPage() {
       });
 
       if (response.ok) {
+        invalidateCache('/api/admin/plans'); // Invalidate plans cache
         setShowModal(false);
         setEditingPlan(null);
         setFormData({
@@ -99,6 +100,7 @@ export default function PlansPage() {
       });
 
       if (response.ok) {
+        invalidateCache('/api/admin/plans'); // Invalidate plans cache
         setShowDeleteModal(false);
         setPlanToDelete(null);
         fetchPlans();

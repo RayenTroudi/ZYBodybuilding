@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 
 const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 const DIFFICULTIES = ['Débutant', 'Intermédiaire', 'Avancé'];
@@ -38,8 +39,7 @@ export default function NewClassPage() {
 
   const fetchTrainers = async () => {
     try {
-      const response = await fetch('/api/admin/trainers');
-      const data = await response.json();
+      const data = await cachedFetch('/api/admin/trainers', {}, 300000); // 5 min cache
       if (data.success && data.trainers.length > 0) {
         setTrainers(data.trainers.filter(t => t.isActive));
         setFormData(prev => ({ ...prev, trainerId: data.trainers[0].$id }));

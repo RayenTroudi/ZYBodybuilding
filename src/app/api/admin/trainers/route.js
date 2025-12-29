@@ -23,6 +23,10 @@ export async function GET(request) {
     return NextResponse.json({
       success: true,
       trainers: trainers.documents
+    }, {
+      headers: {
+        'Cache-Control': 'private, max-age=300, stale-while-revalidate=600'
+      }
     });
   } catch (error) {
     console.error('Error fetching trainers:', error);

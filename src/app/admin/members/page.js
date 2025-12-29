@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 
 export default function MembersPage() {
   const router = useRouter();
@@ -19,10 +20,25 @@ export default function MembersPage() {
   const [pendingFile, setPendingFile] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultMessage, setResultMessage] = useState(null);
+  const searchTimeoutRef = useRef(null);
+
+  const debouncedFetchMembers = useCallback(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchMembers();
+    }, 300); // 300ms debounce
+  }, [search, statusFilter]);
 
   useEffect(() => {
-    fetchMembers();
-  }, [search, statusFilter]);
+    debouncedFetchMembers();
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [search, statusFilter, debouncedFetchMembers]);
 
   const fetchMembers = async () => {
     try {

@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { cachedFetch, invalidateCache } from '@/lib/cache';
 
 const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 const DIFFICULTIES = ['Débutant', 'Intermédiaire', 'Avancé'];
@@ -40,13 +41,10 @@ export default function EditClassPage({ params }) {
 
   const fetchData = async () => {
     try {
-      const [classRes, trainersRes] = await Promise.all([
-        fetch(`/api/admin/classes/${unwrappedParams.id}`),
-        fetch('/api/admin/trainers'),
+      const [classData, trainersData] = await Promise.all([
+        cachedFetch(`/api/admin/classes/${unwrappedParams.id}`, {}, 30000),
+        cachedFetch('/api/admin/trainers', {}, 300000), // 5 min cache
       ]);
-
-      const classData = await classRes.json();
-      const trainersData = await trainersRes.json();
 
       if (classData.success) {
         const cls = classData.class;
