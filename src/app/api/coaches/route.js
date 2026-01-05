@@ -3,16 +3,22 @@ import { createAdminClient } from '@/lib/appwrite/server';
 import { appwriteConfig } from '@/lib/appwrite/config';
 import { Query } from 'node-appwrite';
 
-export const revalidate = 300; // Revalidate every 5 minutes
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // GET /api/coaches - Fetch all active coaches
 export async function GET(request) {
   try {
-    const { databases } = createAdminClient();
-
     if (!appwriteConfig.coachesCollectionId) {
-      throw new Error('Missing coachesCollectionId configuration');
+      console.warn('Missing coachesCollectionId configuration');
+      return NextResponse.json({
+        success: true,
+        coaches: [],
+        total: 0
+      });
     }
+
+    const { databases } = createAdminClient();
 
     const coaches = await databases.listDocuments(
       appwriteConfig.databaseId,
@@ -27,16 +33,13 @@ export async function GET(request) {
       success: true,
       coaches: coaches.documents,
       total: coaches.total
-    }, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
-      }
     });
   } catch (error) {
     console.error('Error fetching coaches:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      success: true,
+      coaches: [],
+      total: 0
+    });
   }
 }

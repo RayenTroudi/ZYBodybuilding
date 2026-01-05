@@ -11,17 +11,12 @@ export async function GET(request) {
   try {
     // Validate required environment variables
     if (!appwriteConfig.databaseId || !appwriteConfig.scheduleSessionsCollectionId) {
-      console.error('Missing required configuration:', {
-        databaseId: !!appwriteConfig.databaseId,
-        scheduleSessionsCollectionId: !!appwriteConfig.scheduleSessionsCollectionId,
-        courseTypesCollectionId: !!appwriteConfig.courseTypesCollectionId,
-        coachesCollectionId: !!appwriteConfig.coachesCollectionId,
-      });
+      console.warn('Missing required configuration for schedule');
       return NextResponse.json({
-        success: false,
+        success: true,
         sessions: [],
-        error: 'Missing required configuration'
-      }, { status: 500 });
+        total: 0
+      });
     }
 
     const { searchParams } = new URL(request.url);
@@ -78,16 +73,13 @@ export async function GET(request) {
       success: true,
       sessions: enrichedSessions,
       total: sessions.total
-    }, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=360'
-      }
     });
   } catch (error) {
     console.error('Error fetching schedule:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      success: true,
+      sessions: [],
+      total: 0
+    });
   }
 }
