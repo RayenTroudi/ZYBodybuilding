@@ -59,7 +59,7 @@ export default function EditTrainerPage({ params }) {
     setSaving(true);
 
     try {
-      const response = await fetch(`/api/admin/trainers/${params.id}`, {
+      const response = await fetch(`/api/admin/trainers/${unwrappedParams.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

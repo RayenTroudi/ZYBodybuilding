@@ -42,13 +42,14 @@ async function getDashboardStats() {
   // Get recent payments
   const recentPayments = allPayments.documents.slice(0, 5);
 
-  // Get expiring soon (within 7 days)
-  const sevenDaysFromNow = new Date();
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+  // Get expiring soon (within 3 days)
+  const threeDaysFromNow = new Date();
+  threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
+  const now = new Date();
 
   const expiringSoon = allMembers.documents.filter(m => {
     const endDate = new Date(m.subscriptionEndDate);
-    return m.status === 'Active' && endDate <= sevenDaysFromNow;
+    return m.status === 'Active' && endDate > now && endDate <= threeDaysFromNow;
   });
 
   return {

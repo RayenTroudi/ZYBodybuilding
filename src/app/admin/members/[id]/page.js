@@ -301,6 +301,9 @@ export default function MemberDetailPage({ params }) {
 
   const isExpired = new Date(member.subscriptionEndDate) < new Date();
   const daysUntilExpiry = Math.ceil((new Date(member.subscriptionEndDate) - new Date()) / (1000 * 60 * 60 * 24));
+  
+  // Get actual status based on subscription end date
+  const actualStatus = isExpired ? 'Expired' : member.status;
 
   return (
     <div className="space-y-6">
@@ -428,11 +431,13 @@ export default function MemberDetailPage({ params }) {
               <div>
                 <p className="text-gray-400 text-sm">Status</p>
                 <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mt-1 ${
-                  member.status === 'Active' 
+                  actualStatus === 'Active' 
                     ? 'bg-green-500/20 text-green-500' 
-                    : 'bg-red-500/20 text-red-500'
+                    : actualStatus === 'Expired'
+                    ? 'bg-red-500/20 text-red-500'
+                    : 'bg-yellow-500/20 text-yellow-500'
                 }`}>
-                  {member.status}
+                  {actualStatus}
                 </span>
               </div>
               <div>

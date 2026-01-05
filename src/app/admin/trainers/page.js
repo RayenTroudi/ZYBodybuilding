@@ -18,7 +18,12 @@ export default function TrainersPage() {
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/trainers');
+      const response = await fetch('/api/admin/trainers', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       const data = await response.json();
       if (data.success) {
         setTrainers(data.trainers);
@@ -51,20 +56,24 @@ export default function TrainersPage() {
     }
   };
 
-  const toggleActive = async (trainer) => {
+  const toggleActive = async (trainerId, currentStatus) => {
     try {
-      const response = await fetch(`/api/admin/trainers/${trainer.$id}`, {
+      const response = await fetch(`/api/admin/trainers/${trainerId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !trainer.isActive }),
+        body: JSON.stringify({ isActive: !currentStatus }),
       });
       
       if (response.ok) {
-        showToast(`Trainer ${!trainer.isActive ? 'activated' : 'deactivated'}`, 'success');
+        showToast(`Trainer ${!currentStatus ? 'activated' : 'deactivated'}`, 'success');
         fetchTrainers();
+      } else {
+        const data = await response.json();
+        showToast(data.error || 'Failed to update trainer', 'error');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error updating trainer:', error);
+      showToast('Failed to update trainer', 'error');
     }
   };
 
@@ -150,7 +159,10 @@ export default function TrainersPage() {
                 )}
                 <div className="absolute top-3 right-3">
                   <button
-                    onClick={() => toggleActive(trainer)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleActive(trainer.$id, trainer.isActive);
+                    }}
                     className={`px-3 py-1 rounded-full text-xs font-bold ${
                       trainer.isActive
                         ? 'bg-green-500 text-white'

@@ -4,15 +4,16 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
-import { cachedFetch, invalidateCache } from '@/lib/cache';
+import { DataTable, createSelectColumn, createActionsColumn } from '@/app/components/ui/data-table';
+import { Button } from '@/app/components/ui/button';
 
 export default function MembersPage() {
   const router = useRouter();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState(null);
   const [showYearDialog, setShowYearDialog] = useState(false);
@@ -20,36 +21,58 @@ export default function MembersPage() {
   const [pendingFile, setPendingFile] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
   const [resultMessage, setResultMessage] = useState(null);
-  const searchTimeoutRef = useRef(null);
+  const [toast, setToast] = useState(null);
 
-  const debouncedFetchMembers = useCallback(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
+  // Helper function to get actual member status based on subscription end date
+  const getActualStatus = (member) => {
+    const endDate = new Date(member.subscriptionEndDate);
+    const now = new Date();
+    
+    if (endDate < now) {
+      return 'Expired';
     }
-    searchTimeoutRef.current = setTimeout(() => {
-      fetchMembers();
-    }, 300); // 300ms debounce
-  }, [search, statusFilter]);
+    return member.status;
+  };
 
   useEffect(() => {
-    debouncedFetchMembers();
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
-  }, [search, statusFilter, debouncedFetchMembers]);
+    fetchMembers();
+  }, [statusFilter, dateFrom, dateTo]);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
 
   const fetchMembers = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (search) params.append('search', search);
       if (statusFilter !== 'all') params.append('status', statusFilter);
 
-      const response = await fetch(`/api/admin/members?${params}`);
+      const response = await fetch(`/api/admin/members?${params}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       const data = await response.json();
-      setMembers(data.documents || []);
+      
+      // Client-side date filtering
+      let filteredMembers = data.documents || [];
+      if (dateFrom || dateTo) {
+        filteredMembers = filteredMembers.filter(member => {
+          const memberDate = new Date(member.subscriptionStartDate);
+          const fromDate = dateFrom ? new Date(dateFrom) : null;
+          const toDate = dateTo ? new Date(dateTo) : null;
+          
+          if (fromDate && memberDate < fromDate) return false;
+          if (toDate && memberDate > toDate) return false;
+          return true;
+        });
+      }
+      
+      setMembers(filteredMembers);
     } catch (error) {
       console.error('Error fetching members:', error);
       setMembers([]);
@@ -194,6 +217,130 @@ export default function MembersPage() {
       setShowResultModal(true);
     }
   };
+
+  const handleBulkDelete = async (ids) => {
+    try {
+      // Filter out any undefined or null IDs
+      const validIds = ids.filter(id => id != null && id !== undefined);
+      
+      if (validIds.length === 0) {
+        showToast('No valid members selected for deletion', 'error');
+        return;
+      }
+
+      console.log('Deleting members with IDs:', validIds);
+
+      const response = await fetch('/api/admin/members/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: validIds }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete members');
+      }
+
+      // Show success message
+      const deletedCount = data.results.success.length;
+      showToast(`Successfully deleted ${deletedCount} member(s)`, 'success');
+      
+      // Refresh the list immediately
+      await fetchMembers();
+      
+      // Force router refresh for any server components
+      router.refresh();
+    } catch (error) {
+      console.error('Error deleting members:', error);
+      showToast(error.message, 'error');
+    }
+  };
+
+  const handleViewMember = (member) => {
+    router.push(`/admin/members/${member.$id}`);
+  };
+
+  const handleDeleteMember = async (member) => {
+    if (!window.confirm(`Are you sure you want to delete ${member.name}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/members/${member.$id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete member');
+      }
+
+      showToast('Member deleted successfully', 'success');
+      await fetchMembers();
+      router.refresh();
+    } catch (error) {
+      console.error('Error deleting member:', error);
+      showToast(error.message, 'error');
+    }
+  };
+
+  // Define columns for the data table
+  const columns = [
+    createSelectColumn(),
+    {
+      accessorKey: 'memberId',
+      header: 'Member ID',
+      cell: ({ row }) => (
+        <div>
+          <p className="text-white font-medium">{row.original.name}</p>
+          <p className="text-sm text-gray-400">{row.original.memberId}</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'email',
+      header: 'Contact',
+      cell: ({ row }) => (
+        <div>
+          <p className="text-white text-sm">{row.original.email}</p>
+          <p className="text-sm text-gray-400">{row.original.phone}</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'planName',
+      header: 'Plan',
+      cell: ({ row }) => (
+        <p className="text-white text-sm">{row.original.planName}</p>
+      ),
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      cell: ({ row }) => {
+        const actualStatus = getActualStatus(row.original);
+        return getStatusBadge(actualStatus);
+      },
+    },
+    {
+      accessorKey: 'subscriptionEndDate',
+      header: 'Expires',
+      cell: ({ row }) => (
+        <p className="text-white text-sm">
+          {format(new Date(row.original.subscriptionEndDate), 'MMM dd, yyyy')}
+        </p>
+      ),
+    },
+    {
+      accessorKey: 'totalPaid',
+      header: 'Total Paid',
+      cell: ({ row }) => (
+        <p className="text-green-500 font-semibold">
+          ${row.original.totalPaid.toFixed(2)}
+        </p>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -350,19 +497,11 @@ export default function MembersPage() {
         </div>
       </div>
 
-      {/* Filters - Responsive */}
+      {/* Filters */}
       <div className="bg-gray-800 rounded-lg p-4 sm:p-6 border border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2">
-            <input
-              type="text"
-              placeholder="Search by member name..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-          </div>
           <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -374,162 +513,72 @@ export default function MembersPage() {
               <option value="Pending">Pending</option>
             </select>
           </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">From Date</label>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">To Date</label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
         </div>
-      </div>
-
-      {/* Members List - Responsive Table */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-        {loading ? (
-          <div className="p-8 sm:p-12 flex flex-col items-center justify-center">
-            <div className="relative w-12 h-12 sm:w-16 sm:h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-red-500/30 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
-            </div>
-            <p className="text-gray-400 mt-4 text-sm sm:text-base">Loading members...</p>
+        
+        {(dateFrom || dateTo) && (
+          <div className="mt-3 flex items-center justify-between">
+            <p className="text-sm text-gray-400">
+              Filtering by subscription start date
+            </p>
+            <button
+              onClick={() => {
+                setDateFrom('');
+                setDateTo('');
+              }}
+              className="text-sm text-red-500 hover:text-red-400 transition-colors"
+            >
+              Clear dates
+            </button>
           </div>
-        ) : members.length === 0 ? (
-          <div className="p-8 sm:p-12 text-center text-gray-400 text-sm sm:text-base">
-            {search || statusFilter !== 'all' ? 'No members found matching your criteria' : 'No members yet. Add your first member!'}
-          </div>
-        ) : (
-          <>
-            {/* Mobile View - Card Layout */}
-            <div className="md:hidden divide-y divide-gray-700">
-              {members.map((member) => (
-                <div key={member.$id} className="p-4 hover:bg-gray-750 transition-colors">
-                  <div className="space-y-3">
-                    {/* Member Name & ID */}
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-white font-semibold text-base">{member.name}</p>
-                        <p className="text-xs text-gray-400 mt-1">{member.memberId}</p>
-                      </div>
-                      {getStatusBadge(member.status)}
-                    </div>
-                    
-                    {/* Contact Info */}
-                    <div className="space-y-1">
-                      <p className="text-sm text-white">{member.email}</p>
-                      <p className="text-sm text-gray-400">{member.phone}</p>
-                    </div>
-                    
-                    {/* Plan & Expiry */}
-                    <div className="flex items-center justify-between text-sm">
-                      <div>
-                        <p className="text-gray-400">Plan:</p>
-                        <p className="text-white font-medium">{member.planName}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-gray-400">Expires:</p>
-                        <p className="text-white font-medium">
-                          {format(new Date(member.subscriptionEndDate), 'MMM dd, yyyy')}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {/* Total Paid & Actions */}
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-700">
-                      <div>
-                        <p className="text-xs text-gray-400">Total Paid</p>
-                        <p className="text-green-500 font-semibold text-base">
-                          ${member.totalPaid.toFixed(2)}
-                        </p>
-                      </div>
-                      <Link
-                        href={`/admin/members/${member.$id}`}
-                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition-colors"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Desktop View - Table Layout */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-900 border-b border-gray-700">
-                  <tr>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Member
-                    </th>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Contact
-                    </th>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Plan
-                    </th>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Expires
-                    </th>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Total Paid
-                    </th>
-                    <th className="px-4 lg:px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  {members.map((member) => (
-                    <tr key={member.$id} className="hover:bg-gray-750 transition-colors">
-                      <td className="px-4 lg:px-6 py-4">
-                        <div>
-                          <p className="text-white font-medium">{member.name}</p>
-                          <p className="text-sm text-gray-400">{member.memberId}</p>
-                        </div>
-                      </td>
-                      <td className="px-4 lg:px-6 py-4">
-                        <div>
-                          <p className="text-white text-sm">{member.email}</p>
-                          <p className="text-sm text-gray-400">{member.phone}</p>
-                        </div>
-                      </td>
-                      <td className="px-4 lg:px-6 py-4">
-                        <p className="text-white text-sm">{member.planName}</p>
-                      </td>
-                      <td className="px-4 lg:px-6 py-4">
-                        {getStatusBadge(member.status)}
-                      </td>
-                      <td className="px-4 lg:px-6 py-4">
-                        <p className="text-white text-sm">
-                          {format(new Date(member.subscriptionEndDate), 'MMM dd, yyyy')}
-                        </p>
-                      </td>
-                      <td className="px-4 lg:px-6 py-4">
-                        <p className="text-green-500 font-semibold">
-                          ${member.totalPaid.toFixed(2)}
-                        </p>
-                      </td>
-                      <td className="px-4 lg:px-6 py-4">
-                        <Link
-                          href={`/admin/members/${member.$id}`}
-                          className="text-red-500 hover:text-red-400 font-medium text-sm"
-                        >
-                          View Details →
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
         )}
       </div>
 
-      {/* Stats Footer - Responsive */}
+      {/* Data Table */}
+      {loading ? (
+        <div className="bg-gray-800 rounded-lg border border-gray-700 p-12 flex flex-col items-center justify-center">
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-red-500/30 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-400 mt-4">Loading members...</p>
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={members}
+          onDelete={handleBulkDelete}
+          searchPlaceholder="Search by name, email, or member ID..."
+          onRowClick={(member) => router.push(`/admin/members/${member.$id}`)}
+        />
+      )}
+
+      {/* Stats Footer */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-gray-800 rounded-lg p-4 sm:p-5 border border-gray-700">
           <p className="text-gray-400 text-xs sm:text-sm">Total Members</p>
           <p className="text-xl sm:text-2xl font-bold text-white mt-1">{members.length}</p>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 sm:p-5 border border-gray-700">
+        <div className="bg-gray-8getActualStatus(m)ed-lg p-4 sm:p-5 border border-gray-700">
           <p className="text-gray-400 text-xs sm:text-sm">Active Members</p>
           <p className="text-xl sm:text-2xl font-bold text-green-500 mt-1">
             {members.filter(m => m.status === 'Active').length}
@@ -542,6 +591,50 @@ export default function MembersPage() {
           </p>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
+          <div
+            className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
+              toast.type === 'success'
+                ? 'bg-gray-800 border-green-500 text-white'
+                : 'bg-gray-800 border-red-500 text-white'
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 text-2xl">
+                {toast.type === 'success' ? '✅' : '❌'}
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-white">{toast.message}</p>
+              </div>
+              <button
+                onClick={() => setToast(null)}
+                className="flex-shrink-0 text-gray-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
