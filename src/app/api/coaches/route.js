@@ -10,6 +10,10 @@ export async function GET(request) {
   try {
     const { databases } = createAdminClient();
 
+    if (!appwriteConfig.coachesCollectionId) {
+      throw new Error('Missing coachesCollectionId configuration');
+    }
+
     const coaches = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.coachesCollectionId,

@@ -3,11 +3,27 @@ import { createAdminClient } from '@/lib/appwrite/server';
 import { appwriteConfig } from '@/lib/appwrite/config';
 import { Query } from 'node-appwrite';
 
-export const revalidate = 180; // Revalidate every 3 minutes
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // GET /api/schedule - Fetch all active sessions with course and coach data
 export async function GET(request) {
   try {
+    // Validate required environment variables
+    if (!appwriteConfig.databaseId || !appwriteConfig.scheduleSessionsCollectionId) {
+      console.error('Missing required configuration:', {
+        databaseId: !!appwriteConfig.databaseId,
+        scheduleSessionsCollectionId: !!appwriteConfig.scheduleSessionsCollectionId,
+        courseTypesCollectionId: !!appwriteConfig.courseTypesCollectionId,
+        coachesCollectionId: !!appwriteConfig.coachesCollectionId,
+      });
+      return NextResponse.json({
+        success: false,
+        sessions: [],
+        error: 'Missing required configuration'
+      }, { status: 500 });
+    }
+
     const { searchParams } = new URL(request.url);
     const day = searchParams.get('day');
 

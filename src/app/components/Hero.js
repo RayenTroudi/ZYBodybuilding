@@ -5,8 +5,8 @@ import Image from 'next/image';
 
 const Hero = () => {
   const images = [
-    { src: '/images/1.jfif', alt: 'Hero Image 1' },
-    { src: '/images/2.jfif', alt: 'Hero Image 2' },
+    { src: '/images/1.jpg', alt: 'Hero Image 1' },
+    { src: '/images/2.jpg', alt: 'Hero Image 2' },
   ];
 
   return (
