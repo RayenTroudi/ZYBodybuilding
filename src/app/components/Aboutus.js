@@ -16,7 +16,7 @@ const AboutUs = () => {
         >
           <div className="lg:w-1/2">
             <Image 
-              src="/images/1.jpg" 
+              src="/images/3.jpg" 
               alt="Salle de sport"
               width={600} 
               height={400} 

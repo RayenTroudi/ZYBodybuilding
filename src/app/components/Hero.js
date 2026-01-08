@@ -1,16 +1,39 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import Image from 'next/image'; 
+import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 const Hero = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
   const images = [
-    { src: '/images/1.jpg', alt: 'Hero Image 1' },
-    { src: '/images/2.jpg', alt: 'Hero Image 2' },
+    { src: '/images/stronger.jpg', alt: 'Hero Image 1' },
+    { src: '/images/zy.jpg', alt: 'Hero Image 2' },
+    { src: '/images/2.jpg', alt: 'Hero Image 3' },
   ];
 
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % images.length);
+    }, 6000); // Change slide every 6 seconds
+
+    return () => clearInterval(interval);
+  }, [isPaused, images.length]);
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   return (
-    <section className="relative min-h-screen h-screen flex items-center justify-center overflow-hidden">
+    <section 
+      className="relative min-h-screen h-screen flex items-center justify-center overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
   
       {/* Gradient Overlay - Responsive opacity */}
       <motion.div
@@ -20,39 +43,47 @@ const Hero = () => {
         transition={{ duration: 1 }}
       ></motion.div>
 
-      {/* Background Images with Animation */}
-      <motion.div
-        className="absolute inset-0 w-full h-full"
-        initial={{ scale: 1.2 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 2 }}
-      >
-        {images.map((image, index) => (
+      {/* Background Images with Smooth Transition */}
+      <div className="absolute inset-0 w-full h-full">
+        <AnimatePresence initial={false}>
           <motion.div
-            key={index}
+            key={currentSlide}
             className="absolute w-full h-full"
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: {
-                duration: 3,
-                delay: index * 2,
-                repeat: Infinity,
-                repeatType: 'reverse',
-              },
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1 }}
+            transition={{ 
+              opacity: { duration: 0.8, ease: 'easeInOut' },
+              scale: { duration: 6, ease: 'linear' }
             }}
           >
             <Image
-              src={image.src}
-              alt={image.alt}
+              src={images[currentSlide].src}
+              alt={images[currentSlide].alt}
               fill
               style={{ objectFit: 'cover' }}
-              priority={index === 0} 
-              quality={75} 
+              priority
+              quality={90}
             />
           </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation Dots */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex gap-3">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`transition-all duration-300 rounded-full ${
+              currentSlide === index
+                ? 'w-12 h-3 bg-primary'
+                : 'w-3 h-3 bg-white/50 hover:bg-white/80'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
         ))}
-      </motion.div>
+      </div>
 
       {/* Hero Content - Fully Responsive */}
       <motion.div

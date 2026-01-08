@@ -17,7 +17,7 @@ const CTA = () => {
         >
      
           <Image
-            src="/images/3.jpg"
+            src="/images/zy.jpg"
             alt="Image CTA"
             fill
             style={{ objectFit: 'cover' }}
