@@ -11,6 +11,9 @@ const Contact = () => {
     phone: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const [statusMessage, setStatusMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,20 +23,49 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setStatusMessage('');
 
-    // Submit form data
-    console.log('Form submitted:', formData);
-    alert("Formulaire soumis !");
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      message: '',
-    });
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setStatusMessage(data.message || 'Message envoyé avec succès!');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
+        });
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setSubmitStatus(null);
+          setStatusMessage('');
+        }, 5000);
+      } else {
+        setSubmitStatus('error');
+        setStatusMessage(data.error || 'Une erreur s\'est produite. Veuillez réessayer.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus('error');
+      setStatusMessage('Une erreur s\'est produite. Veuillez réessayer.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const containerVariants = {
@@ -153,14 +185,34 @@ const Contact = () => {
                   rows="4"
                 ></textarea>
               </div>
+
+              {/* Status Message */}
+              {submitStatus && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-lg flex items-center gap-3 ${
+                    submitStatus === 'success' 
+                      ? 'bg-green-500/20 border border-green-500/50 text-green-400' 
+                      : 'bg-red-500/20 border border-red-500/50 text-red-400'
+                  }`}
+                >
+                  {submitStatus === 'success' && <FaCheckCircle className="text-2xl flex-shrink-0" />}
+                  <p className="text-sm sm:text-base">{statusMessage}</p>
+                </motion.div>
+              )}
+
               <div className="text-center sm:text-left">
                 <motion.button
                   type="submit"
-                  className="btn-primary text-base sm:text-lg w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-4"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  disabled={isSubmitting}
+                  className={`btn-primary text-base sm:text-lg w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-4 ${
+                    isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  whileHover={!isSubmitting ? { scale: 1.05 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.95 } : {}}
                 >
-                  Envoyer
+                  {isSubmitting ? 'Envoi en cours...' : 'Envoyer'}
                 </motion.button>
               </div>
             </form>
