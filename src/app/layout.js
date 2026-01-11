@@ -27,7 +27,7 @@ export const metadata = {
     siteName: 'ZY Bodybuilding',
     images: [
       {
-        url: '/images/logoNobg.png',
+        url: 'https://www.zybodybuilding.space/images/logoNobg.png',
         width: 1200,
         height: 630,
         alt: 'ZY Bodybuilding Logo',
@@ -38,7 +38,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'ZY Bodybuilding - Gym & Fitness Center',
     description: 'Transformez votre corps avec nos programmes personnalisés.',
-    images: ['/images/logoNobg.png'],
+    images: ['https://www.zybodybuilding.space/images/logoNobg.png'],
   },
   robots: {
     index: true,
@@ -52,8 +52,12 @@ export const metadata = {
     },
   },
   icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
+    icon: [
+      { url: '/icon.png' },
+      { url: '/images/logoNobg.png', sizes: 'any' },
+    ],
+    apple: '/apple-touch-icon.png',
+    shortcut: '/icon.png',
   },
   manifest: '/manifest.json',
 };
