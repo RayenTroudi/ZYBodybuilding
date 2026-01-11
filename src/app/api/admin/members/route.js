@@ -12,7 +12,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
     const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '100');
+    const limit = parseInt(searchParams.get('limit') || '5000');
     const offset = parseInt(searchParams.get('offset') || '0');
 
     const { databases } = createAdminClient();

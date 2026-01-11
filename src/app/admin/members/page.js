@@ -48,6 +48,7 @@ export default function MembersPage() {
       setLoading(true);
       const params = new URLSearchParams();
       if (statusFilter !== 'all') params.append('status', statusFilter);
+      params.append('limit', '5000'); // Fetch all members
 
       const response = await fetch(`/api/admin/members?${params}`, {
         cache: 'no-store',
