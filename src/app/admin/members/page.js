@@ -47,7 +47,7 @@ export default function MembersPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (statusFilter !== 'all') params.append('status', statusFilter);
+      // Don't send status filter to API - we'll filter client-side based on actual dates
       params.append('limit', '5000'); // Fetch all members
 
       const response = await fetch(`/api/admin/members?${params}`, {
@@ -59,8 +59,18 @@ export default function MembersPage() {
       });
       const data = await response.json();
       
-      // Client-side date filtering
+      // Client-side filtering based on actual status and dates
       let filteredMembers = data.documents || [];
+      
+      // Filter by actual status (based on subscription end date)
+      if (statusFilter !== 'all') {
+        filteredMembers = filteredMembers.filter(member => {
+          const actualStatus = getActualStatus(member);
+          return actualStatus === statusFilter;
+        });
+      }
+      
+      // Filter by date range
       if (dateFrom || dateTo) {
         filteredMembers = filteredMembers.filter(member => {
           const memberDate = new Date(member.subscriptionStartDate);
@@ -337,7 +347,7 @@ export default function MembersPage() {
       header: 'Total Paid',
       cell: ({ row }) => (
         <p className="text-green-500 font-semibold">
-          ${row.original.totalPaid.toFixed(2)}
+          {row.original.totalPaid.toFixed(2)} TND
         </p>
       ),
     },
@@ -579,16 +589,16 @@ export default function MembersPage() {
           <p className="text-gray-400 text-xs sm:text-sm">Total Members</p>
           <p className="text-xl sm:text-2xl font-bold text-white mt-1">{members.length}</p>
         </div>
-        <div className="bg-gray-8getActualStatus(m)ed-lg p-4 sm:p-5 border border-gray-700">
+        <div className="bg-gray-800 rounded-lg p-4 sm:p-5 border border-gray-700">
           <p className="text-gray-400 text-xs sm:text-sm">Active Members</p>
           <p className="text-xl sm:text-2xl font-bold text-green-500 mt-1">
-            {members.filter(m => m.status === 'Active').length}
+            {members.filter(m => getActualStatus(m) === 'Active').length}
           </p>
         </div>
         <div className="bg-gray-800 rounded-lg p-4 sm:p-5 border border-gray-700">
           <p className="text-gray-400 text-xs sm:text-sm">Total Revenue</p>
           <p className="text-xl sm:text-2xl font-bold text-white mt-1">
-            ${members.reduce((sum, m) => sum + m.totalPaid, 0).toFixed(2)}
+            {members.reduce((sum, m) => sum + m.totalPaid, 0).toFixed(2)} TND
           </p>
         </div>
       </div>

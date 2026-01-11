@@ -15,11 +15,21 @@ async function getDashboardStats() {
   const allMembers = await databases.listDocuments(
     appwriteConfig.databaseId,
     appwriteConfig.membersCollectionId,
-    [Query.limit(500)]
+    [Query.limit(5000)]
   );
 
-  const activeMembers = allMembers.documents.filter(m => m.status === 'Active').length;
-  const expiredMembers = allMembers.documents.filter(m => m.status === 'Expired').length;
+  const now = new Date();
+  
+  // Calculate actual active/expired members based on subscription end date
+  const activeMembers = allMembers.documents.filter(m => {
+    const endDate = new Date(m.subscriptionEndDate);
+    return endDate >= now; // Active if subscription end date is today or in the future
+  }).length;
+  
+  const expiredMembers = allMembers.documents.filter(m => {
+    const endDate = new Date(m.subscriptionEndDate);
+    return endDate < now; // Expired if subscription end date is in the past
+  }).length;
 
   // Get payments stats
   const thisMonth = new Date();
@@ -29,7 +39,7 @@ async function getDashboardStats() {
   const allPayments = await databases.listDocuments(
     appwriteConfig.databaseId,
     appwriteConfig.paymentsCollectionId,
-    [Query.limit(500)]
+    [Query.limit(5000), Query.orderDesc('paymentDate')]
   );
 
   const monthlyPayments = allPayments.documents.filter(
@@ -42,14 +52,13 @@ async function getDashboardStats() {
   // Get recent payments
   const recentPayments = allPayments.documents.slice(0, 5);
 
-  // Get expiring soon (within 3 days)
-  const threeDaysFromNow = new Date();
-  threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
-  const now = new Date();
+  // Get expiring soon (within 7 days) - only truly active members
+  const sevenDaysFromNow = new Date();
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
   const expiringSoon = allMembers.documents.filter(m => {
     const endDate = new Date(m.subscriptionEndDate);
-    return m.status === 'Active' && endDate > now && endDate <= threeDaysFromNow;
+    return endDate >= now && endDate <= sevenDaysFromNow;
   });
 
   return {
@@ -106,7 +115,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Monthly Revenue</p>
-              <p className="text-3xl font-bold text-white mt-2">${stats.monthlyRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-white mt-2">{stats.monthlyRevenue.toFixed(2)} TND</p>
             </div>
             <div className="text-4xl">💰</div>
           </div>
@@ -116,7 +125,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-400 text-sm">Total Revenue</p>
-              <p className="text-3xl font-bold text-white mt-2">${stats.totalRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-white mt-2">{stats.totalRevenue.toFixed(2)} TND</p>
             </div>
             <div className="text-4xl">📈</div>
           </div>
@@ -136,7 +145,7 @@ export default async function AdminDashboardPage() {
                   <p className="text-sm text-gray-400">{payment.planName}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-green-500 font-semibold">${payment.amount.toFixed(2)}</p>
+                  <p className="text-green-500 font-semibold">{payment.amount.toFixed(2)} TND</p>
                   <p className="text-xs text-gray-400">
                     {new Date(payment.paymentDate).toLocaleDateString()}
                   </p>
@@ -193,9 +202,9 @@ export default async function AdminDashboardPage() {
           <div className="p-4 bg-gray-700 rounded-lg">
             <p className="text-gray-400 text-sm mb-1">Avg Payment</p>
             <p className="text-2xl font-bold text-blue-500">
-              ${stats.recentPayments.length > 0 
+              {stats.recentPayments.length > 0 
                 ? (stats.recentPayments.reduce((sum, p) => sum + p.amount, 0) / stats.recentPayments.length).toFixed(2)
-                : 0}
+                : 0} TND
             </p>
           </div>
         </div>
