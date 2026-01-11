@@ -131,18 +131,18 @@ export default function TrainersPage() {
           <p className="text-gray-400">No trainers found. Add your first trainer!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {trainers.map((trainer) => (
             <motion.div
               key={trainer.$id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-gray-800 rounded-xl overflow-hidden border ${
+              className={`bg-gray-800 rounded-lg overflow-hidden border ${
                 trainer.isActive ? 'border-green-500/50' : 'border-gray-700'
-              } hover:shadow-xl transition-all duration-300`}
+              } hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
             >
               {/* Trainer Image */}
-              <div className="relative h-48 bg-gray-700">
+              <div className="relative h-32 bg-gray-700">
                 {trainer.imageUrl ? (
                   <Image
                     src={trainer.imageUrl}
@@ -152,18 +152,18 @@ export default function TrainersPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800">
-                    <span className="text-6xl font-bold text-white">
+                    <span className="text-4xl font-bold text-white">
                       {trainer.name.charAt(0)}
                     </span>
                   </div>
                 )}
-                <div className="absolute top-3 right-3">
+                <div className="absolute top-2 right-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleActive(trainer.$id, trainer.isActive);
                     }}
-                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                       trainer.isActive
                         ? 'bg-green-500 text-white'
                         : 'bg-gray-600 text-gray-300'
@@ -175,26 +175,26 @@ export default function TrainersPage() {
               </div>
 
               {/* Trainer Info */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-2">{trainer.name}</h3>
+              <div className="p-4">
+                <h3 className="text-lg font-bold text-white mb-1 truncate">{trainer.name}</h3>
                 {trainer.specialty && (
-                  <p className="text-red-400 text-sm font-medium mb-3">{trainer.specialty}</p>
+                  <p className="text-red-400 text-xs font-medium mb-2">{trainer.specialty}</p>
                 )}
                 {trainer.bio && (
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{trainer.bio}</p>
+                  <p className="text-gray-400 text-xs mb-3 line-clamp-2">{trainer.bio}</p>
                 )}
                 
                 {/* Experience & Email */}
-                <div className="space-y-2 mb-4 text-sm">
+                <div className="space-y-1 mb-3 text-xs">
                   {trainer.experienceYears > 0 && (
                     <div className="flex items-center text-gray-400">
-                      <span className="mr-2">⭐</span>
-                      <span>{trainer.experienceYears} years experience</span>
+                      <span className="mr-1.5">⭐</span>
+                      <span>{trainer.experienceYears} yrs exp</span>
                     </div>
                   )}
                   {trainer.email && (
                     <div className="flex items-center text-gray-400">
-                      <span className="mr-2">✉️</span>
+                      <span className="mr-1.5">✉️</span>
                       <span className="truncate">{trainer.email}</span>
                     </div>
                   )}
@@ -204,13 +204,13 @@ export default function TrainersPage() {
                 <div className="flex gap-2">
                   <Link
                     href={`/admin/trainers/${trainer.$id}`}
-                    className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-center rounded-lg transition-colors text-sm font-medium"
+                    className="flex-1 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-center rounded-md transition-colors text-xs font-medium"
                   >
                     Edit
                   </Link>
                   <button
                     onClick={() => setDeleteModal({ show: true, trainer })}
-                    className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors text-sm font-medium"
+                    className="px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-md transition-colors text-xs font-medium"
                   >
                     Delete
                   </button>

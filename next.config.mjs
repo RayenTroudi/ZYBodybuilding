@@ -21,6 +21,7 @@ const nextConfig = {
   },
   // Image configuration for external images
   images: {
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: 'https',

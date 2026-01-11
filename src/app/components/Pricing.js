@@ -80,7 +80,7 @@ const Pricing = () => {
       
       {/* Pricing Cards Grid */}
       <motion.div
-        className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl"
+        className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full max-w-7xl"
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 1 }}
@@ -93,35 +93,34 @@ const Pricing = () => {
           plans.map((plan, index) => (
             <motion.div
               key={plan.$id || index}
-              className="card overflow-hidden transition-all duration-300 hover:shadow-2xl flex flex-col"
-              whileHover={{ scale: 1.05, y: -5 }}
+              className="card overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] flex flex-col"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ type: "spring", stiffness: 200, delay: index * 0.1 }}
             >
-              <div className="p-6 sm:p-8 flex-grow">
+              <div className="p-4 flex-grow">
                 {/* Plan Title */}
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-center text-white">
+                <h2 className="text-xl font-bold mb-2 text-center text-white">
                   {plan.name}
                 </h2>
                 
                 {/* Plan Description */}
                 {plan.description && (
-                  <p className="text-sm sm:text-base text-neutral-400 text-center mb-4 sm:mb-6 min-h-[40px]">
+                  <p className="text-xs text-neutral-400 text-center mb-3 line-clamp-2 min-h-[32px]">
                     {plan.description}
                   </p>
                 )}
                 
                 {/* Price */}
-                <div className="my-6 sm:my-8 text-center">
-                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-2">
+                <div className="my-4 text-center">
+                  <div className="text-2xl font-bold text-primary mb-1">
                     {formatPrice(plan.price)}
                   </div>
-                  <div className="text-neutral-400 text-sm sm:text-base">
+                  <div className="text-neutral-400 text-xs">
                     {getPeriodLabel(plan.duration)}
                   </div>
-                  <div className="text-neutral-500 text-xs sm:text-sm mt-2">
+                  <div className="text-neutral-500 text-xs mt-1">
                     Durée: {plan.duration} jour{plan.duration > 1 ? 's' : ''}
                   </div>
                 </div>
@@ -129,7 +128,7 @@ const Pricing = () => {
               
               {/* CTA Button */}
               <motion.button
-                className="w-full bg-gradient-to-r from-primary to-accent text-white text-center py-3 sm:py-4 text-base sm:text-lg font-bold cursor-pointer hover:shadow-glow transition-all"
+                className="w-full bg-gradient-to-r from-primary to-accent text-white text-center py-2.5 text-sm font-bold cursor-pointer hover:shadow-glow transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
