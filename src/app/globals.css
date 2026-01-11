@@ -151,7 +151,7 @@ h1, h2, h3, h4, h5, h6 {
   .card {
     @apply bg-gradient-to-br from-neutral-900 to-neutral-800 rounded-xl 
            shadow-dark hover:shadow-primary-lg border border-neutral-800 
-           transition-all duration-300;
+           transition-all duration-300 overflow-hidden;
   }
   
   .card-primary {

@@ -80,9 +80,9 @@ const Contact = () => {
                 <div className="text-3xl sm:text-4xl md:text-5xl text-primary group-hover:text-white transition duration-300 flex-shrink-0">
                   {card.icon}
                 </div>
-                <div className="flex-grow">
+                <div className="flex-grow overflow-hidden">
                   <p className="text-xs sm:text-sm text-neutral-500 mb-1">{card.label}</p>
-                  <p className="text-sm sm:text-base md:text-lg font-medium break-words">{card.text}</p>
+                  <p className="text-sm sm:text-base md:text-lg font-medium break-words overflow-wrap-anywhere">{card.text}</p>
                 </div>
               </div>
             </motion.div>
