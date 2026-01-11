@@ -88,7 +88,7 @@ export default function Navbar() {
             
             <div className="flex flex-row gap-3 ml-4">
               <Link 
-                href="/admin/login" 
+                href="/login" 
                 className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-neutral-700 rounded hover:border-primary"
               >
                 Connexion
@@ -172,7 +172,7 @@ export default function Navbar() {
           {/* Auth Buttons in Mobile Menu */}
           <div className="flex flex-col gap-4 mt-8 w-64">
             <Link 
-              href="/admin/login" 
+              href="/login" 
               className="px-6 py-3 text-lg text-white hover:text-primary transition-colors text-center border-2 border-neutral-700 rounded-lg hover:border-primary transform hover:scale-105 duration-200"
               onClick={closeMenu}
             >
@@ -209,7 +209,7 @@ export default function Navbar() {
           {/* Auth Buttons */}
           <div className="flex flex-row gap-3 ml-4">
             <Link 
-              href="/admin/login" 
+              href="/login" 
               className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-neutral-700 rounded hover:border-primary"
             >
               Connexion

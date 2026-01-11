@@ -19,13 +19,14 @@ export function createAdminClient() {
 }
 
 // Create a session client for user-specific operations
-export function createSessionClient(session) {
+export function createSessionClient(sessionSecret) {
   const client = new Client()
     .setEndpoint(appwriteConfig.endpoint)
     .setProject(appwriteConfig.projectId);
 
-  if (session) {
-    client.setSession(session);
+  if (sessionSecret) {
+    // The session secret is the session ID that we can use
+    client.setSession(sessionSecret);
   }
 
   return {

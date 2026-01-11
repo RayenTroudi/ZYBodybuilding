@@ -8,15 +8,31 @@ export async function getLoggedInUser() {
   try {
     console.log('👤 Getting logged in user...');
     const cookieStore = await cookies();
-    const session = cookieStore.get('session');
+    const sessionCookie = cookieStore.get('session');
     
-    if (!session) {
+    if (!sessionCookie || !sessionCookie.value) {
       console.log('❌ No session cookie found');
       return null;
     }
 
-    console.log('✅ Session cookie found, creating client...');
-    const { account } = createSessionClient(session.value);
+    console.log('✅ Session cookie found, parsing session...');
+    let session;
+    try {
+      session = JSON.parse(sessionCookie.value);
+    } catch (parseError) {
+      console.error('❌ Failed to parse session cookie:', parseError.message);
+      // Delete invalid cookie
+      cookieStore.delete('session');
+      return null;
+    }
+    
+    if (!session || !session.secret) {
+      console.log('❌ Invalid session data');
+      cookieStore.delete('session');
+      return null;
+    }
+    
+    const { account } = createSessionClient(session.secret);
     const user = await account.get();
     console.log('✅ User retrieved:', user.email);
     
@@ -88,10 +104,11 @@ export async function signIn(email, password) {
     
     console.log('🍪 Setting session cookie...');
     const cookieStore = await cookies();
-    cookieStore.set('session', session.secret, {
+    // Store the complete session as JSON
+    cookieStore.set('session', JSON.stringify(session), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: '/',
     });
@@ -138,16 +155,34 @@ export async function register(email, password, name) {
 export async function signOut() {
   try {
     const cookieStore = await cookies();
-    const session = cookieStore.get('session');
+    const sessionCookie = cookieStore.get('session');
     
-    if (session) {
-      const { account } = createSessionClient(session.value);
-      await account.deleteSession('current');
-      cookieStore.delete('session');
+    if (sessionCookie && sessionCookie.value) {
+      try {
+        const session = JSON.parse(sessionCookie.value);
+        if (session && session.secret) {
+          const { account } = createSessionClient(session.secret);
+          await account.deleteSession('current');
+        }
+      } catch (parseError) {
+        console.log('⚠️  Could not parse session during logout:', parseError.message);
+        // Continue to delete cookie anyway
+      }
     }
+    
+    // Always delete the cookie, even if session deletion failed
+    cookieStore.delete('session');
 
     return { success: true };
   } catch (error) {
+    console.error('❌ SignOut error:', error);
+    // Still try to delete cookie
+    try {
+      const cookieStore = await cookies();
+      cookieStore.delete('session');
+    } catch (e) {
+      // Ignore
+    }
     return { success: false, error: error.message };
   }
 }
