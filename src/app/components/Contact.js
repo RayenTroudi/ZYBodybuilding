@@ -64,10 +64,10 @@ const Contact = () => {
           viewport={{ once: false, amount: 0.3 }} 
         >
           {[
-            { icon: <FaPhoneAlt />, text: "+216 123 456 78", label: "Téléphone" },
-            { icon: <FaEnvelope />, text: "contact@zybodybuilding.tn", label: "Email" },
+            { icon: <FaPhoneAlt />, text: "+216 58800554", label: "Téléphone" },
+            { icon: <FaEnvelope />, text: "zybodybuildingstudio@gmail.com", label: "Email" },
             { icon: <FaMapMarkerAlt />, text: "ZY Bodybuilding, Tunisia", label: "Adresse" },
-            { icon: <FaGlobe />, text: "ZYbodybuilding.tn", label: "Site Web" },
+            { icon: <FaGlobe />, text: "www.zybodybuilding.space", label: "Site Web" },
           ].map((card, index) => (
             <motion.div
               key={index}
@@ -136,7 +136,7 @@ const Contact = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  placeholder="+216 12 345 678"
+                  placeholder="+216 58800554"
                   className="input-field w-full px-4 py-3 sm:py-4 text-base sm:text-lg"
                 />
               </div>

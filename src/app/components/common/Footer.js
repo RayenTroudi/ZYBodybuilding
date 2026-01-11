@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -40,14 +40,14 @@ const Footer = () => {
               <ul className="space-y-3 text-neutral-300">
                 <li className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
                   <span className="text-primary text-lg flex-shrink-0">✉</span> 
-                  <a href="mailto:contact@zybodybuilding.tn" className="hover:text-primary transition-colors break-all">
-                    contact@zybodybuilding.tn
+                  <a href="mailto:zybodybuildingstudio@gmail.com" className="hover:text-primary transition-colors break-all">
+                    zybodybuildingstudio@gmail.com
                   </a>
                 </li>
                 <li className="flex items-center justify-center sm:justify-start gap-2">
                   <span className="text-primary text-lg flex-shrink-0">📞</span>
-                  <a href="tel:+21612345678" className="hover:text-primary transition-colors">
-                    +216 123 456 78
+                  <a href="tel:+21658800554" className="hover:text-primary transition-colors">
+                    +216 58800554
                   </a>
                 </li>
                 <li className="flex items-start justify-center sm:justify-start gap-2">
@@ -64,8 +64,8 @@ const Footer = () => {
                 </li>
                 <li className="flex items-center justify-center sm:justify-start gap-2">
                   <span className="text-primary text-lg flex-shrink-0">🌐</span>
-                  <a href="https://zybodybuilding.tn" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                    ZYbodybuilding.tn
+                  <a href="https://www.zybodybuilding.space" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                    www.zybodybuilding.space
                   </a>
                 </li>
               </ul>
@@ -99,17 +99,11 @@ const Footer = () => {
               <h3 className="text-xl sm:text-2xl font-bold text-gradient">Suivez-nous</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <div className="flex space-x-4 sm:space-x-6 justify-center sm:justify-start">
-                <a href="#" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Facebook">
+                <a href="https://www.facebook.com/p/ZY-Bodybuilding-61577705828873/" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Facebook">
                   <FaFacebook className="text-2xl sm:text-3xl" />
                 </a>
-                <a href="#" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Twitter">
-                  <FaTwitter className="text-2xl sm:text-3xl" />
-                </a>
-                <a href="#" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Instagram">
+                <a href="https://www.instagram.com/zy_bodybuilding/" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Instagram">
                   <FaInstagram className="text-2xl sm:text-3xl" />
-                </a>
-                <a href="#" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="LinkedIn">
-                  <FaLinkedin className="text-2xl sm:text-3xl" />
                 </a>
               </div>
             </div>
