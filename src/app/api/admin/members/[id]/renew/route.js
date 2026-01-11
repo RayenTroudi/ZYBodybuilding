@@ -23,19 +23,21 @@ export async function POST(request, { params }) {
     // Calculate new dates
     const now = new Date();
     let startDate = new Date();
+    let isRenewal = false;
     
-    // If member has a valid end date and it's in the future, extend from there
+    // If member has a valid end date and it's in the future, extend from there (renewal)
     if (member.subscriptionEndDate) {
       const currentEndDate = new Date(member.subscriptionEndDate);
       if (!isNaN(currentEndDate.getTime()) && currentEndDate > now) {
         startDate = currentEndDate;
+        isRenewal = true;
       }
     }
     
     const newEndDate = new Date(startDate);
     newEndDate.setDate(newEndDate.getDate() + parseInt(planDuration));
 
-    // Update member
+    // Update member with both start and end dates
     const updatedMember = await databases.updateDocument(
       appwriteConfig.databaseId,
       appwriteConfig.membersCollectionId,
@@ -43,6 +45,7 @@ export async function POST(request, { params }) {
       {
         planId,
         planName,
+        subscriptionStartDate: startDate.toISOString(),
         subscriptionEndDate: newEndDate.toISOString(),
         status: 'Active',
         totalPaid: parseFloat(member.totalPaid || 0) + parseFloat(amount),
@@ -67,7 +70,14 @@ export async function POST(request, { params }) {
       }
     );
 
-    return NextResponse.json({ member: updatedMember });
+    return NextResponse.json({ 
+      member: updatedMember,
+      renewalInfo: {
+        startDate: startDate.toISOString(),
+        endDate: newEndDate.toISOString(),
+        isRenewal
+      }
+    });
   } catch (error) {
     console.error('Error renewing membership:', error);
     return NextResponse.json(

@@ -124,9 +124,10 @@ export default function MemberDetailPage({ params }) {
         await fetchMemberDetails();
         invalidateCache('/api/admin/members'); // Invalidate members cache
         
-        // Prepare receipt data
-        const endDate = new Date(result.member.subscriptionEndDate);
-        const startDate = new Date();
+        // Prepare receipt data using renewal info from API
+        const renewalInfo = result.renewalInfo || {};
+        const startDate = renewalInfo.startDate ? new Date(renewalInfo.startDate) : new Date();
+        const endDate = renewalInfo.endDate ? new Date(renewalInfo.endDate) : new Date(result.member.subscriptionEndDate);
         
         setReceiptData({
           member: result.member,
@@ -305,6 +306,11 @@ export default function MemberDetailPage({ params }) {
   // Get actual status based on subscription end date
   const actualStatus = isExpired ? 'Expired' : member.status;
 
+  // Check for data inconsistency - payments after subscription end date
+  const hasRecentPayment = payments.length > 0 && 
+    new Date(payments[0].paymentDate) > new Date(member.subscriptionEndDate);
+  const dataInconsistent = isExpired && hasRecentPayment;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -344,7 +350,16 @@ export default function MemberDetailPage({ params }) {
       </div>
 
       {/* Status Alert */}
-      {isExpired ? (
+      {dataInconsistent ? (
+        <div className="bg-orange-500/10 border border-orange-500 rounded-lg p-4">
+          <p className="text-orange-500 font-semibold">⚠️ Data Inconsistency Detected</p>
+          <p className="text-orange-400 text-sm mt-1">
+            This member has payments dated after their subscription ended. 
+            Last payment: {format(new Date(payments[0].paymentDate), 'MMM dd, yyyy')} but subscription ended: {format(new Date(member.subscriptionEndDate), 'MMM dd, yyyy')}.
+            Please renew the membership to update subscription dates.
+          </p>
+        </div>
+      ) : isExpired ? (
         <div className="bg-red-500/10 border border-red-500 rounded-lg p-4">
           <p className="text-red-500 font-semibold">⚠️ Membership expired on {format(new Date(member.subscriptionEndDate), 'MMM dd, yyyy')}</p>
         </div>
@@ -406,7 +421,7 @@ export default function MemberDetailPage({ params }) {
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="text-green-500 font-bold text-lg">${payment.amount.toFixed(2)}</p>
+                      <p className="text-green-500 font-bold text-lg">{payment.amount.toFixed(2)} TND</p>
                       <span className="px-2 py-1 rounded text-xs bg-green-500/20 text-green-500">
                         {payment.status}
                       </span>
@@ -462,12 +477,12 @@ export default function MemberDetailPage({ params }) {
               <div>
                 <p className="text-gray-400 text-sm">Total Paid</p>
                 <p className="text-2xl font-bold text-green-500 mt-1">
-                  ${member.totalPaid.toFixed(2)}
+                  {member.totalPaid.toFixed(2)} TND
                 </p>
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Payment Count</p>
-                <p className="text-white font-medium mt-1">{payments.length} payments</p>
+                <p className="text-white font-medium mt-1">{payments.length} payment{payments.length !== 1 ? 's' : ''}</p>
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Last Payment</p>
@@ -477,6 +492,12 @@ export default function MemberDetailPage({ params }) {
                     : 'N/A'}
                 </p>
               </div>
+              {payments.length > 0 && (
+                <div>
+                  <p className="text-gray-400 text-sm">Last Amount</p>
+                  <p className="text-white font-medium mt-1">{payments[0].amount.toFixed(2)} TND</p>
+                </div>
+              )}
               {member.hasAssurance && (
                 <div className="pt-3 border-t border-gray-700">
                   <div className="flex items-center gap-2 px-3 py-2 bg-blue-500/10 border border-blue-500/30 rounded-lg">
@@ -847,7 +868,7 @@ export default function MemberDetailPage({ params }) {
                 </div>
                 <div>
                   <p className="text-gray-400">Amount</p>
-                  <p className="text-white font-medium">${receiptData.payment}</p>
+                  <p className="text-white font-medium">{receiptData.payment} TND</p>
                 </div>
                 <div>
                   <p className="text-gray-400">Start Date</p>
