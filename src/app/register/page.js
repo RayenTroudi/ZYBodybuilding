@@ -59,7 +59,7 @@ export default function RegisterPage() {
       if (data.success) {
         setSuccess(true);
         setTimeout(() => {
-          router.push('/admin/login');
+          router.push('/admin/ironcore/login');
         }, 2000);
       } else {
         setError(data.error || 'Registration failed. Please try again.');
@@ -169,7 +169,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center text-sm text-gray-400">
             <p>
               Already have an account?{' '}
-              <Link href="/admin/login" className="text-red-500 hover:text-red-400 font-medium">
+              <Link href="/admin/ironcore/login" className="text-red-500 hover:text-red-400 font-medium">
                 Sign in
               </Link>
             </p>

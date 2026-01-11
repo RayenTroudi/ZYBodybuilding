@@ -53,7 +53,7 @@ async function makeAdmin(email) {
     console.log('\n✅ Success!');
     console.log(`👤 ${email} is now an admin`);
     console.log('\nYou can now:');
-    console.log('1. Login at /admin/login');
+    console.log('1. Login at /admin/ironcore/login');
     console.log('2. Access the admin panel');
     console.log('3. Manage users at /admin/users');
   } catch (error) {

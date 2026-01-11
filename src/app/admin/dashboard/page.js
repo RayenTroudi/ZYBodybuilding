@@ -77,7 +77,7 @@ export default async function AdminDashboardPage() {
   const adminAccess = await isAdmin();
 
   if (!user || !adminAccess) {
-    redirect('/admin/login');
+    redirect('/admin/ironcore/login');
   }
 
   const stats = await getDashboardStats();

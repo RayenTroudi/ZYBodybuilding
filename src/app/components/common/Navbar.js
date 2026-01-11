@@ -94,7 +94,7 @@ export default function Navbar() {
                 Connexion
               </Link>
               <Link 
-                href="/admin/login" 
+                href="/admin/ironcore/login" 
                 className="btn-primary text-center"
               >
                 S'inscrire

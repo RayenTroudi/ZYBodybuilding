@@ -107,7 +107,7 @@ export default function TestConnectionPage() {
                 <li>If environment variables are missing: Add them in Vercel Settings</li>
                 <li>If endpoint not reachable: Check your NEXT_PUBLIC_APPWRITE_ENDPOINT</li>
                 <li>If project connection fails: Verify NEXT_PUBLIC_APPWRITE_PROJECT_ID</li>
-                <li>If all tests pass: Try logging in again at /admin/login</li>
+                <li>If all tests pass: Try logging in again at /admin/ironcore/login</li>
               </ul>
             </div>
           </div>

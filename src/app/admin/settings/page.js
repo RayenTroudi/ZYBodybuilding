@@ -76,7 +76,7 @@ export default function SettingsPage() {
 
         // Redirect to login after 2 seconds
         setTimeout(() => {
-          router.push('/admin/login');
+          router.push('/admin/ironcore/login');
         }, 2000);
       } else {
         showToast(data.error || 'Failed to change password', 'error');

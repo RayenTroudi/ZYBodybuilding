@@ -97,7 +97,7 @@ async function createAdminUser() {
     console.log('\n📋 Admin Credentials:');
     console.log(`   Email: ${email}`);
     console.log(`   Password: ${password}`);
-    console.log('\n🔗 You can now login at: http://localhost:3000/admin/login');
+    console.log('\n🔗 You can now login at: http://localhost:3000/admin/ironcore/login');
 
   } catch (error) {
     console.error('❌ Error:', error.message);

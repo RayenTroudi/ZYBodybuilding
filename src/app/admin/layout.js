@@ -14,7 +14,7 @@ export default function AdminLayout({ children }) {
   const handleSignOut = async () => {
     setLoading(true);
     await signOut();
-    router.push('/admin/login');
+    router.push('/admin/ironcore/login');
   };
 
   const navigation = [
@@ -31,7 +31,7 @@ export default function AdminLayout({ children }) {
   ];
 
   // Don't show layout on login page
-  if (pathname === '/admin/login') {
+  if (pathname === '/admin/ironcore/login') {
     return <div className="min-h-screen bg-gray-900">{children}</div>;
   }
 
