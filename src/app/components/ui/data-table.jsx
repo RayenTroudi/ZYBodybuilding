@@ -45,6 +45,31 @@ export function DataTable({
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const [pendingDeleteIds, setPendingDeleteIds] = React.useState([])
 
+  // Custom global filter function that searches through all row data
+  const globalFilterFn = React.useCallback((row, columnId, filterValue) => {
+    const search = filterValue.toLowerCase()
+    
+    // Search through all values in the original data object
+    const searchInObject = (obj) => {
+      if (!obj) return false
+      
+      for (const key in obj) {
+        const value = obj[key]
+        if (value === null || value === undefined) continue
+        
+        if (typeof value === 'string' && value.toLowerCase().includes(search)) {
+          return true
+        }
+        if (typeof value === 'number' && value.toString().includes(search)) {
+          return true
+        }
+      }
+      return false
+    }
+    
+    return searchInObject(row.original)
+  }, [])
+
   const table = useReactTable({
     data,
     columns,
@@ -56,6 +81,7 @@ export function DataTable({
     onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn,
     state: {
       sorting,
       columnFilters,
