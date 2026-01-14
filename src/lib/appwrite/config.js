@@ -15,6 +15,17 @@ export const appwriteConfig = {
   classesCollectionId: process.env.NEXT_PUBLIC_CLASSES_COLLECTION_ID,
   trainerImagesBucketId: process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID,
   usersCollectionId: process.env.NEXT_PUBLIC_USERS_COLLECTION_ID,
+  // User Panel Collections
+  userProfilesCollectionId: process.env.NEXT_PUBLIC_USER_PROFILES_COLLECTION_ID || 'user_profiles',
+  exercisesCollectionId: process.env.NEXT_PUBLIC_EXERCISES_COLLECTION_ID || 'exercises',
+  workoutPlansCollectionId: process.env.NEXT_PUBLIC_WORKOUT_PLANS_COLLECTION_ID || 'workout_plans',
+  workoutPlanExercisesCollectionId: process.env.NEXT_PUBLIC_WORKOUT_PLAN_EXERCISES_COLLECTION_ID || 'workout_plan_exercises',
+  workoutLogsCollectionId: process.env.NEXT_PUBLIC_WORKOUT_LOGS_COLLECTION_ID || 'workout_logs',
+  workoutLogSetsCollectionId: process.env.NEXT_PUBLIC_WORKOUT_LOG_SETS_COLLECTION_ID || 'workout_log_sets',
+  bodyMetricsCollectionId: process.env.NEXT_PUBLIC_BODY_METRICS_COLLECTION_ID || 'body_metrics',
+  fitnessGoalsCollectionId: process.env.NEXT_PUBLIC_FITNESS_GOALS_COLLECTION_ID || 'fitness_goals',
+  userStreaksCollectionId: process.env.NEXT_PUBLIC_USER_STREAKS_COLLECTION_ID || 'user_streaks',
+  dailyTipsCollectionId: process.env.NEXT_PUBLIC_DAILY_TIPS_COLLECTION_ID || 'daily_tips',
 };
 
 export const ADMIN_TEAM_ID = 'admin_team';

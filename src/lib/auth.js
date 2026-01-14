@@ -93,6 +93,14 @@ export async function requireAdmin() {
   return true;
 }
 
+export async function requireUser() {
+  const user = await getLoggedInUser();
+  if (!user) {
+    throw new Error('Unauthorized: Login required');
+  }
+  return user;
+}
+
 export async function signIn(email, password) {
   try {
     console.log('🔧 Creating admin client...');

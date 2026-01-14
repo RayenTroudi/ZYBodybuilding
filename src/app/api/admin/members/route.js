@@ -4,6 +4,65 @@ import { appwriteConfig } from '@/lib/appwrite/config';
 import { requireAdmin } from '@/lib/auth';
 import { ID, Query } from 'node-appwrite';
 
+/**
+ * Create a user account for a gym member
+ * Uses memberId as initial password (member must change on first login)
+ */
+async function createMemberUserAccount(memberData) {
+  try {
+    const { account, databases } = createAdminClient();
+    
+    // Check if user with this email already exists
+    try {
+      const existingUsers = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.usersCollectionId,
+        [Query.equal('email', memberData.email), Query.limit(1)]
+      );
+      
+      if (existingUsers.documents.length > 0) {
+        console.log('⚠️ User account already exists for:', memberData.email);
+        return { success: true, existing: true };
+      }
+    } catch (e) {
+      // Collection might not exist yet, continue
+    }
+
+    // Create user account in Appwrite Auth with memberId as initial password
+    const user = await account.create(
+      ID.unique(),
+      memberData.email,
+      memberData.memberId, // Initial password is the memberId
+      memberData.name
+    );
+    console.log('✅ User account created for member:', user.$id);
+
+    // Store user metadata in users collection
+    await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      user.$id,
+      {
+        userId: user.$id,
+        email: memberData.email,
+        name: memberData.name,
+        role: 'member', // Role is 'member' for gym members
+        memberId: memberData.memberId,
+        requiresPasswordReset: true, // Must change password on first login
+        createdAt: new Date().toISOString(),
+        createdByAdmin: true,
+      }
+    );
+    console.log('✅ User metadata stored for member');
+
+    return { success: true, userId: user.$id };
+  } catch (error) {
+    console.error('❌ Failed to create member user account:', error.message);
+    // Don't fail the member creation if user account fails
+    return { success: false, error: error.message };
+  }
+}
+
 // GET all members or search
 export async function GET(request) {
   try {
@@ -114,7 +173,14 @@ export async function POST(request) {
       );
     }
 
-    return NextResponse.json(member, { status: 201 });
+    // Create user account for the member (for dashboard access)
+    const userAccountResult = await createMemberUserAccount(memberData);
+    
+    return NextResponse.json({
+      ...member,
+      userAccountCreated: userAccountResult.success,
+      userAccountError: userAccountResult.error || null,
+    }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: error.message },

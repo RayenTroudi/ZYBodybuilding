@@ -23,9 +23,22 @@ export default function LoginPage() {
       console.log('📝 Login result:', result);
       
       if (result.success) {
-        console.log('✅ Login successful, redirecting...');
-        // Redirect to home page for regular users
-        router.push('/');
+        console.log('✅ Login successful, checking membership status...');
+        
+        // Check auth status to determine where to redirect
+        const authRes = await fetch('/api/auth/check');
+        const authData = await authRes.json();
+        
+        if (authData.membership?.requiresPasswordReset) {
+          // First-time login - need to change password
+          router.push('/reset-password');
+        } else if (authData.membership && !authData.membership.isValid) {
+          // Membership expired
+          router.push('/membership-expired');
+        } else {
+          // All good - go to dashboard
+          router.push('/dashboard');
+        }
         router.refresh();
       } else {
         console.error('❌ Login failed:', result.error);

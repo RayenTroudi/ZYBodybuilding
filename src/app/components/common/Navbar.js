@@ -2,11 +2,33 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const router = useRouter();
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/check');
+        const data = await res.json();
+        if (data.success && data.user) {
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.log('Not authenticated');
+      } finally {
+        setLoadingAuth(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -171,20 +193,46 @@ export default function Navbar() {
           
           {/* Auth Buttons in Mobile Menu */}
           <div className="flex flex-col gap-4 mt-8 w-64">
-            <Link 
-              href="/login" 
-              className="px-6 py-3 text-lg text-white hover:text-primary transition-colors text-center border-2 border-neutral-700 rounded-lg hover:border-primary transform hover:scale-105 duration-200"
-              onClick={closeMenu}
-            >
-              Connexion
-            </Link>
-            <Link 
-              href="/register" 
-              className="btn-primary text-lg text-center transform hover:scale-105 duration-200"
-              onClick={closeMenu}
-            >
-              S'inscrire
-            </Link>
+            {user ? (
+              <>
+                <Link 
+                  href="/dashboard" 
+                  className="px-6 py-3 text-lg text-white hover:text-primary transition-colors text-center border-2 border-primary rounded-lg transform hover:scale-105 duration-200"
+                  onClick={closeMenu}
+                >
+                  Mon Espace
+                </Link>
+                <button 
+                  onClick={async () => {
+                    await fetch('/api/auth/logout', { method: 'POST' });
+                    setUser(null);
+                    closeMenu();
+                    router.push('/');
+                    router.refresh();
+                  }}
+                  className="px-6 py-3 text-lg text-white hover:text-red-400 transition-colors text-center border-2 border-neutral-700 rounded-lg hover:border-red-400 transform hover:scale-105 duration-200"
+                >
+                  Déconnexion
+                </button>
+              </>
+            ) : (
+              <>
+                <Link 
+                  href="/login" 
+                  className="px-6 py-3 text-lg text-white hover:text-primary transition-colors text-center border-2 border-neutral-700 rounded-lg hover:border-primary transform hover:scale-105 duration-200"
+                  onClick={closeMenu}
+                >
+                  Connexion
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="btn-primary text-lg text-center transform hover:scale-105 duration-200"
+                  onClick={closeMenu}
+                >
+                  S'inscrire
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -208,18 +256,42 @@ export default function Navbar() {
           
           {/* Auth Buttons */}
           <div className="flex flex-row gap-3 ml-4">
-            <Link 
-              href="/login" 
-              className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-neutral-700 rounded hover:border-primary"
-            >
-              Connexion
-            </Link>
-            <Link 
-              href="/register" 
-              className="btn-primary text-center"
-            >
-              S'inscrire
-            </Link>
+            {user ? (
+              <>
+                <Link 
+                  href="/dashboard" 
+                  className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-primary rounded hover:bg-primary/10"
+                >
+                  Mon Espace
+                </Link>
+                <button 
+                  onClick={async () => {
+                    await fetch('/api/auth/logout', { method: 'POST' });
+                    setUser(null);
+                    router.push('/');
+                    router.refresh();
+                  }}
+                  className="px-4 py-2 text-white hover:text-red-400 transition-colors text-center border border-neutral-700 rounded hover:border-red-400"
+                >
+                  Déconnexion
+                </button>
+              </>
+            ) : (
+              <>
+                <Link 
+                  href="/login" 
+                  className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-neutral-700 rounded hover:border-primary"
+                >
+                  Connexion
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="btn-primary text-center"
+                >
+                  S'inscrire
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
