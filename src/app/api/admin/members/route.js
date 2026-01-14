@@ -104,7 +104,7 @@ export async function POST(request) {
           planId: memberData.planId,
           planName: memberData.planName,
           amount: parseFloat(initialPayment),
-          paymentDate: new Date().toISOString(),
+          paymentDate: startDate.toISOString(),
           paymentMethod: paymentMethod || 'Cash',
           status: 'Completed',
           notes: paymentNotes,

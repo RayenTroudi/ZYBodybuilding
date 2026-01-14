@@ -327,10 +327,10 @@ export async function POST(request) {
             appwriteConfig.paymentsCollectionId,
             ID.unique(),
             {
-              memberId: String(row.ID),
-              memberName: String(row.NAME),
+              memberId: String(rowData.ID),
+              memberName: String(rowData.NAME),
               planId: 'imported_plan',
-              planName: `${row.DURATION}`,
+              planName: `${rowData.DURATION}`,
               amount: amount,
               paymentDate: startDate.toISOString(),
               paymentMethod: 'Cash',
@@ -339,7 +339,7 @@ export async function POST(request) {
             }
           );
         } catch (paymentError) {
-          console.error(`Failed to create payment for member ${row.ID}:`, paymentError.message);
+          console.error(`Failed to create payment for member ${rowData.ID}:`, paymentError.message);
           // Continue even if payment creation fails
         }
 
