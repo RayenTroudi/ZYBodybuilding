@@ -53,10 +53,10 @@ export default function DashboardPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="relative w-12 h-12 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-400">Loading your dashboard...</p>
+          <p className="text-neutral-400">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -65,13 +65,13 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl p-6 text-white">
+      <div className="bg-primary rounded-2xl p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">Welcome back! 💪</h1>
         <p className="opacity-90">Ready to crush your workout today?</p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/dashboard/workouts/log"
-            className="px-4 py-2 bg-white text-red-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-4 py-2 bg-white text-primary font-semibold rounded-lg hover:bg-neutral-100 transition-colors"
           >
             Start Workout
           </Link>
@@ -87,10 +87,10 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Membership Days Card */}
-        <div className={`bg-gray-800 rounded-xl border p-4 ${
+        <div className={`bg-neutral-800 rounded-xl border p-4 ${
           membership?.daysRemaining <= 7 
             ? 'border-orange-500/50' 
-            : 'border-gray-700'
+            : 'border-neutral-700'
         }`}>
           <div className="flex items-center gap-3 mb-2">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${
@@ -101,7 +101,7 @@ export default function DashboardPage() {
               📅
             </div>
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide">Membership</p>
+              <p className="text-xs text-neutral-400 uppercase tracking-wide">Membership</p>
               <p className={`text-lg font-bold ${
                 membership?.daysRemaining <= 7 
                   ? 'text-orange-400' 
@@ -112,7 +112,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {membership?.member?.planName && (
-            <p className="text-xs text-gray-500 truncate">{membership.member.planName}</p>
+            <p className="text-xs text-neutral-500 truncate">{membership.member.planName}</p>
           )}
         </div>
         
@@ -138,7 +138,7 @@ export default function DashboardPage() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Workouts */}
-        <div className="lg:col-span-2 bg-gray-800 rounded-xl border border-gray-700 p-6">
+        <div className="lg:col-span-2 bg-neutral-800 rounded-xl border border-neutral-700 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-white">Recent Workouts</h2>
             <Link href="/dashboard/workouts" className="text-red-500 text-sm hover:text-red-400">
@@ -149,7 +149,7 @@ export default function DashboardPage() {
           {recentWorkouts.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-6xl mb-4">🏃</p>
-              <p className="text-gray-400 mb-4">No workouts logged yet</p>
+              <p className="text-neutral-400 mb-4">No workouts logged yet</p>
               <Link
                 href="/dashboard/workouts/log"
                 className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -163,7 +163,7 @@ export default function DashboardPage() {
                 <Link
                   key={workout.$id}
                   href={`/dashboard/workouts/${workout.$id}`}
-                  className="flex items-center gap-4 p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors"
+                  className="flex items-center gap-4 p-4 bg-neutral-700/50 rounded-lg hover:bg-neutral-700 transition-colors"
                 >
                   <div className="w-12 h-12 rounded-lg bg-red-600/20 flex items-center justify-center text-2xl">
                     💪
@@ -172,7 +172,7 @@ export default function DashboardPage() {
                     <p className="font-medium text-white truncate">
                       {workout.planName || 'Quick Workout'}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-neutral-400">
                       {format(new Date(workout.workoutDate), 'MMM dd, yyyy')} • {workout.exerciseCount || 0} exercises
                     </p>
                   </div>
@@ -192,31 +192,31 @@ export default function DashboardPage() {
         <div className="space-y-6">
           {/* Daily Tip */}
           {dailyTip && (
-            <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-xl border border-blue-500/30 p-6">
+            <div className="bg-primary/10 rounded-xl border border-primary/30 p-6">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">💡</span>
                 <h3 className="font-bold text-white">Daily Tip</h3>
               </div>
-              <p className="text-sm font-medium text-blue-400 mb-2">{dailyTip.title}</p>
-              <p className="text-gray-300 text-sm">{dailyTip.content}</p>
+              <p className="text-sm font-medium text-primary mb-2">{dailyTip.title}</p>
+              <p className="text-neutral-300 text-sm">{dailyTip.content}</p>
             </div>
           )}
 
           {/* Active Goals */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-white">Active Goals</h3>
-              <Link href="/dashboard/goals" className="text-red-500 text-sm hover:text-red-400">
+              <Link href="/dashboard/goals" className="text-primary text-sm hover:opacity-80">
                 Manage →
               </Link>
             </div>
             
             {goals.length === 0 ? (
               <div className="text-center py-4">
-                <p className="text-gray-400 text-sm mb-3">No goals set yet</p>
+                <p className="text-neutral-400 text-sm mb-3">No goals set yet</p>
                 <Link
                   href="/dashboard/goals/new"
-                  className="text-red-500 text-sm hover:text-red-400"
+                  className="text-primary text-sm hover:opacity-80"
                 >
                   + Add Goal
                 </Link>
@@ -231,21 +231,21 @@ export default function DashboardPage() {
           </div>
 
           {/* Streak Info */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">🔥</span>
               <div>
                 <p className="text-2xl font-bold text-white">{streak?.currentStreak || 0}</p>
-                <p className="text-sm text-gray-400">Day Streak</p>
+                <p className="text-sm text-neutral-400">Day Streak</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-700">
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-800">
               <div>
-                <p className="text-gray-400 text-xs">Longest Streak</p>
+                <p className="text-neutral-400 text-xs">Longest Streak</p>
                 <p className="text-white font-semibold">{streak?.longestStreak || 0} days</p>
               </div>
               <div>
-                <p className="text-gray-400 text-xs">Total Workouts</p>
+                <p className="text-neutral-400 text-xs">Total Workouts</p>
                 <p className="text-white font-semibold">{streak?.totalWorkouts || 0}</p>
               </div>
             </div>
@@ -254,7 +254,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Week Overview */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
         <h2 className="text-lg font-bold text-white mb-4">This Week</h2>
         <WeekCalendar workouts={recentWorkouts} />
       </div>
@@ -264,10 +264,10 @@ export default function DashboardPage() {
 
 function StatCard({ icon, label, value, color }) {
   const colors = {
-    orange: 'from-orange-600/20 to-red-600/20 border-orange-500/30',
-    blue: 'from-blue-600/20 to-cyan-600/20 border-blue-500/30',
-    purple: 'from-purple-600/20 to-pink-600/20 border-purple-500/30',
-    green: 'from-green-600/20 to-emerald-600/20 border-green-500/30',
+    orange: 'from-primary/20 to-primary/10 border-primary/30',
+    blue: 'from-blue-600/20 to-blue-600/10 border-blue-500/30',
+    purple: 'from-purple-600/20 to-purple-600/10 border-purple-500/30',
+    green: 'from-green-600/20 to-green-600/10 border-green-500/30',
   };
 
   return (
@@ -275,7 +275,7 @@ function StatCard({ icon, label, value, color }) {
       <div className="flex items-center gap-3">
         <span className="text-2xl">{icon}</span>
         <div>
-          <p className="text-xs text-gray-400">{label}</p>
+          <p className="text-xs text-neutral-400">{label}</p>
           <p className="text-lg font-bold text-white">{value}</p>
         </div>
       </div>
@@ -292,11 +292,11 @@ function GoalProgress({ goal }) {
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <p className="text-sm text-white truncate">{goal.title}</p>
-        <span className="text-xs text-gray-400">{Math.round(progress)}%</span>
+        <span className="text-xs text-neutral-400">{Math.round(progress)}%</span>
       </div>
-      <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+      <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full transition-all"
+          className="h-full bg-primary rounded-full transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -330,10 +330,10 @@ function WeekCalendar({ workouts }) {
                 ? 'bg-red-600/20 border border-red-500'
                 : hasWorkout
                 ? 'bg-green-600/20 border border-green-500/50'
-                : 'bg-gray-700/50'
+                : 'bg-neutral-700/50'
             }`}
           >
-            <p className="text-xs text-gray-400 mb-1">{day}</p>
+            <p className="text-xs text-neutral-400 mb-1">{day}</p>
             <p className={`font-semibold ${isCurrentDay ? 'text-red-500' : 'text-white'}`}>
               {format(date, 'd')}
             </p>

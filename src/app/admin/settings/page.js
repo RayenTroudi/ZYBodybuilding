@@ -104,20 +104,20 @@ export default function SettingsPage() {
 
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-        <p className="text-gray-400">Manage your account settings</p>
+        <p className="text-neutral-400">Manage your account settings</p>
       </div>
 
       {/* Change Password Section */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700">
-        <div className="p-6 border-b border-gray-700">
+      <div className="bg-neutral-800 rounded-lg border border-neutral-700">
+        <div className="p-6 border-b border-neutral-700">
           <h2 className="text-xl font-semibold text-white mb-1">Change Password</h2>
-          <p className="text-gray-400 text-sm">Update your password to keep your account secure</p>
+          <p className="text-neutral-400 text-sm">Update your password to keep your account secure</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Old Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Current Password *
             </label>
             <input
@@ -125,7 +125,7 @@ export default function SettingsPage() {
               name="oldPassword"
               value={formData.oldPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Enter your current password"
               disabled={loading}
             />
@@ -133,7 +133,7 @@ export default function SettingsPage() {
 
           {/* New Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               New Password *
             </label>
             <input
@@ -141,18 +141,18 @@ export default function SettingsPage() {
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Enter your new password (min. 8 characters)"
               disabled={loading}
             />
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-neutral-400">
               Password must be at least 8 characters long
             </p>
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
               Confirm New Password *
             </label>
             <input
@@ -160,7 +160,7 @@ export default function SettingsPage() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Confirm your new password"
               disabled={loading}
             />
@@ -190,9 +190,9 @@ export default function SettingsPage() {
       </div>
 
       {/* Security Tips */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 p-6">
+      <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6">
         <h3 className="text-lg font-semibold text-white mb-3">🔐 Password Security Tips</h3>
-        <ul className="space-y-2 text-gray-400 text-sm">
+        <ul className="space-y-2 text-neutral-400 text-sm">
           <li className="flex items-start">
             <span className="mr-2">•</span>
             <span>Use a password with at least 8 characters</span>

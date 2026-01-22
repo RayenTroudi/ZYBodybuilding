@@ -84,7 +84,7 @@ export default function Programs() {
             {programs.map((program, index) => (
               <motion.div
                 key={program.$id}
-                className="bg-gray-800 p-4 sm:p-6 md:p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/50"
+                className="bg-neutral-800 p-4 sm:p-6 md:p-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/50"
                 variants={itemVariants}
                 whileHover={{ scale: 1.02, y: -3 }}
                 initial={{ opacity: 0, y: 50 }}

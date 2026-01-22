@@ -37,7 +37,7 @@ const Hero = () => {
   
       {/* Gradient Overlay - Responsive opacity */}
       <motion.div
-        className="absolute inset-0 z-10 bg-gradient-to-r from-dark/95 via-dark/80 sm:via-dark/70 to-primary/30"
+        className="absolute inset-0 z-10 bg-black/80"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -99,7 +99,7 @@ const Hero = () => {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <span className="text-gradient">ZY</span> Bodybuilding
+          <span className="text-primary">ZY</span> Bodybuilding
         </motion.h1>
         
         {/* Responsive Subtitle */}

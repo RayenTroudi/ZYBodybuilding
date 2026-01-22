@@ -42,7 +42,7 @@ const Schedule = () => {
       case 'Débutant': return 'bg-green-500';
       case 'Intermédiaire': return 'bg-yellow-500';
       case 'Avancé': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      default: return 'bg-neutral-500';
     }
   };
 
@@ -61,13 +61,13 @@ const Schedule = () => {
   const filteredClasses = classes.filter(cls => cls.dayOfWeek === activeTab);
 
   return (
-    <section id="schedule" className="bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-12 xl:px-48">
+    <section id="schedule" className="bg-black text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-12 xl:px-48">
       <div className="container mx-auto space-y-8 sm:space-y-12">
        
         {/* Section Header */}
         <div className="text-center">
           <motion.h2
-            className="section-header text-3xl sm:text-4xl md:text-5xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary"
+            className="section-header text-3xl sm:text-4xl md:text-5xl mb-4 text-white"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
@@ -93,8 +93,8 @@ const Schedule = () => {
               onClick={() => setActiveTab(day)}
               className={`flex-shrink-0 snap-center py-3 px-6 sm:px-8 text-sm sm:text-base font-bold transition-all duration-300 whitespace-nowrap rounded-xl min-w-[110px] sm:min-w-[130px] ${
                 activeTab === day
-                  ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/50 scale-105'
-                  : 'bg-gray-800/50 backdrop-blur-sm text-neutral-300 hover:bg-gray-700/50 hover:text-white border border-gray-700'
+                  ? 'bg-primary text-white shadow-lg scale-105'
+                  : 'bg-neutral-800/50 backdrop-blur-sm text-neutral-300 hover:bg-neutral-700/50 hover:text-white border border-neutral-700'
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
@@ -132,7 +132,7 @@ const Schedule = () => {
                     key={classItem.$id}
                     variants={cardVariants}
                     layout
-                    className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-md rounded-2xl overflow-hidden border border-gray-700/50 hover:border-primary/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-primary/20"
+                    className="bg-neutral-900 backdrop-blur-md rounded-2xl overflow-hidden border border-neutral-800 hover:border-primary/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-primary/20"
                   >
                     {/* Main Card Content */}
                     <div 
@@ -157,7 +157,7 @@ const Schedule = () => {
                             <div className="flex items-center gap-2 text-neutral-400 text-sm mb-1">
                               <FaClock className="text-primary" />
                               <span className="font-medium">{classItem.startTime} - {classItem.endTime}</span>
-                              <span className="text-xs bg-gray-700 px-2 py-0.5 rounded-full">
+                              <span className="text-xs bg-neutral-700 px-2 py-0.5 rounded-full">
                                 {classItem.duration} min
                               </span>
                             </div>
@@ -214,12 +214,12 @@ const Schedule = () => {
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3 }}
-                          className="overflow-hidden border-t border-gray-700/50"
+                          className="overflow-hidden border-t border-neutral-700/50"
                         >
-                          <div className="p-5 sm:p-6 bg-gray-900/50">
+                          <div className="p-5 sm:p-6 bg-neutral-900/50">
                             {/* Trainer Info */}
                             {classItem.trainer && (
-                              <div className="flex items-center gap-4 mb-4 p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                              <div className="flex items-center gap-4 mb-4 p-4 bg-neutral-800/50 rounded-xl border border-neutral-700/30">
                                 <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden ring-2 ring-primary/50">
                                   {classItem.trainer.imageUrl ? (
                                     <Image
@@ -229,7 +229,7 @@ const Schedule = () => {
                                       className="object-cover"
                                     />
                                   ) : (
-                                    <div className="w-full h-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl font-bold">
+                                    <div className="w-full h-full bg-primary flex items-center justify-center text-2xl font-bold">
                                       {classItem.trainer.name.charAt(0)}
                                     </div>
                                   )}

@@ -70,20 +70,20 @@ export default function DashboardLayout({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <div className="relative w-16 h-16 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-400">Loading...</p>
+          <p className="text-neutral-400">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-black">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -94,13 +94,13 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-gray-800/95 backdrop-blur-sm border-r border-gray-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-neutral-800/95 backdrop-blur-sm border-r border-neutral-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-700">
+          <div className="flex items-center justify-between h-16 px-4 border-b border-neutral-700">
             <Link href="/dashboard" className="flex items-center gap-2">
               <Image 
                 src="/images/logoNobg.png" 
@@ -113,7 +113,7 @@ export default function DashboardLayout({ children }) {
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-gray-400 hover:text-white"
+              className="lg:hidden text-neutral-400 hover:text-white"
             >
               ✕
             </button>
@@ -133,7 +133,7 @@ export default function DashboardLayout({ children }) {
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive
                       ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
-                      : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
+                      : 'text-neutral-300 hover:bg-neutral-700/50 hover:text-white'
                   }`}
                 >
                   <span className="text-xl">{item.icon}</span>
@@ -144,16 +144,16 @@ export default function DashboardLayout({ children }) {
           </nav>
 
           {/* User section */}
-          <div className="p-4 border-t border-gray-700">
+          <div className="p-4 border-t border-neutral-800">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">
                   {user?.name || 'User'}
                 </p>
-                <p className="text-xs text-gray-400 truncate">
+                <p className="text-xs text-neutral-400 truncate">
                   {user?.email}
                 </p>
               </div>
@@ -161,13 +161,13 @@ export default function DashboardLayout({ children }) {
             <div className="flex gap-2">
               <Link
                 href="/"
-                className="flex-1 px-3 py-2 text-sm text-center text-gray-300 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                className="flex-1 px-3 py-2 text-sm text-center text-neutral-300 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition-colors"
               >
                 Home
               </Link>
               <button
                 onClick={handleSignOut}
-                className="flex-1 px-3 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+                className="flex-1 px-3 py-2 text-sm text-white bg-primary rounded-lg hover:opacity-90 transition-opacity"
               >
                 Logout
               </button>
@@ -179,11 +179,11 @@ export default function DashboardLayout({ children }) {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700">
+        <header className="sticky top-0 z-30 bg-neutral-900/80 backdrop-blur-sm border-b border-neutral-800">
           <div className="flex items-center justify-between h-16 px-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-gray-400 hover:text-white p-2"
+              className="lg:hidden text-neutral-400 hover:text-white p-2"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -199,11 +199,11 @@ export default function DashboardLayout({ children }) {
 
           {/* Membership Warning Banner */}
           {membership?.isInGracePeriod && (
-            <div className="bg-gradient-to-r from-orange-600/90 to-red-600/90 px-4 py-3 text-center">
+            <div className="bg-primary/90 px-4 py-3 text-center">
               <p className="text-white text-sm">
                 <span className="font-semibold">⚠️ Grace Period Active:</span>{' '}
                 Your membership expired. You have {membership.graceDaysLeft} day(s) to renew.{' '}
-                <Link href="/#pricing" className="underline font-semibold hover:text-orange-200">
+                <Link href="/#pricing" className="underline font-semibold hover:opacity-80">
                   Renew Now
                 </Link>
               </p>
@@ -211,11 +211,11 @@ export default function DashboardLayout({ children }) {
           )}
           
           {membership?.daysRemaining > 0 && membership?.daysRemaining <= 7 && !membership?.isInGracePeriod && (
-            <div className="bg-gradient-to-r from-yellow-600/90 to-orange-600/90 px-4 py-3 text-center">
+            <div className="bg-yellow-600/90 px-4 py-3 text-center">
               <p className="text-white text-sm">
                 <span className="font-semibold">⏰ Expiring Soon:</span>{' '}
                 Your membership expires in {membership.daysRemaining} day(s).{' '}
-                <Link href="/#pricing" className="underline font-semibold hover:text-yellow-200">
+                <Link href="/#pricing" className="underline font-semibold hover:opacity-80">
                   Renew Now
                 </Link>
               </p>

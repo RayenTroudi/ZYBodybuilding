@@ -136,7 +136,7 @@ export default function PlansPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Subscription Plans</h1>
-          <p className="text-gray-400">Manage membership plans and pricing</p>
+          <p className="text-neutral-400">Manage membership plans and pricing</p>
         </div>
         <button
           onClick={() => {
@@ -164,16 +164,16 @@ export default function PlansPage() {
               <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500/30 rounded-full"></div>
               <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
             </div>
-            <p className="text-gray-400 mt-4">Loading plans...</p>
+            <p className="text-neutral-400 mt-4">Loading plans...</p>
           </div>
         ) : plans.length === 0 ? (
-          <div className="col-span-3 p-12 text-center text-gray-400">No subscription plans yet. Create your first plan!</div>
+          <div className="col-span-3 p-12 text-center text-neutral-400">No subscription plans yet. Create your first plan!</div>
         ) : (
           plans.map((plan) => (
             <div
               key={plan.$id}
-              className={`bg-gray-800 rounded-lg p-6 border-2 transition-all ${
-                plan.isActive ? 'border-red-600' : 'border-gray-700 opacity-60'
+              className={`bg-neutral-800 rounded-lg p-6 border-2 transition-all ${
+                plan.isActive ? 'border-red-600' : 'border-neutral-700 opacity-60'
               }`}
             >
               {/* Plan Header */}
@@ -187,7 +187,7 @@ export default function PlansPage() {
                     className={`px-2 py-1 rounded text-xs font-semibold ${
                       plan.isActive
                         ? 'bg-green-500/20 text-green-500'
-                        : 'bg-gray-500/20 text-gray-500'
+                        : 'bg-neutral-500/20 text-neutral-500'
                     }`}
                   >
                     {plan.isActive ? 'Active' : 'Inactive'}
@@ -199,12 +199,12 @@ export default function PlansPage() {
               <div className="mb-4">
                 <div className="flex items-baseline">
                   <span className="text-4xl font-bold text-white">${plan.price}</span>
-                  <span className="text-gray-400 ml-2">/ {plan.duration} days</span>
+                  <span className="text-neutral-400 ml-2">/ {plan.duration} days</span>
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-gray-400 text-sm mb-6 min-h-[60px]">
+              <p className="text-neutral-400 text-sm mb-6 min-h-[60px]">
                 {plan.description || 'No description provided'}
               </p>
 
@@ -212,7 +212,7 @@ export default function PlansPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(plan)}
-                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors text-sm"
                 >
                   ✏️ Edit
                 </button>
@@ -234,13 +234,13 @@ export default function PlansPage() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
+          <div className="bg-neutral-800 rounded-lg p-6 max-w-md w-full border border-neutral-700 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-white mb-4">
               {editingPlan ? 'Edit Plan' : 'Create New Plan'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Plan Name
                 </label>
                 <input
@@ -248,26 +248,26 @@ export default function PlansPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="e.g., Monthly Plan"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Description
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Brief description of the plan..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Duration (days)
                 </label>
                 <input
@@ -276,13 +276,13 @@ export default function PlansPage() {
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                   required
                   min="1"
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="30"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Price ($)
                 </label>
                 <input
@@ -292,7 +292,7 @@ export default function PlansPage() {
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   required
                   min="0"
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="50.00"
                 />
               </div>
@@ -303,9 +303,9 @@ export default function PlansPage() {
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500"
+                  className="w-4 h-4 text-red-600 bg-neutral-700 border-neutral-600 rounded focus:ring-red-500"
                 />
-                <label htmlFor="isActive" className="ml-2 text-sm text-gray-300">
+                <label htmlFor="isActive" className="ml-2 text-sm text-neutral-300">
                   Active (visible to members)
                 </label>
               </div>
@@ -317,7 +317,7 @@ export default function PlansPage() {
                     setShowModal(false);
                     setEditingPlan(null);
                   }}
-                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -334,21 +334,21 @@ export default function PlansPage() {
       )}
 
       {/* Stats */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
         <h2 className="text-xl font-bold text-white mb-4">Plan Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-gray-700 rounded-lg">
-            <p className="text-gray-400 text-sm">Total Plans</p>
+          <div className="p-4 bg-neutral-700 rounded-lg">
+            <p className="text-neutral-400 text-sm">Total Plans</p>
             <p className="text-2xl font-bold text-white mt-1">{plans.length}</p>
           </div>
-          <div className="p-4 bg-gray-700 rounded-lg">
-            <p className="text-gray-400 text-sm">Active Plans</p>
+          <div className="p-4 bg-neutral-700 rounded-lg">
+            <p className="text-neutral-400 text-sm">Active Plans</p>
             <p className="text-2xl font-bold text-green-500 mt-1">
               {plans.filter(p => p.isActive).length}
             </p>
           </div>
-          <div className="p-4 bg-gray-700 rounded-lg">
-            <p className="text-gray-400 text-sm">Price Range</p>
+          <div className="p-4 bg-neutral-700 rounded-lg">
+            <p className="text-neutral-400 text-sm">Price Range</p>
             <p className="text-2xl font-bold text-white mt-1">
               ${Math.min(...plans.map(p => p.price))} - ${Math.max(...plans.map(p => p.price))}
             </p>
@@ -359,7 +359,7 @@ export default function PlansPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && planToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg max-w-md w-full border border-gray-700 shadow-2xl">
+          <div className="bg-neutral-800 rounded-lg max-w-md w-full border border-neutral-700 shadow-2xl">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
@@ -367,12 +367,12 @@ export default function PlansPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white">Delete Plan</h3>
-                  <p className="text-gray-400 text-sm mt-1">This action cannot be undone</p>
+                  <p className="text-neutral-400 text-sm mt-1">This action cannot be undone</p>
                 </div>
               </div>
               
               <div className="mb-6">
-                <p className="text-gray-300">
+                <p className="text-neutral-300">
                   Are you sure you want to delete the <span className="font-semibold text-white">{planToDelete.name}</span> plan? 
                   This will permanently remove it from your subscription options.
                 </p>
@@ -385,7 +385,7 @@ export default function PlansPage() {
                     setShowDeleteModal(false);
                     setPlanToDelete(null);
                   }}
-                  className="flex-1 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -408,8 +408,8 @@ export default function PlansPage() {
           <div
             className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
               toast.type === 'success'
-                ? 'bg-gray-800 border-green-500 text-white'
-                : 'bg-gray-800 border-red-500 text-white'
+                ? 'bg-neutral-800 border-green-500 text-white'
+                : 'bg-neutral-800 border-red-500 text-white'
             }`}
           >
             <div className="flex items-start gap-3">
@@ -421,7 +421,7 @@ export default function PlansPage() {
               </div>
               <button
                 onClick={() => setToast(null)}
-                className="flex-shrink-0 text-gray-400 hover:text-white transition-colors"
+                className="flex-shrink-0 text-neutral-400 hover:text-white transition-colors"
               >
                 ✕
               </button>

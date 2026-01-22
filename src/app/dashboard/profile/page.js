@@ -141,10 +141,10 @@ export default function ProfilePage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="relative w-12 h-12 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-400">Loading profile...</p>
+          <p className="text-neutral-400">Loading profile...</p>
         </div>
       </div>
     );
@@ -165,7 +165,7 @@ export default function ProfilePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Profile Settings</h1>
-          <p className="text-gray-400">Customize your fitness profile</p>
+          <p className="text-neutral-400">Customize your fitness profile</p>
         </div>
         <button
           onClick={handleSave}
@@ -177,7 +177,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-700">
+      <div className="flex gap-2 border-b border-neutral-700">
         {[
           { id: 'profile', name: 'Profile', icon: '👤' },
           { id: 'fitness', name: 'Fitness', icon: '💪' },
@@ -189,7 +189,7 @@ export default function ProfilePage() {
             className={`px-4 py-2 font-medium transition-colors ${
               activeTab === tab.id
                 ? 'text-red-500 border-b-2 border-red-500'
-                : 'text-gray-400 hover:text-white'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             {tab.icon} {tab.name}
@@ -199,37 +199,37 @@ export default function ProfilePage() {
 
       {/* Profile Tab */}
       {activeTab === 'profile' && (
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
+        <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6 space-y-6">
           <h2 className="text-lg font-bold text-white">Personal Information</h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Display Name</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Display Name</label>
               <input
                 type="text"
                 value={profile.displayName}
                 onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Your name"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Date of Birth</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Date of Birth</label>
               <input
                 type="date"
                 value={profile.dateOfBirth}
                 onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Gender</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Gender</label>
               <select
                 value={profile.gender}
                 onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 <option value="">Select...</option>
                 <option value="male">Male</option>
@@ -240,12 +240,12 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Height (cm)</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Height (cm)</label>
               <input
                 type="number"
                 value={profile.height}
                 onChange={(e) => setProfile({ ...profile, height: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="175"
               />
             </div>
@@ -257,7 +257,7 @@ export default function ProfilePage() {
       {activeTab === 'fitness' && (
         <div className="space-y-6">
           {/* Fitness Level */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
             <h2 className="text-lg font-bold text-white mb-4">Fitness Level</h2>
             <div className="grid md:grid-cols-2 gap-3">
               {fitnessLevels.map((level) => (
@@ -267,20 +267,20 @@ export default function ProfilePage() {
                   className={`p-4 rounded-lg text-left transition-all ${
                     profile.fitnessLevel === level.id
                       ? 'bg-red-600 border-2 border-red-500'
-                      : 'bg-gray-700 border-2 border-transparent hover:border-gray-500'
+                      : 'bg-neutral-700 border-2 border-transparent hover:border-neutral-500'
                   }`}
                 >
                   <p className="font-semibold text-white">{level.name}</p>
-                  <p className="text-sm text-gray-300 mt-1">{level.description}</p>
+                  <p className="text-sm text-neutral-300 mt-1">{level.description}</p>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Fitness Goals */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
             <h2 className="text-lg font-bold text-white mb-4">Fitness Goals</h2>
-            <p className="text-gray-400 text-sm mb-4">Select all that apply</p>
+            <p className="text-neutral-400 text-sm mb-4">Select all that apply</p>
             <div className="flex flex-wrap gap-2">
               {fitnessGoalOptions.map((goal) => (
                 <button
@@ -289,7 +289,7 @@ export default function ProfilePage() {
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     profile.fitnessGoals?.includes(goal)
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
                   }`}
                 >
                   {goal}
@@ -299,14 +299,14 @@ export default function ProfilePage() {
           </div>
 
           {/* Injuries */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
             <h2 className="text-lg font-bold text-white mb-4">Injuries or Limitations</h2>
-            <p className="text-gray-400 text-sm mb-4">Let us know about any injuries or physical limitations</p>
+            <p className="text-neutral-400 text-sm mb-4">Let us know about any injuries or physical limitations</p>
             <textarea
               value={profile.injuries}
               onChange={(e) => setProfile({ ...profile, injuries: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="e.g., Lower back pain, knee injury, shoulder mobility issues..."
             />
           </div>
@@ -317,7 +317,7 @@ export default function ProfilePage() {
       {activeTab === 'preferences' && (
         <div className="space-y-6">
           {/* Workout Days */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
             <h2 className="text-lg font-bold text-white mb-4">Preferred Workout Days</h2>
             <div className="flex flex-wrap gap-2">
               {workoutDays.map((day) => (
@@ -327,7 +327,7 @@ export default function ProfilePage() {
                   className={`w-14 h-14 rounded-lg font-medium transition-colors ${
                     profile.preferredWorkoutDays?.includes(day.id)
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
                   }`}
                 >
                   {day.name}
@@ -337,7 +337,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Workout Time */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
             <h2 className="text-lg font-bold text-white mb-4">Preferred Workout Time</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
@@ -352,21 +352,21 @@ export default function ProfilePage() {
                   className={`p-4 rounded-lg text-center transition-all ${
                     profile.preferredWorkoutTime === time.id
                       ? 'bg-red-600 border-2 border-red-500'
-                      : 'bg-gray-700 border-2 border-transparent hover:border-gray-500'
+                      : 'bg-neutral-700 border-2 border-transparent hover:border-neutral-500'
                   }`}
                 >
                   <span className="text-2xl block mb-1">{time.icon}</span>
                   <p className="font-medium text-white">{time.name}</p>
-                  <p className="text-xs text-gray-400">{time.time}</p>
+                  <p className="text-xs text-neutral-400">{time.time}</p>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Equipment Access */}
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
             <h2 className="text-lg font-bold text-white mb-4">Equipment Access</h2>
-            <p className="text-gray-400 text-sm mb-4">What equipment do you have access to?</p>
+            <p className="text-neutral-400 text-sm mb-4">What equipment do you have access to?</p>
             <div className="flex flex-wrap gap-2">
               {equipmentOptions.map((equipment) => (
                 <button
@@ -375,7 +375,7 @@ export default function ProfilePage() {
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     profile.equipmentAccess?.includes(equipment)
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
                   }`}
                 >
                   {equipment}

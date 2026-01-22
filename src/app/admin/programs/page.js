@@ -78,7 +78,7 @@ export default function ProgramsManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Workout Programs</h1>
-          <p className="text-gray-400">Manage training programs and offerings</p>
+          <p className="text-neutral-400">Manage training programs and offerings</p>
         </div>
         <button
           onClick={() => router.push('/admin/programs/new')}
@@ -96,16 +96,16 @@ export default function ProgramsManagement() {
               <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500/30 rounded-full"></div>
               <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
             </div>
-            <p className="text-gray-400 mt-4">Loading programs...</p>
+            <p className="text-neutral-400 mt-4">Loading programs...</p>
           </div>
         ) : programs.length === 0 ? (
-          <div className="col-span-3 p-12 text-center text-gray-400">No workout programs yet. Create your first program!</div>
+          <div className="col-span-3 p-12 text-center text-neutral-400">No workout programs yet. Create your first program!</div>
         ) : (
           programs.map((program) => (
             <div
               key={program.$id}
-              className={`bg-gray-800 rounded-lg p-6 border-2 transition-all ${
-                program.isActive ? 'border-red-600' : 'border-gray-700 opacity-60'
+              className={`bg-neutral-800 rounded-lg p-6 border-2 transition-all ${
+                program.isActive ? 'border-red-600' : 'border-neutral-700 opacity-60'
               }`}
             >
               {/* Program Header */}
@@ -120,7 +120,7 @@ export default function ProgramsManagement() {
                     className={`px-2 py-1 rounded text-xs font-semibold ${
                       program.isActive
                         ? 'bg-green-500/20 text-green-500'
-                        : 'bg-gray-500/20 text-gray-500'
+                        : 'bg-neutral-500/20 text-neutral-500'
                     }`}
                   >
                     {program.isActive ? 'Active' : 'Inactive'}
@@ -129,13 +129,13 @@ export default function ProgramsManagement() {
               </div>
 
               {/* Description */}
-              <p className="text-gray-400 text-sm mb-4 min-h-[60px]">
+              <p className="text-neutral-400 text-sm mb-4 min-h-[60px]">
                 {program.description || 'No description provided'}
               </p>
 
               {/* Meta Info */}
               {(program.targetAudience || program.duration) && (
-                <div className="text-xs text-gray-500 mb-4 space-y-1">
+                <div className="text-xs text-neutral-500 mb-4 space-y-1">
                   {program.targetAudience && <p>👥 {program.targetAudience}</p>}
                   {program.duration && <p>⏱️ {program.duration}</p>}
                 </div>
@@ -145,7 +145,7 @@ export default function ProgramsManagement() {
               <div className="flex gap-2">
                 <button
                   onClick={() => router.push(`/admin/programs/${program.$id}`)}
-                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors text-sm"
                 >
                   ✏️ Edit
                 </button>
@@ -165,22 +165,22 @@ export default function ProgramsManagement() {
       </div>
 
       {/* Stats */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
         <h2 className="text-xl font-bold text-white mb-4">Program Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-gray-700 rounded-lg">
-            <p className="text-gray-400 text-sm">Total Programs</p>
+          <div className="p-4 bg-neutral-700 rounded-lg">
+            <p className="text-neutral-400 text-sm">Total Programs</p>
             <p className="text-2xl font-bold text-white mt-1">{programs.length}</p>
           </div>
-          <div className="p-4 bg-gray-700 rounded-lg">
-            <p className="text-gray-400 text-sm">Active Programs</p>
+          <div className="p-4 bg-neutral-700 rounded-lg">
+            <p className="text-neutral-400 text-sm">Active Programs</p>
             <p className="text-2xl font-bold text-green-500 mt-1">
               {programs.filter(p => p.isActive).length}
             </p>
           </div>
-          <div className="p-4 bg-gray-700 rounded-lg">
-            <p className="text-gray-400 text-sm">Inactive Programs</p>
-            <p className="text-2xl font-bold text-gray-500 mt-1">
+          <div className="p-4 bg-neutral-700 rounded-lg">
+            <p className="text-neutral-400 text-sm">Inactive Programs</p>
+            <p className="text-2xl font-bold text-neutral-500 mt-1">
               {programs.filter(p => !p.isActive).length}
             </p>
           </div>
@@ -190,7 +190,7 @@ export default function ProgramsManagement() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && programToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg max-w-md w-full border border-gray-700 shadow-2xl">
+          <div className="bg-neutral-800 rounded-lg max-w-md w-full border border-neutral-700 shadow-2xl">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
@@ -198,12 +198,12 @@ export default function ProgramsManagement() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-white">Delete Program</h3>
-                  <p className="text-gray-400 text-sm mt-1">This action cannot be undone</p>
+                  <p className="text-neutral-400 text-sm mt-1">This action cannot be undone</p>
                 </div>
               </div>
               
               <div className="mb-6">
-                <p className="text-gray-300">
+                <p className="text-neutral-300">
                   Are you sure you want to delete the <span className="font-semibold text-white">{programToDelete.title}</span> program? 
                   This will permanently remove it from your workout offerings.
                 </p>
@@ -216,7 +216,7 @@ export default function ProgramsManagement() {
                     setShowDeleteModal(false);
                     setProgramToDelete(null);
                   }}
-                  className="flex-1 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -239,8 +239,8 @@ export default function ProgramsManagement() {
           <div
             className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
               toast.type === 'success'
-                ? 'bg-gray-800 border-green-500 text-white'
-                : 'bg-gray-800 border-red-500 text-white'
+                ? 'bg-neutral-800 border-green-500 text-white'
+                : 'bg-neutral-800 border-red-500 text-white'
             }`}
           >
             <div className="flex items-start gap-3">
@@ -252,7 +252,7 @@ export default function ProgramsManagement() {
               </div>
               <button
                 onClick={() => setToast(null)}
-                className="flex-shrink-0 text-gray-400 hover:text-white transition-colors"
+                className="flex-shrink-0 text-neutral-400 hover:text-white transition-colors"
               >
                 ✕
               </button>

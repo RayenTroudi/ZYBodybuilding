@@ -80,25 +80,14 @@ export default {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(135deg, #CC1303 0%, #B80C02 100%)',
-        'gradient-dark': 'linear-gradient(135deg, #000000 0%, #1A1A1A 100%)',
-        'gradient-hero': 'linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(204,19,3,0.8) 100%)',
       },
       boxShadow: {
-        'primary': '0 4px 14px 0 rgba(204, 19, 3, 0.39)',
-        'primary-lg': '0 10px 40px 0 rgba(204, 19, 3, 0.5)',
-        'dark': '0 4px 14px 0 rgba(0, 0, 0, 0.5)',
-        'glow': '0 0 20px rgba(204, 19, 3, 0.6)',
+        'sm': '0 2px 4px rgba(0, 0, 0, 0.3)',
+        'md': '0 4px 6px rgba(0, 0, 0, 0.3)',
+        'lg': '0 10px 15px rgba(0, 0, 0, 0.3)',
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
-      },
-      keyframes: {
-        glow: {
-          'from': { boxShadow: '0 0 10px rgba(204, 19, 3, 0.4)' },
-          'to': { boxShadow: '0 0 20px rgba(204, 19, 3, 0.8)' },
-        },
       },
     },
   },

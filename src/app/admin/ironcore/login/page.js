@@ -39,12 +39,12 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="max-w-md w-full mx-4">
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-8 border border-gray-700">
+        <div className="bg-neutral-800 rounded-lg shadow-2xl p-8 border border-neutral-700">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
-            <p className="text-gray-400">ZY Bodybuilding Gym</p>
+            <p className="text-neutral-400">ZY Bodybuilding Gym</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-neutral-300 mb-2">
                 Email Address
               </label>
               <input
@@ -64,13 +64,13 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="admin@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2">
                 Password
               </label>
               <input
@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="••••••••"
               />
             </div>
@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-400">
+          <div className="mt-6 text-center text-sm text-neutral-400">
             <p>Authorized personnel only</p>
             <p className="mt-2">
               Don't have an account?{' '}

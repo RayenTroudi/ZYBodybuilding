@@ -77,7 +77,7 @@ export default function Navbar() {
               height={40}
               className="object-contain sm:w-[50px] sm:h-[50px]"
             />
-            <span className="text-base sm:text-xl font-bold text-gradient tracking-widest">
+            <span className="text-base sm:text-xl font-bold text-primary tracking-widest">
               ZY BODYBUILDING
             </span>
           </Link>
@@ -143,7 +143,7 @@ export default function Navbar() {
             height={40}
             className="object-contain sm:w-[50px] sm:h-[50px]"
           />
-          <span className="text-base sm:text-xl font-bold text-gradient tracking-widest">
+          <span className="text-base sm:text-xl font-bold text-primary tracking-widest">
             ZY BODYBUILDING
           </span>
         </Link>

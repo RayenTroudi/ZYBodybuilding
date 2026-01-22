@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <div>
 
-      <footer className="bg-gradient-to-br from-neutral-900 to-dark py-12 sm:py-16 md:py-20 border-t border-primary/20">
+      <footer className="bg-black py-12 sm:py-16 md:py-20 border-t border-neutral-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
        
@@ -24,7 +24,7 @@ const Footer = () => {
                   height={50}
                   className="object-contain sm:w-[60px] sm:h-[60px]"
                 />
-                <h3 className="text-xl sm:text-2xl font-bold text-gradient">ZY BODYBUILDING</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-primary">ZY BODYBUILDING</h3>
               </div>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
@@ -35,7 +35,7 @@ const Footer = () => {
 
             {/* Contact Info */}
             <div className="space-y-4 text-center sm:text-left animate__animated animate__fadeIn animate__delay-1s">
-              <h3 className="text-xl sm:text-2xl font-bold text-gradient">Contact</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-primary">Contact</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <ul className="space-y-3 text-neutral-300">
                 <li className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
@@ -73,7 +73,7 @@ const Footer = () => {
 
             {/* Quick Links */}
             <div className="space-y-4 text-center sm:text-left animate__animated animate__fadeIn animate__delay-1.25s">
-              <h3 className="text-xl sm:text-2xl font-bold text-gradient">Liens Rapides</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-primary">Liens Rapides</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <ul className="space-y-3 text-neutral-300">
                 <li>
@@ -96,7 +96,7 @@ const Footer = () => {
 
             {/* Social Media */}
             <div className="space-y-4 text-center sm:text-left animate__animated animate__fadeIn animate__delay-1.5s">
-              <h3 className="text-xl sm:text-2xl font-bold text-gradient">Suivez-nous</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-primary">Suivez-nous</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <div className="flex space-x-4 sm:space-x-6 justify-center sm:justify-start">
                 <a href="https://www.facebook.com/p/ZY-Bodybuilding-61577705828873/" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Facebook">

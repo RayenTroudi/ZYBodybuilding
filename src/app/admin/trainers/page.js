@@ -94,7 +94,7 @@ export default function TrainersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white">Trainers</h1>
-          <p className="text-gray-400 mt-1">Manage gym trainers and coaches</p>
+          <p className="text-neutral-400 mt-1">Manage gym trainers and coaches</p>
         </div>
         <Link
           href="/admin/trainers/new"
@@ -107,17 +107,17 @@ export default function TrainersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <div className="text-gray-400 text-sm mb-1">Total Trainers</div>
+        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+          <div className="text-neutral-400 text-sm mb-1">Total Trainers</div>
           <div className="text-3xl font-bold text-white">{stats.total}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-6 border border-green-500/30">
-          <div className="text-gray-400 text-sm mb-1">Active</div>
+        <div className="bg-neutral-800 rounded-lg p-6 border border-green-500/30">
+          <div className="text-neutral-400 text-sm mb-1">Active</div>
           <div className="text-3xl font-bold text-green-400">{stats.active}</div>
         </div>
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <div className="text-gray-400 text-sm mb-1">Inactive</div>
-          <div className="text-3xl font-bold text-gray-400">{stats.inactive}</div>
+        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+          <div className="text-neutral-400 text-sm mb-1">Inactive</div>
+          <div className="text-3xl font-bold text-neutral-400">{stats.inactive}</div>
         </div>
       </div>
 
@@ -127,8 +127,8 @@ export default function TrainersPage() {
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
       ) : trainers.length === 0 ? (
-        <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
-          <p className="text-gray-400">No trainers found. Add your first trainer!</p>
+        <div className="text-center py-12 bg-neutral-800 rounded-lg border border-neutral-700">
+          <p className="text-neutral-400">No trainers found. Add your first trainer!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -137,12 +137,12 @@ export default function TrainersPage() {
               key={trainer.$id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-gray-800 rounded-lg overflow-hidden border ${
-                trainer.isActive ? 'border-green-500/50' : 'border-gray-700'
+              className={`bg-neutral-800 rounded-lg overflow-hidden border ${
+                trainer.isActive ? 'border-green-500/50' : 'border-neutral-700'
               } hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
             >
               {/* Trainer Image */}
-              <div className="relative h-32 bg-gray-700">
+              <div className="relative h-32 bg-neutral-700">
                 {trainer.imageUrl ? (
                   <Image
                     src={trainer.imageUrl}
@@ -151,7 +151,7 @@ export default function TrainersPage() {
                     className="object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800">
+                  <div className="w-full h-full flex items-center justify-center bg-primary text-white text-lg font-bold">
                     <span className="text-4xl font-bold text-white">
                       {trainer.name.charAt(0)}
                     </span>
@@ -166,7 +166,7 @@ export default function TrainersPage() {
                     className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                       trainer.isActive
                         ? 'bg-green-500 text-white'
-                        : 'bg-gray-600 text-gray-300'
+                        : 'bg-neutral-600 text-neutral-300'
                     }`}
                   >
                     {trainer.isActive ? 'Active' : 'Inactive'}
@@ -181,19 +181,19 @@ export default function TrainersPage() {
                   <p className="text-red-400 text-xs font-medium mb-2">{trainer.specialty}</p>
                 )}
                 {trainer.bio && (
-                  <p className="text-gray-400 text-xs mb-3 line-clamp-2">{trainer.bio}</p>
+                  <p className="text-neutral-400 text-xs mb-3 line-clamp-2">{trainer.bio}</p>
                 )}
                 
                 {/* Experience & Email */}
                 <div className="space-y-1 mb-3 text-xs">
                   {trainer.experienceYears > 0 && (
-                    <div className="flex items-center text-gray-400">
+                    <div className="flex items-center text-neutral-400">
                       <span className="mr-1.5">⭐</span>
                       <span>{trainer.experienceYears} yrs exp</span>
                     </div>
                   )}
                   {trainer.email && (
-                    <div className="flex items-center text-gray-400">
+                    <div className="flex items-center text-neutral-400">
                       <span className="mr-1.5">✉️</span>
                       <span className="truncate">{trainer.email}</span>
                     </div>
@@ -204,7 +204,7 @@ export default function TrainersPage() {
                 <div className="flex gap-2">
                   <Link
                     href={`/admin/trainers/${trainer.$id}`}
-                    className="flex-1 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-center rounded-md transition-colors text-xs font-medium"
+                    className="flex-1 px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 text-white text-center rounded-md transition-colors text-xs font-medium"
                   >
                     Edit
                   </Link>
@@ -235,20 +235,20 @@ export default function TrainersPage() {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700"
+              className="bg-neutral-800 rounded-xl p-6 max-w-md w-full border border-neutral-700"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
                 <div className="text-5xl mb-4">⚠️</div>
                 <h3 className="text-xl font-bold text-white mb-2">Delete Trainer</h3>
-                <p className="text-gray-400">
+                <p className="text-neutral-400">
                   Are you sure you want to delete <span className="text-white font-medium">{deleteModal.trainer?.name}</span>? This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteModal({ show: false, trainer: null })}
-                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
                 >
                   Cancel
                 </button>

@@ -127,7 +127,7 @@ export function DataTable({
             placeholder={searchPlaceholder}
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
-            className="w-full sm:max-w-md px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+            className="w-full sm:max-w-md px-4 py-2 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 font-medium focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
           {selectedCount > 0 && (
             <Button
@@ -144,14 +144,14 @@ export function DataTable({
         {customToolbar && <div className="flex items-center gap-2">{customToolbar}</div>}
       </div>
 
-      <div className="rounded-md border border-gray-700 bg-gray-800">
+      <div className="rounded-md border border-neutral-800 bg-neutral-900">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-gray-400 font-semibold">
+                    <TableHead key={header.id} className="text-neutral-400 font-semibold">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -170,7 +170,7 @@ export function DataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`text-white ${onRowClick ? 'cursor-pointer hover:bg-gray-700' : ''}`}
+                  className={`text-white border-neutral-800 ${onRowClick ? 'cursor-pointer hover:bg-neutral-800' : ''}`}
                   onClick={(e) => {
                     // Don't trigger row click if clicking on checkbox or action buttons
                     if (e.target.closest('button') || e.target.closest('[role="checkbox"]')) {
@@ -195,7 +195,7 @@ export function DataTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-gray-400"
+                  className="h-24 text-center text-neutral-500 font-medium"
                 >
                   No results.
                 </TableCell>

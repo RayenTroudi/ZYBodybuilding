@@ -153,7 +153,7 @@ export default function UsersManagementPage() {
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">User Management</h1>
-        <p className="text-gray-400">Manage user accounts and permissions</p>
+        <p className="text-neutral-400">Manage user accounts and permissions</p>
       </div>
 
       {error && (
@@ -169,12 +169,12 @@ export default function UsersManagementPage() {
           placeholder="Search by name or email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
         <select
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
-          className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           <option value="all">All Roles</option>
           <option value="admin">Admin</option>
@@ -184,18 +184,18 @@ export default function UsersManagementPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <p className="text-gray-400 text-sm">Total Users</p>
+        <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+          <p className="text-neutral-400 text-sm">Total Users</p>
           <p className="text-2xl font-bold text-white">{users.length}</p>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <p className="text-gray-400 text-sm">Admin Users</p>
+        <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+          <p className="text-neutral-400 text-sm">Admin Users</p>
           <p className="text-2xl font-bold text-red-500">
             {users.filter(u => u.role === 'admin').length}
           </p>
         </div>
-        <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <p className="text-gray-400 text-sm">Regular Users</p>
+        <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+          <p className="text-neutral-400 text-sm">Regular Users</p>
           <p className="text-2xl font-bold text-blue-500">
             {users.filter(u => u.role === 'user').length}
           </p>
@@ -203,39 +203,39 @@ export default function UsersManagementPage() {
       </div>
 
       {/* Users Table */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+      <div className="bg-neutral-800 rounded-lg border border-neutral-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-700">
+            <thead className="bg-neutral-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
                   Created At
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-700/50">
+                <tr key={user.id} className="hover:bg-neutral-700/50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-white">{user.name}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-300">{user.email}</div>
+                    <div className="text-sm text-neutral-300">{user.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
@@ -253,12 +253,12 @@ export default function UsersManagementPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      user.status ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                      user.status ? 'bg-green-500/20 text-green-400' : 'bg-neutral-500/20 text-neutral-400'
                     }`}>
                       {user.status ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-300">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -284,7 +284,7 @@ export default function UsersManagementPage() {
         </div>
 
         {filteredUsers.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-neutral-400">
             No users found
           </div>
         )}

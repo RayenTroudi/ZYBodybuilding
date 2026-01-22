@@ -94,23 +94,23 @@ export default function NewClassPage() {
       <div className="flex items-center gap-4">
         <Link
           href="/admin/classes"
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-neutral-400 hover:text-white transition-colors"
         >
           ← Back
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-white">Add New Class</h1>
-          <p className="text-gray-400 mt-1">Create a new class schedule</p>
+          <p className="text-neutral-400 mt-1">Create a new class schedule</p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Form */}
         <div className="md:col-span-2">
-          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg border border-gray-700 p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Class Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -119,14 +119,14 @@ export default function NewClassPage() {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="HIIT Explosif"
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Description
               </label>
               <textarea
@@ -134,7 +134,7 @@ export default function NewClassPage() {
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="High-intensity interval training for maximum results..."
               />
             </div>
@@ -142,7 +142,7 @@ export default function NewClassPage() {
             {/* Day and Time */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Day <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -150,7 +150,7 @@ export default function NewClassPage() {
                   value={formData.dayOfWeek}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   {DAYS_OF_WEEK.map(day => (
                     <option key={day} value={day}>{day}</option>
@@ -158,7 +158,7 @@ export default function NewClassPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Start Time <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -167,11 +167,11 @@ export default function NewClassPage() {
                   value={formData.startTime}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   End Time <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -180,21 +180,21 @@ export default function NewClassPage() {
                   value={formData.endTime}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
             </div>
 
             {/* Trainer */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Trainer
               </label>
               <select
                 name="trainerId"
                 value={formData.trainerId}
                 onChange={handleChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               >
                 <option value="">No trainer assigned</option>
                 {trainers.map(trainer => (
@@ -208,14 +208,14 @@ export default function NewClassPage() {
             {/* Difficulty and Category */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Difficulty
                 </label>
                 <select
                   name="difficulty"
                   value={formData.difficulty}
                   onChange={handleChange}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   {DIFFICULTIES.map(diff => (
                     <option key={diff} value={diff}>{diff}</option>
@@ -223,14 +223,14 @@ export default function NewClassPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Category
                 </label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   {CATEGORIES.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -242,7 +242,7 @@ export default function NewClassPage() {
             {/* Calories, Duration, Spots */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Calories
                 </label>
                 <input
@@ -251,11 +251,11 @@ export default function NewClassPage() {
                   value={formData.caloriesBurn}
                   onChange={handleChange}
                   min="0"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Duration (min) <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -265,11 +265,11 @@ export default function NewClassPage() {
                   onChange={handleChange}
                   required
                   min="1"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Available Spots
                 </label>
                 <input
@@ -278,7 +278,7 @@ export default function NewClassPage() {
                   value={formData.availableSpots}
                   onChange={handleChange}
                   min="0"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -286,7 +286,7 @@ export default function NewClassPage() {
             {/* Icon and Color */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Icon
                 </label>
                 <div className="grid grid-cols-5 gap-2">
@@ -297,8 +297,8 @@ export default function NewClassPage() {
                       onClick={() => setFormData(prev => ({ ...prev, icon }))}
                       className={`text-2xl p-3 rounded-lg border-2 transition-all ${
                         formData.icon === icon
-                          ? 'border-red-500 bg-gray-700'
-                          : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                          ? 'border-red-500 bg-neutral-700'
+                          : 'border-neutral-600 bg-neutral-800 hover:border-neutral-500'
                       }`}
                     >
                       {icon}
@@ -307,7 +307,7 @@ export default function NewClassPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
                   Color
                 </label>
                 <input
@@ -315,14 +315,14 @@ export default function NewClassPage() {
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
-                  className="w-full h-12 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer"
+                  className="w-full h-12 bg-neutral-700 border border-neutral-600 rounded-lg cursor-pointer"
                 />
               </div>
             </div>
 
             {/* Order */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Display Order
               </label>
               <input
@@ -331,7 +331,7 @@ export default function NewClassPage() {
                 value={formData.order}
                 onChange={handleChange}
                 min="0"
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
             </div>
 
@@ -342,16 +342,16 @@ export default function NewClassPage() {
                 name="isActive"
                 checked={formData.isActive}
                 onChange={handleChange}
-                className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500"
+                className="w-4 h-4 text-red-600 bg-neutral-700 border-neutral-600 rounded focus:ring-red-500"
               />
-              <label className="ml-2 text-sm text-gray-300">Active</label>
+              <label className="ml-2 text-sm text-neutral-300">Active</label>
             </div>
 
             {/* Submit */}
             <div className="flex gap-3">
               <Link
                 href="/admin/classes"
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors"
+                className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors"
               >
                 Cancel
               </Link>
@@ -368,9 +368,9 @@ export default function NewClassPage() {
 
         {/* Preview */}
         <div className="md:col-span-1">
-          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 sticky top-6">
+          <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 sticky top-6">
             <h3 className="text-lg font-bold text-white mb-4">Preview</h3>
-            <div className="bg-gray-900 rounded-lg overflow-hidden border border-gray-700 p-4">
+            <div className="bg-neutral-900 rounded-lg overflow-hidden border border-neutral-700 p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div
                   className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
@@ -382,7 +382,7 @@ export default function NewClassPage() {
                   <h4 className="text-sm font-bold text-white">
                     {formData.title || 'Class Title'}
                   </h4>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-neutral-400">
                     {formData.startTime} - {formData.endTime}
                   </p>
                 </div>

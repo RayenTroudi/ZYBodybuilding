@@ -128,7 +128,7 @@ const Pricing = () => {
               
               {/* CTA Button */}
               <motion.button
-                className="w-full bg-gradient-to-r from-primary to-accent text-white text-center py-2.5 text-sm font-bold cursor-pointer hover:shadow-glow transition-all"
+                className="w-full bg-primary text-white text-center py-2.5 text-sm font-bold cursor-pointer hover:shadow-lg transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >

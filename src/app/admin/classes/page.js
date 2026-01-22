@@ -87,7 +87,7 @@ export default function ClassesPage() {
       case 'Débutant': return 'bg-green-600';
       case 'Intermédiaire': return 'bg-yellow-600';
       case 'Avancé': return 'bg-red-600';
-      default: return 'bg-gray-600';
+      default: return 'bg-neutral-600';
     }
   };
 
@@ -107,7 +107,7 @@ export default function ClassesPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Classes</h1>
-          <p className="text-gray-400 mt-1">Manage your gym class schedule</p>
+          <p className="text-neutral-400 mt-1">Manage your gym class schedule</p>
         </div>
         <Link
           href="/admin/classes/new"
@@ -119,29 +119,29 @@ export default function ClassesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-          <div className="text-gray-400 text-sm">Total Classes</div>
+        <div className="bg-neutral-800 p-6 rounded-lg border border-neutral-700">
+          <div className="text-neutral-400 text-sm">Total Classes</div>
           <div className="text-3xl font-bold text-white mt-2">{stats.total}</div>
         </div>
-        <div className="bg-gray-800 p-6 rounded-lg border border-green-600">
-          <div className="text-gray-400 text-sm">Active</div>
+        <div className="bg-neutral-800 p-6 rounded-lg border border-green-600">
+          <div className="text-neutral-400 text-sm">Active</div>
           <div className="text-3xl font-bold text-green-500 mt-2">{stats.active}</div>
         </div>
-        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-          <div className="text-gray-400 text-sm">Inactive</div>
-          <div className="text-3xl font-bold text-gray-500 mt-2">{stats.inactive}</div>
+        <div className="bg-neutral-800 p-6 rounded-lg border border-neutral-700">
+          <div className="text-neutral-400 text-sm">Inactive</div>
+          <div className="text-3xl font-bold text-neutral-500 mt-2">{stats.inactive}</div>
         </div>
       </div>
 
       {/* Day Filter */}
-      <div className="bg-gray-800 rounded-lg border border-gray-700 p-4">
+      <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-4">
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedDay('all')}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               selectedDay === 'all'
                 ? 'bg-red-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
             }`}
           >
             All Days
@@ -153,7 +153,7 @@ export default function ClassesPage() {
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedDay === day
                   ? 'bg-red-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
               }`}
             >
               {day}
@@ -174,8 +174,8 @@ export default function ClassesPage() {
               key={classItem.$id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-gray-800 rounded-lg border ${
-                classItem.isActive ? 'border-green-600' : 'border-gray-700'
+              className={`bg-neutral-800 rounded-lg border ${
+                classItem.isActive ? 'border-green-600' : 'border-neutral-700'
               } p-6 hover:shadow-xl transition-all`}
             >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -185,7 +185,7 @@ export default function ClassesPage() {
                     <span className="text-3xl">{classItem.icon || '🏋️'}</span>
                     <div>
                       <h3 className="text-xl font-bold text-white">{classItem.title}</h3>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-neutral-400 text-sm">
                         {classItem.dayOfWeek} • {classItem.startTime} - {classItem.endTime}
                       </p>
                     </div>
@@ -212,7 +212,7 @@ export default function ClassesPage() {
                   </div>
 
                   {classItem.description && (
-                    <p className="text-gray-400 text-sm">{classItem.description}</p>
+                    <p className="text-neutral-400 text-sm">{classItem.description}</p>
                   )}
                 </div>
 
@@ -220,7 +220,7 @@ export default function ClassesPage() {
                 <div className="flex md:flex-col gap-2">
                   <Link
                     href={`/admin/classes/${classItem.$id}`}
-                    className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-center text-sm font-medium transition-colors"
+                    className="bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded text-center text-sm font-medium transition-colors"
                   >
                     Edit
                   </Link>
@@ -248,9 +248,9 @@ export default function ClassesPage() {
       )}
 
       {filteredClasses.length === 0 && !loading && (
-        <div className="text-center py-12 bg-gray-800 rounded-lg border border-gray-700">
+        <div className="text-center py-12 bg-neutral-800 rounded-lg border border-neutral-700">
           <div className="text-6xl mb-4">📅</div>
-          <p className="text-gray-400 text-lg">
+          <p className="text-neutral-400 text-lg">
             {selectedDay === 'all' ? 'No classes found' : `No classes on ${selectedDay}`}
           </p>
           <Link
@@ -270,19 +270,19 @@ export default function ClassesPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-gray-800 rounded-lg p-6 max-w-md w-full border border-gray-700"
+              className="bg-neutral-800 rounded-lg p-6 max-w-md w-full border border-neutral-700"
             >
               <div className="text-center">
                 <div className="text-5xl mb-4">⚠️</div>
                 <h3 className="text-xl font-bold text-white mb-2">Delete Class</h3>
-                <p className="text-gray-400 mb-6">
+                <p className="text-neutral-400 mb-6">
                   Are you sure you want to delete <strong>{deleteModal.classItem?.title}</strong>?
                   This action cannot be undone.
                 </p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setDeleteModal({ show: false, classItem: null })}
-                    className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded font-medium transition-colors"
+                    className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded font-medium transition-colors"
                   >
                     Cancel
                   </button>

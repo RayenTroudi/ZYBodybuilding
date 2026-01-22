@@ -40,10 +40,10 @@ export default function WorkoutsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="relative w-12 h-12 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-400">Loading workouts...</p>
+          <p className="text-neutral-400">Loading workouts...</p>
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ export default function WorkoutsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Workouts</h1>
-          <p className="text-gray-400">Manage your workout plans and history</p>
+          <p className="text-neutral-400">Manage your workout plans and history</p>
         </div>
         <div className="flex gap-3">
           <Link
@@ -68,13 +68,13 @@ export default function WorkoutsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-700">
+      <div className="flex gap-2 border-b border-neutral-700">
         <button
           onClick={() => setActiveTab('history')}
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'history'
               ? 'text-red-500 border-b-2 border-red-500'
-              : 'text-gray-400 hover:text-white'
+              : 'text-neutral-400 hover:text-white'
           }`}
         >
           History
@@ -84,7 +84,7 @@ export default function WorkoutsPage() {
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'plans'
               ? 'text-red-500 border-b-2 border-red-500'
-              : 'text-gray-400 hover:text-white'
+              : 'text-neutral-400 hover:text-white'
           }`}
         >
           My Plans
@@ -119,9 +119,9 @@ export default function WorkoutsPage() {
 function WorkoutHistory({ logs }) {
   if (logs.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
+      <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">📝</p>
-        <p className="text-gray-400 mb-4">No workouts logged yet</p>
+        <p className="text-neutral-400 mb-4">No workouts logged yet</p>
         <Link
           href="/dashboard/workouts/log"
           className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -144,15 +144,15 @@ function WorkoutHistory({ logs }) {
     <div className="space-y-6">
       {Object.entries(groupedLogs).map(([month, monthLogs]) => (
         <div key={month}>
-          <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">{month}</h3>
+          <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">{month}</h3>
           <div className="space-y-3">
             {monthLogs.map((log) => (
               <Link
                 key={log.$id}
                 href={`/dashboard/workouts/${log.$id}`}
-                className="flex items-center gap-4 p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-red-500/50 transition-all"
+                className="flex items-center gap-4 p-4 bg-neutral-800 border border-neutral-700 rounded-xl hover:border-red-500/50 transition-all"
               >
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-red-600 to-orange-600 flex flex-col items-center justify-center text-white">
+                <div className="w-14 h-14 rounded-xl bg-primary flex flex-col items-center justify-center text-white">
                   <span className="text-lg font-bold">{format(new Date(log.workoutDate), 'd')}</span>
                   <span className="text-xs">{format(new Date(log.workoutDate), 'EEE')}</span>
                 </div>
@@ -160,7 +160,7 @@ function WorkoutHistory({ logs }) {
                   <p className="font-semibold text-white truncate">
                     {log.planName || 'Quick Workout'}
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-neutral-400">
                     {log.exerciseCount || 0} exercises • {log.durationMinutes || 0} minutes
                   </p>
                 </div>
@@ -202,9 +202,9 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
 
   if (plans.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
+      <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">📋</p>
-        <p className="text-gray-400 mb-4">No workout plans yet</p>
+        <p className="text-neutral-400 mb-4">No workout plans yet</p>
         <button
           onClick={onNewPlan}
           className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -220,7 +220,7 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
       <div className="flex justify-end">
         <button
           onClick={onNewPlan}
-          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+          className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
         >
           + New Plan
         </button>
@@ -230,12 +230,12 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
         {plans.map((plan) => (
           <div
             key={plan.$id}
-            className="bg-gray-800 border border-gray-700 rounded-xl p-5 hover:border-red-500/50 transition-all"
+            className="bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-red-500/50 transition-all"
           >
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-bold text-white text-lg">{plan.name}</h3>
-                <p className="text-sm text-gray-400">{plan.type.replace('_', ' ')}</p>
+                <p className="text-sm text-neutral-400">{plan.type.replace('_', ' ')}</p>
               </div>
               <div className="flex gap-2">
                 <Link
@@ -246,7 +246,7 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
                 </Link>
                 <button
                   onClick={() => handleDeletePlan(plan.$id)}
-                  className="px-3 py-1 bg-gray-700 text-gray-300 text-sm rounded-lg hover:bg-red-600 hover:text-white transition-colors"
+                  className="px-3 py-1 bg-neutral-700 text-neutral-300 text-sm rounded-lg hover:bg-red-600 hover:text-white transition-colors"
                 >
                   🗑️
                 </button>
@@ -254,7 +254,7 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
             </div>
             
             {plan.description && (
-              <p className="text-gray-400 text-sm mb-3 line-clamp-2">{plan.description}</p>
+              <p className="text-neutral-400 text-sm mb-3 line-clamp-2">{plan.description}</p>
             )}
             
             <div className="flex flex-wrap gap-3 text-sm">
@@ -312,7 +312,7 @@ function NewPlanModal({ onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div
-        className="bg-gray-800 rounded-2xl max-w-md w-full border border-gray-700"
+        className="bg-neutral-800 rounded-2xl max-w-md w-full border border-neutral-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -320,35 +320,35 @@ function NewPlanModal({ onClose, onSuccess }) {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Plan Name</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">Plan Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="e.g., Push Day, Leg Day"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">Description</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={2}
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Optional description..."
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Type</label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <option value="push_pull_legs">Push/Pull/Legs</option>
                   <option value="upper_lower">Upper/Lower</option>
@@ -359,11 +359,11 @@ function NewPlanModal({ onClose, onSuccess }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Days/Week</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Days/Week</label>
                 <select
                   value={formData.daysPerWeek}
                   onChange={(e) => setFormData({ ...formData, daysPerWeek: parseInt(e.target.value) })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   {[1, 2, 3, 4, 5, 6, 7].map(n => (
                     <option key={n} value={n}>{n} day{n > 1 ? 's' : ''}</option>
@@ -374,11 +374,11 @@ function NewPlanModal({ onClose, onSuccess }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Difficulty</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Difficulty</label>
                 <select
                   value={formData.difficulty}
                   onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
@@ -387,14 +387,14 @@ function NewPlanModal({ onClose, onSuccess }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Duration (min)</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Duration (min)</label>
                 <input
                   type="number"
                   value={formData.estimatedDuration}
                   onChange={(e) => setFormData({ ...formData, estimatedDuration: parseInt(e.target.value) })}
                   min={15}
                   max={180}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
               </div>
             </div>
@@ -403,7 +403,7 @@ function NewPlanModal({ onClose, onSuccess }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                className="flex-1 px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
               >
                 Cancel
               </button>

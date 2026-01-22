@@ -103,7 +103,7 @@ const Contact = () => {
           ].map((card, index) => (
             <motion.div
               key={index}
-              className="group card p-5 sm:p-6 md:p-8 transition duration-300 hover:bg-gradient-to-br hover:from-primary-900 hover:to-dark hover:shadow-glow min-h-[120px] sm:min-h-[140px] flex flex-col justify-center"
+              className="group card p-5 sm:p-6 md:p-8 transition duration-300 hover:shadow-lg min-h-[120px] sm:min-h-[140px] flex flex-col justify-center"
               variants={cardVariants}
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.8 }}  

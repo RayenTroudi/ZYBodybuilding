@@ -197,7 +197,7 @@ export default function EmailManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-neutral-900 p-4 sm:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto">
         {/* Page Header */}
         <div className="mb-8">
@@ -207,15 +207,15 @@ export default function EmailManagementPage() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-white">Email Management</h1>
-              <p className="text-gray-400 text-sm mt-1">Send customized emails to your members</p>
+              <p className="text-neutral-400 text-sm mt-1">Send customized emails to your members</p>
             </div>
           </div>
         </div>
 
         {/* Email Form Card */}
-        <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+        <div className="bg-neutral-800 rounded-xl shadow-2xl border border-neutral-700 overflow-hidden">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-4 border-b border-red-800">
+          <div className="bg-primary px-6 py-4 border-b border-red-800">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <FaPaperPlane className="text-white" />
               Compose Email
@@ -227,14 +227,14 @@ export default function EmailManagementPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Template Selection */}
               <div>
-                <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
                   <span className="text-red-400">📋</span>
                   Select Template
                 </label>
                 <select
                   value={selectedTemplate}
                   onChange={(e) => handleTemplateChange(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500 cursor-pointer"
+                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
                 >
                   {Object.entries(EMAIL_TEMPLATES).map(([key, template]) => (
                     <option key={key} value={key}>
@@ -246,14 +246,14 @@ export default function EmailManagementPage() {
 
               {/* Email Type */}
               <div>
-                <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
                   <span className="text-red-400">🏷️</span>
                   Email Type
                 </label>
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500 cursor-pointer"
+                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
                 >
                   {Object.entries(EMAIL_TYPES).map(([key, label]) => (
                     <option key={key} value={key}>
@@ -265,11 +265,11 @@ export default function EmailManagementPage() {
             </div>
 
             {/* Divider */}
-            <div className="border-t border-gray-700"></div>
+            <div className="border-t border-neutral-700"></div>
 
             {/* Recipient Email */}
             <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+              <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
                 <span className="text-red-400">✉️</span>
                 Recipient Email
                 <span className="text-red-500">*</span>
@@ -280,13 +280,13 @@ export default function EmailManagementPage() {
                 onChange={(e) => setRecipientEmail(e.target.value)}
                 placeholder="recipient@example.com"
                 required
-                className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500"
+                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
               />
             </div>
 
             {/* Subject */}
             <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+              <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
                 <span className="text-red-400">📝</span>
                 Subject
                 <span className="text-red-500">*</span>
@@ -298,17 +298,17 @@ export default function EmailManagementPage() {
                 placeholder="Email subject"
                 required
                 maxLength={200}
-                className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500"
+                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
               />
               <div className="flex justify-between mt-2">
-                <p className="text-xs text-gray-400">Keep it clear and concise</p>
-                <p className="text-xs text-gray-500 font-mono">{subject.length}/200</p>
+                <p className="text-xs text-neutral-400">Keep it clear and concise</p>
+                <p className="text-xs text-neutral-500 font-mono">{subject.length}/200</p>
               </div>
             </div>
 
             {/* Email Body */}
             <div>
-              <label className="block text-sm font-semibold text-gray-200 mb-3 flex items-center gap-2">
+              <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
                 <span className="text-red-400">📄</span>
                 Email Content
                 <span className="text-red-500">*</span>
@@ -319,43 +319,43 @@ export default function EmailManagementPage() {
                 placeholder="Entrez le contenu de votre email (texte simple, pas besoin de HTML complexe)..."
                 required
                 rows={12}
-                className="w-full px-4 py-3 bg-gray-700 border-2 border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-gray-500 text-sm font-mono resize-y"
+                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 text-sm font-mono resize-y"
               />
               
               {/* Helper Information Box */}
-              <div className="mt-3 bg-gray-700/50 border border-gray-600 rounded-lg p-4 space-y-2">
+              <div className="mt-3 bg-neutral-700/50 border border-neutral-600 rounded-lg p-4 space-y-2">
                 <div className="flex items-start gap-2">
                   <span className="text-blue-400 mt-0.5">ℹ️</span>
-                  <p className="text-xs text-gray-300">
+                  <p className="text-xs text-neutral-300">
                     Le contenu sera automatiquement formaté avec le design de ZY Bodybuilding (logo, couleurs, en-tête, pied de page).
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-yellow-400 mt-0.5">📝</span>
-                  <p className="text-xs text-gray-300">
+                  <p className="text-xs text-neutral-300">
                     <strong className="text-yellow-300">Variables disponibles:</strong> {'{memberName}'}, {'{amount}'}, {'{dueDate}'}, etc. 
                     <br />
-                    <span className="text-gray-400 italic">Exemple: "Bonjour {'{memberName}'}, votre paiement de {'{amount}'} est dû."</span>
+                    <span className="text-neutral-400 italic">Exemple: "Bonjour {'{memberName}'}, votre paiement de {'{amount}'} est dû."</span>
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">✓</span>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-neutral-400">
                     Le texte sera converti automatiquement en HTML (paragraphes, sauts de ligne, etc.)
                   </p>
                 </div>
               </div>
               
-              <p className="text-xs text-gray-500 mt-2 font-mono text-right">{emailHtml.length} caractères</p>
+              <p className="text-xs text-neutral-500 mt-2 font-mono text-right">{emailHtml.length} caractères</p>
             </div>
 
             {/* Divider */}
-            <div className="border-t border-gray-700"></div>
+            <div className="border-t border-neutral-700"></div>
             {/* Send Button */}
             <button
               type="submit"
               disabled={isSending || !recipientEmail || !subject || !emailHtml}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
             >
               {isSending ? (
                 <>
@@ -385,8 +385,8 @@ export default function EmailManagementPage() {
                       <span className="text-2xl">✓</span>
                       Email sent successfully!
                     </p>
-                    <p className="text-sm text-gray-300">
-                      <span className="text-gray-400">Message ID:</span>{' '}
+                    <p className="text-sm text-neutral-300">
+                      <span className="text-neutral-400">Message ID:</span>{' '}
                       <span className="font-mono text-green-300">{sendResult.data?.messageId}</span>
                     </p>
                   </div>
@@ -396,7 +396,7 @@ export default function EmailManagementPage() {
                       <FaExclamationTriangle className="text-xl" />
                       Failed to send email
                     </p>
-                    <p className="text-sm text-gray-300">{sendResult.error}</p>
+                    <p className="text-sm text-neutral-300">{sendResult.error}</p>
                   </div>
                 )}
               </div>

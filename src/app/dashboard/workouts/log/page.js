@@ -195,13 +195,13 @@ function WorkoutLogContent() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Log Workout</h1>
-          <p className="text-gray-400">
+          <p className="text-neutral-400">
             Duration: {calculateDuration()} min • Volume: {(calculateTotalVolume() / 1000).toFixed(1)}k kg
           </p>
         </div>
         <Link
           href="/dashboard/workouts"
-          className="text-gray-400 hover:text-white"
+          className="text-neutral-400 hover:text-white"
         >
           Cancel
         </Link>
@@ -210,11 +210,11 @@ function WorkoutLogContent() {
       {/* Exercises */}
       <div className="space-y-4">
         {exercises.map((exercise, exIndex) => (
-          <div key={exIndex} className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-            <div className="flex items-center justify-between p-4 bg-gray-700/50">
+          <div key={exIndex} className="bg-neutral-800 rounded-xl border border-neutral-700 overflow-hidden">
+            <div className="flex items-center justify-between p-4 bg-neutral-700/50">
               <div>
                 <h3 className="font-semibold text-white">{exercise.exerciseName}</h3>
-                <p className="text-sm text-gray-400">Target: {exercise.targetSets} sets × {exercise.targetReps}</p>
+                <p className="text-sm text-neutral-400">Target: {exercise.targetSets} sets × {exercise.targetReps}</p>
               </div>
               <button
                 onClick={() => removeExercise(exIndex)}
@@ -226,7 +226,7 @@ function WorkoutLogContent() {
             
             <div className="p-4">
               {/* Set Headers */}
-              <div className="grid grid-cols-12 gap-2 mb-2 text-xs text-gray-400 uppercase">
+              <div className="grid grid-cols-12 gap-2 mb-2 text-xs text-neutral-400 uppercase">
                 <div className="col-span-2">Set</div>
                 <div className="col-span-3">Weight (kg)</div>
                 <div className="col-span-3">Reps</div>
@@ -251,7 +251,7 @@ function WorkoutLogContent() {
                       value={set.weight}
                       onChange={(e) => updateSet(exIndex, setIndex, 'weight', e.target.value)}
                       placeholder="0"
-                      className="w-full px-2 py-1.5 bg-gray-700 border border-gray-600 rounded text-white text-center focus:outline-none focus:ring-1 focus:ring-red-500"
+                      className="w-full px-2 py-1.5 bg-neutral-700 border border-neutral-600 rounded text-white text-center focus:outline-none focus:ring-1 focus:ring-red-500"
                     />
                   </div>
                   <div className="col-span-3">
@@ -260,14 +260,14 @@ function WorkoutLogContent() {
                       value={set.reps}
                       onChange={(e) => updateSet(exIndex, setIndex, 'reps', e.target.value)}
                       placeholder="0"
-                      className="w-full px-2 py-1.5 bg-gray-700 border border-gray-600 rounded text-white text-center focus:outline-none focus:ring-1 focus:ring-red-500"
+                      className="w-full px-2 py-1.5 bg-neutral-700 border border-neutral-600 rounded text-white text-center focus:outline-none focus:ring-1 focus:ring-red-500"
                     />
                   </div>
                   <div className="col-span-2">
                     <select
                       value={set.setType}
                       onChange={(e) => updateSet(exIndex, setIndex, 'setType', e.target.value)}
-                      className="w-full px-1 py-1.5 bg-gray-700 border border-gray-600 rounded text-white text-xs focus:outline-none focus:ring-1 focus:ring-red-500"
+                      className="w-full px-1 py-1.5 bg-neutral-700 border border-neutral-600 rounded text-white text-xs focus:outline-none focus:ring-1 focus:ring-red-500"
                     >
                       <option value="normal">Normal</option>
                       <option value="warmup">Warmup</option>
@@ -281,7 +281,7 @@ function WorkoutLogContent() {
                       className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
                         set.completed
                           ? 'bg-green-600 text-white'
-                          : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                          : 'bg-neutral-700 text-neutral-400 hover:bg-neutral-600'
                       }`}
                     >
                       ✓
@@ -289,7 +289,7 @@ function WorkoutLogContent() {
                     {exercise.sets.length > 1 && (
                       <button
                         onClick={() => removeSet(exIndex, setIndex)}
-                        className="w-8 h-8 rounded-lg bg-gray-700 text-gray-400 hover:bg-red-600 hover:text-white transition-colors"
+                        className="w-8 h-8 rounded-lg bg-neutral-700 text-neutral-400 hover:bg-red-600 hover:text-white transition-colors"
                       >
                         ×
                       </button>
@@ -300,7 +300,7 @@ function WorkoutLogContent() {
               
               <button
                 onClick={() => addSet(exIndex)}
-                className="mt-2 w-full py-2 text-sm text-gray-400 hover:text-white border border-dashed border-gray-600 rounded-lg hover:border-gray-500 transition-colors"
+                className="mt-2 w-full py-2 text-sm text-neutral-400 hover:text-white border border-dashed border-neutral-600 rounded-lg hover:border-neutral-500 transition-colors"
               >
                 + Add Set
               </button>
@@ -311,34 +311,34 @@ function WorkoutLogContent() {
         {/* Add Exercise Button */}
         <button
           onClick={() => setShowExerciseModal(true)}
-          className="w-full py-4 bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl text-gray-400 hover:text-white hover:border-red-500 transition-colors"
+          className="w-full py-4 bg-neutral-800 border-2 border-dashed border-neutral-600 rounded-xl text-neutral-400 hover:text-white hover:border-red-500 transition-colors"
         >
           + Add Exercise
         </button>
       </div>
 
       {/* Workout Notes & Rating */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-4 space-y-4">
+      <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-4 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Workout Notes</label>
+          <label className="block text-sm font-medium text-neutral-300 mb-2">Workout Notes</label>
           <textarea
             value={workoutNotes}
             onChange={(e) => setWorkoutNotes(e.target.value)}
             rows={2}
             placeholder="How was your workout?"
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Rate Your Workout</label>
+          <label className="block text-sm font-medium text-neutral-300 mb-2">Rate Your Workout</label>
           <div className="flex gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
                 onClick={() => setWorkoutRating(star)}
                 className={`text-2xl transition-transform hover:scale-110 ${
-                  star <= workoutRating ? 'text-yellow-500' : 'text-gray-600'
+                  star <= workoutRating ? 'text-yellow-500' : 'text-neutral-600'
                 }`}
               >
                 ⭐
@@ -349,7 +349,7 @@ function WorkoutLogContent() {
       </div>
 
       {/* Fixed Bottom Save Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-900/95 backdrop-blur-sm border-t border-gray-700 lg:left-64">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-neutral-900/95 backdrop-blur-sm border-t border-neutral-700 lg:left-64">
         <button
           onClick={handleSaveWorkout}
           disabled={saving || exercises.length === 0}
@@ -366,15 +366,15 @@ function WorkoutLogContent() {
           onClick={() => setShowExerciseModal(false)}
         >
           <div
-            className="bg-gray-800 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[80vh] overflow-hidden border border-gray-700"
+            className="bg-neutral-800 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[80vh] overflow-hidden border border-neutral-700"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-4 border-b border-gray-700">
+            <div className="p-4 border-b border-neutral-700">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-white">Add Exercise</h3>
                 <button
                   onClick={() => setShowExerciseModal(false)}
-                  className="text-gray-400 hover:text-white text-xl"
+                  className="text-neutral-400 hover:text-white text-xl"
                 >
                   ✕
                 </button>
@@ -385,13 +385,13 @@ function WorkoutLogContent() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search exercises..."
                 autoFocus
-                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
             
             <div className="overflow-y-auto max-h-[60vh]">
               {filteredExercises.length === 0 ? (
-                <div className="text-center py-8 text-gray-400">
+                <div className="text-center py-8 text-neutral-400">
                   No exercises found
                 </div>
               ) : (
@@ -399,18 +399,18 @@ function WorkoutLogContent() {
                   <button
                     key={exercise.$id}
                     onClick={() => addExercise(exercise)}
-                    className="w-full flex items-center gap-4 p-4 hover:bg-gray-700 transition-colors text-left"
+                    className="w-full flex items-center gap-4 p-4 hover:bg-neutral-700 transition-colors text-left"
                   >
                     <div className="w-10 h-10 rounded-lg bg-red-600/20 flex items-center justify-center text-xl">
                       💪
                     </div>
                     <div className="flex-1">
                       <p className="font-medium text-white">{exercise.name}</p>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-neutral-400">
                         {exercise.muscleGroup} • {exercise.equipment}
                       </p>
                     </div>
-                    <span className="text-gray-400">+</span>
+                    <span className="text-neutral-400">+</span>
                   </button>
                 ))
               )}
@@ -428,10 +428,10 @@ export default function LogWorkoutPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="relative w-12 h-12 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-400">Loading...</p>
+          <p className="text-neutral-400">Loading...</p>
         </div>
       </div>
     }>

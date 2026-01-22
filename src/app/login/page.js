@@ -53,23 +53,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="max-w-md w-full mx-4">
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-8 border border-gray-700">
+        <div className="bg-neutral-900 rounded-lg shadow-lg p-8 border border-neutral-800">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Login</h1>
-            <p className="text-gray-400">ZY Bodybuilding Gym</p>
+            <p className="text-neutral-400">ZY Bodybuilding Gym</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-neutral-300 mb-2">
                 Email Address
               </label>
               <input
@@ -78,13 +78,13 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="your@email.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2">
                 Password
               </label>
               <input
@@ -93,7 +93,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="••••••••"
               />
             </div>
@@ -101,21 +101,21 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-400">
+          <div className="mt-6 text-center text-sm text-neutral-400">
             <p className="mt-2">
               Don't have an account?{' '}
-              <Link href="/register" className="text-red-500 hover:text-red-400 font-medium">
+              <Link href="/register" className="text-primary hover:opacity-80 font-medium">
                 Register here
               </Link>
             </p>
             <p className="mt-3">
-              <Link href="/" className="text-gray-500 hover:text-gray-400">
+              <Link href="/" className="text-neutral-500 hover:text-neutral-400">
                 ← Back to home
               </Link>
             </p>

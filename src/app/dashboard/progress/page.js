@@ -53,10 +53,10 @@ export default function ProgressPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <div className="relative w-12 h-12 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-gray-400">Loading progress...</p>
+          <p className="text-neutral-400">Loading progress...</p>
         </div>
       </div>
     );
@@ -68,7 +68,7 @@ export default function ProgressPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Progress Tracking</h1>
-          <p className="text-gray-400">Track your body transformation</p>
+          <p className="text-neutral-400">Track your body transformation</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
@@ -131,7 +131,7 @@ export default function ProgressPage() {
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               timeRange === range.id
                 ? 'bg-red-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
             }`}
           >
             {range.label}
@@ -140,7 +140,7 @@ export default function ProgressPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-700">
+      <div className="flex gap-2 border-b border-neutral-700">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -148,7 +148,7 @@ export default function ProgressPage() {
             className={`px-4 py-2 font-medium transition-colors ${
               activeTab === tab.id
                 ? 'text-red-500 border-b-2 border-red-500'
-                : 'text-gray-400 hover:text-white'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             {tab.icon} {tab.name}
@@ -177,18 +177,18 @@ export default function ProgressPage() {
 
 function MetricCard({ icon, label, value, unit, change, changeLabel, inverse = false }) {
   const changeColor = change === null
-    ? 'text-gray-400'
+    ? 'text-neutral-400'
     : (inverse ? change < 0 : change > 0)
     ? 'text-green-500'
     : (inverse ? change > 0 : change < 0)
     ? 'text-red-500'
-    : 'text-gray-400';
+    : 'text-neutral-400';
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
+    <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-4">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xl">{icon}</span>
-        <span className="text-sm text-gray-400">{label}</span>
+        <span className="text-sm text-neutral-400">{label}</span>
       </div>
       <p className="text-2xl font-bold text-white">
         {value !== null ? `${value.toFixed(1)} ${unit}` : '--'}
@@ -207,9 +207,9 @@ function WeightProgress({ metrics }) {
 
   if (weightData.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
+      <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">⚖️</p>
-        <p className="text-gray-400">No weight data recorded yet</p>
+        <p className="text-neutral-400">No weight data recorded yet</p>
       </div>
     );
   }
@@ -217,7 +217,7 @@ function WeightProgress({ metrics }) {
   return (
     <div className="space-y-6">
       {/* Simple Chart Visualization */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+      <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
         <h3 className="text-lg font-bold text-white mb-4">Weight History</h3>
         <div className="h-48 flex items-end gap-1">
           {weightData.slice(0, 30).reverse().map((m, i) => {
@@ -229,10 +229,10 @@ function WeightProgress({ metrics }) {
             return (
               <div
                 key={i}
-                className="flex-1 bg-gradient-to-t from-red-600 to-orange-500 rounded-t-sm hover:from-red-500 hover:to-orange-400 transition-colors cursor-pointer group relative"
+                className="flex-1 bg-primary rounded-t-sm hover:opacity-90 transition-opacity cursor-pointer group relative"
                 style={{ height: `${height}%` }}
               >
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-neutral-900 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   {m.weight} kg
                   <br />
                   {format(new Date(m.recordedAt), 'MMM d')}
@@ -244,12 +244,12 @@ function WeightProgress({ metrics }) {
       </div>
 
       {/* Weight Log */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+      <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
         <h3 className="text-lg font-bold text-white mb-4">Recent Entries</h3>
         <div className="space-y-2">
           {weightData.slice(0, 10).map((m, i) => (
-            <div key={m.$id} className="flex items-center justify-between py-2 border-b border-gray-700 last:border-0">
-              <span className="text-gray-400">{format(new Date(m.recordedAt), 'MMM dd, yyyy')}</span>
+            <div key={m.$id} className="flex items-center justify-between py-2 border-b border-neutral-700 last:border-0">
+              <span className="text-neutral-400">{format(new Date(m.recordedAt), 'MMM dd, yyyy')}</span>
               <span className="font-semibold text-white">{m.weight} kg</span>
               {i < weightData.length - 1 && (
                 <span className={`text-sm ${
@@ -290,7 +290,7 @@ function MeasurementsProgress({ metrics }) {
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+    <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
       <h3 className="text-lg font-bold text-white mb-4">Body Measurements</h3>
       <div className="grid md:grid-cols-2 gap-4">
         {measurements.map((m) => {
@@ -299,7 +299,7 @@ function MeasurementsProgress({ metrics }) {
           const change = latest && first ? latest - first : null;
 
           return (
-            <div key={m.key} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+            <div key={m.key} className="flex items-center justify-between p-4 bg-neutral-700/50 rounded-lg">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{m.icon}</span>
                 <span className="text-white">{m.label}</span>
@@ -309,7 +309,7 @@ function MeasurementsProgress({ metrics }) {
                   {latest ? `${latest} cm` : '--'}
                 </p>
                 {change !== null && (
-                  <p className={`text-sm ${change > 0 ? 'text-green-500' : change < 0 ? 'text-red-500' : 'text-gray-400'}`}>
+                  <p className={`text-sm ${change > 0 ? 'text-green-500' : change < 0 ? 'text-red-500' : 'text-neutral-400'}`}>
                     {change > 0 ? '+' : ''}{change.toFixed(1)} cm
                   </p>
                 )}
@@ -346,36 +346,36 @@ function StrengthProgress() {
 
   if (loading) {
     return (
-      <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
-        <p className="text-gray-400">Loading strength data...</p>
+      <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
+        <p className="text-neutral-400">Loading strength data...</p>
       </div>
     );
   }
 
   if (personalRecords.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
+      <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">💪</p>
-        <p className="text-gray-400">Log workouts to track your strength progress</p>
+        <p className="text-neutral-400">Log workouts to track your strength progress</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
+    <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
       <h3 className="text-lg font-bold text-white mb-4">Personal Records</h3>
       <div className="space-y-3">
         {personalRecords.map((pr, i) => (
-          <div key={i} className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+          <div key={i} className="flex items-center justify-between p-4 bg-neutral-700/50 rounded-lg">
             <div>
               <p className="font-semibold text-white">{pr.exerciseName}</p>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-neutral-400">
                 {pr.date ? format(new Date(pr.date), 'MMM dd, yyyy') : 'Unknown date'}
               </p>
             </div>
             <div className="text-right">
               <p className="text-xl font-bold text-yellow-500">🏆 {pr.weight} kg</p>
-              <p className="text-sm text-gray-400">{pr.reps} reps</p>
+              <p className="text-sm text-neutral-400">{pr.reps} reps</p>
             </div>
           </div>
         ))}
@@ -434,7 +434,7 @@ function AddMeasurementModal({ onClose, onSuccess }) {
 
   const InputField = ({ name, label, unit, placeholder }) => (
     <div>
-      <label className="block text-xs text-gray-400 mb-1">{label}</label>
+      <label className="block text-xs text-neutral-400 mb-1">{label}</label>
       <div className="relative">
         <input
           type="number"
@@ -442,9 +442,9 @@ function AddMeasurementModal({ onClose, onSuccess }) {
           value={formData[name]}
           onChange={(e) => setFormData({ ...formData, [name]: e.target.value })}
           placeholder={placeholder}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-red-500 pr-10"
+          className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-red-500 pr-10"
         />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
           {unit}
         </span>
       </div>
@@ -454,7 +454,7 @@ function AddMeasurementModal({ onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div
-        className="bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-gray-700"
+        className="bg-neutral-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-neutral-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -463,7 +463,7 @@ function AddMeasurementModal({ onClose, onSuccess }) {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Primary Metrics */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Primary Metrics</h3>
+              <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">Primary Metrics</h3>
               <div className="grid grid-cols-3 gap-3">
                 <InputField name="weight" label="Weight" unit="kg" placeholder="75" />
                 <InputField name="bodyFat" label="Body Fat" unit="%" placeholder="15" />
@@ -473,7 +473,7 @@ function AddMeasurementModal({ onClose, onSuccess }) {
 
             {/* Body Measurements */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Body Measurements</h3>
+              <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">Body Measurements</h3>
               <div className="grid grid-cols-2 gap-3">
                 <InputField name="chest" label="Chest" unit="cm" placeholder="100" />
                 <InputField name="shoulders" label="Shoulders" unit="cm" placeholder="120" />
@@ -488,13 +488,13 @@ function AddMeasurementModal({ onClose, onSuccess }) {
 
             {/* Notes */}
             <div>
-              <label className="block text-xs text-gray-400 mb-1">Notes</label>
+              <label className="block text-xs text-neutral-400 mb-1">Notes</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 rows={2}
                 placeholder="Any notes about this measurement..."
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-red-500"
+                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-red-500"
               />
             </div>
 
@@ -502,7 +502,7 @@ function AddMeasurementModal({ onClose, onSuccess }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                className="flex-1 px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
               >
                 Cancel
               </button>

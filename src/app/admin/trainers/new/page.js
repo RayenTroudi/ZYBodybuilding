@@ -132,23 +132,23 @@ export default function NewTrainerPage() {
       <div className="flex items-center gap-4">
         <Link
           href="/admin/trainers"
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-neutral-400 hover:text-white transition-colors"
         >
           ← Back
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-white">Add New Trainer</h1>
-          <p className="text-gray-400 mt-1">Create a new trainer profile</p>
+          <p className="text-neutral-400 mt-1">Create a new trainer profile</p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Form */}
         <div className="md:col-span-2">
-          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg border border-gray-700 p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 space-y-6">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -157,14 +157,14 @@ export default function NewTrainerPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="John Doe"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Email
               </label>
               <input
@@ -172,14 +172,14 @@ export default function NewTrainerPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="john@example.com"
               />
             </div>
 
             {/* Specialty */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Specialty
               </label>
               <input
@@ -187,14 +187,14 @@ export default function NewTrainerPage() {
                 name="specialty"
                 value={formData.specialty}
                 onChange={handleChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="Strength Training & Nutrition"
               />
             </div>
 
             {/* Bio */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Bio
               </label>
               <textarea
@@ -202,14 +202,14 @@ export default function NewTrainerPage() {
                 value={formData.bio}
                 onChange={handleChange}
                 rows={4}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="Tell us about this trainer..."
               />
             </div>
 
             {/* Trainer Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Trainer Photo
               </label>
               
@@ -217,7 +217,7 @@ export default function NewTrainerPage() {
               <div
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
-                className="relative border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-red-500 transition-colors cursor-pointer"
+                className="relative border-2 border-dashed border-neutral-600 rounded-lg p-6 text-center hover:border-red-500 transition-colors cursor-pointer"
               >
                 <input
                   type="file"
@@ -230,11 +230,11 @@ export default function NewTrainerPage() {
                 {uploading ? (
                   <div className="py-8">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-600 mb-2"></div>
-                    <p className="text-gray-400">Uploading...</p>
+                    <p className="text-neutral-400">Uploading...</p>
                   </div>
                 ) : imagePreview ? (
                   <div className="space-y-3">
-                    <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-700">
+                    <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-neutral-700">
                       <Image
                         src={imagePreview}
                         alt="Preview"
@@ -242,20 +242,20 @@ export default function NewTrainerPage() {
                         className="object-cover"
                       />
                     </div>
-                    <p className="text-sm text-gray-400">Click or drag to change photo</p>
+                    <p className="text-sm text-neutral-400">Click or drag to change photo</p>
                   </div>
                 ) : (
                   <div className="py-8">
                     <div className="text-5xl mb-3">📸</div>
-                    <p className="text-gray-300 font-medium mb-1">Click to upload or drag and drop</p>
-                    <p className="text-sm text-gray-500">PNG, JPG, WebP up to 5MB</p>
+                    <p className="text-neutral-300 font-medium mb-1">Click to upload or drag and drop</p>
+                    <p className="text-sm text-neutral-500">PNG, JPG, WebP up to 5MB</p>
                   </div>
                 )}
               </div>
               
               {/* Or use URL */}
               <div className="mt-4">
-                <label className="block text-xs font-medium text-gray-400 mb-2">
+                <label className="block text-xs font-medium text-neutral-400 mb-2">
                   Or enter image URL
                 </label>
                 <input
@@ -266,7 +266,7 @@ export default function NewTrainerPage() {
                     handleChange(e);
                     setImagePreview(e.target.value);
                   }}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
+                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
                   placeholder="https://example.com/trainer-photo.jpg"
                 />
               </div>
@@ -274,7 +274,7 @@ export default function NewTrainerPage() {
 
             {/* Certifications */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Certifications
               </label>
               <input
@@ -282,14 +282,14 @@ export default function NewTrainerPage() {
                 name="certifications"
                 value={formData.certifications}
                 onChange={handleChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="NASM CPT, Nutrition Coach"
               />
             </div>
 
             {/* Experience Years */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Years of Experience
               </label>
               <input
@@ -298,13 +298,13 @@ export default function NewTrainerPage() {
                 value={formData.experienceYears}
                 onChange={handleChange}
                 min="0"
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
             </div>
 
             {/* Order */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
                 Display Order
               </label>
               <input
@@ -313,7 +313,7 @@ export default function NewTrainerPage() {
                 value={formData.order}
                 onChange={handleChange}
                 min="0"
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
             </div>
 
@@ -324,16 +324,16 @@ export default function NewTrainerPage() {
                 name="isActive"
                 checked={formData.isActive}
                 onChange={handleChange}
-                className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500"
+                className="w-4 h-4 text-red-600 bg-neutral-700 border-neutral-600 rounded focus:ring-red-500"
               />
-              <label className="ml-2 text-sm text-gray-300">Active</label>
+              <label className="ml-2 text-sm text-neutral-300">Active</label>
             </div>
 
             {/* Submit */}
             <div className="flex gap-3">
               <Link
                 href="/admin/trainers"
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors"
+                className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors"
               >
                 Cancel
               </Link>
@@ -350,10 +350,10 @@ export default function NewTrainerPage() {
 
         {/* Preview */}
         <div className="md:col-span-1">
-          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 sticky top-6">
+          <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 sticky top-6">
             <h3 className="text-lg font-bold text-white mb-4">Preview</h3>
-            <div className="bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
-              <div className="relative h-48 bg-gray-700">
+            <div className="bg-neutral-900 rounded-lg overflow-hidden border border-neutral-700">
+              <div className="relative h-48 bg-neutral-700">
                 {formData.imageUrl ? (
                   <Image
                     src={formData.imageUrl}
@@ -363,7 +363,7 @@ export default function NewTrainerPage() {
                     onError={(e) => e.target.style.display = 'none'}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-5xl text-gray-600">
+                  <div className="w-full h-full flex items-center justify-center text-5xl text-neutral-600">
                     {formData.name ? formData.name.charAt(0) : '?'}
                   </div>
                 )}
@@ -376,7 +376,7 @@ export default function NewTrainerPage() {
                   <p className="text-red-500 text-sm mt-1">{formData.specialty}</p>
                 )}
                 {formData.experienceYears > 0 && (
-                  <p className="text-gray-400 text-sm mt-2">
+                  <p className="text-neutral-400 text-sm mt-2">
                     {formData.experienceYears} years of experience
                   </p>
                 )}
