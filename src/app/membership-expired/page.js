@@ -187,9 +187,9 @@ export default function MembershipExpiredPage() {
                   { Icon: Target, text: 'Personalized Workouts' },
                   { Icon: Users, text: 'Fitness Classes' },
                   { Icon: Trophy, text: 'Community Support' },
-                ].map((item, index) => {
+                ].map((item, index) => (
                   <div key={index} className="flex items-center gap-2 text-neutral-300">
-                    <span className="text-lg">{item.icon}</span>
+                    <item.Icon className="w-5 h-5 text-primary" />
                     <span className="text-sm">{item.text}</span>
                   </div>
                 ))}
