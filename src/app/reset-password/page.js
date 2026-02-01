@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { CheckCircle } from 'lucide-react';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -158,7 +159,7 @@ export default function ResetPasswordPage() {
               height={50}
               className="object-contain"
             />
-            <span className="text-xl font-bold text-white tracking-widest">ZY BODYBUILDING</span>
+            <span className="text-xl font-bold text-white tracking-tight">ZY BODYBUILDING</span>
           </Link>
         </div>
 

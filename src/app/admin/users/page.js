@@ -117,7 +117,7 @@ export default function UsersManagementPage() {
       {/* Notification Toast */}
       {notification && (
         <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top duration-300">
-          <div className={`flex items-center gap-3 px-6 py-4 rounded-lg shadow-2xl border backdrop-blur-sm ${
+          <div className={`flex items-center gap-3 px-6 py-4 rounded shadow-2xl border backdrop-blur-sm ${
             notification.type === 'success'
               ? 'bg-green-500/10 border-green-500 text-green-400'
               : 'bg-red-500/10 border-red-500 text-red-400'
@@ -157,7 +157,7 @@ export default function UsersManagementPage() {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg">
+        <div className="mb-6 bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded">
           {error}
         </div>
       )}
@@ -169,12 +169,12 @@ export default function UsersManagementPage() {
           placeholder="Search by name or email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
         <select
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
-          className="px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           <option value="all">All Roles</option>
           <option value="admin">Admin</option>
@@ -184,17 +184,17 @@ export default function UsersManagementPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-4 border border-neutral-700">
           <p className="text-neutral-400 text-sm">Total Users</p>
           <p className="text-2xl font-bold text-white">{users.length}</p>
         </div>
-        <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-4 border border-neutral-700">
           <p className="text-neutral-400 text-sm">Admin Users</p>
           <p className="text-2xl font-bold text-red-500">
             {users.filter(u => u.role === 'admin').length}
           </p>
         </div>
-        <div className="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-4 border border-neutral-700">
           <p className="text-neutral-400 text-sm">Regular Users</p>
           <p className="text-2xl font-bold text-blue-500">
             {users.filter(u => u.role === 'user').length}
@@ -203,27 +203,27 @@ export default function UsersManagementPage() {
       </div>
 
       {/* Users Table */}
-      <div className="bg-neutral-800 rounded-lg border border-neutral-700 overflow-hidden">
+      <div className="bg-neutral-800 rounded border border-neutral-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-neutral-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">
                   Created At
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">
                   Actions
                 </th>
               </tr>

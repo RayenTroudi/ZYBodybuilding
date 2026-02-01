@@ -202,7 +202,7 @@ export default function EmailManagementPage() {
         {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
-            <div className="bg-red-500/10 p-3 rounded-xl border border-red-500/20">
+            <div className="bg-red-500/10 p-3 rounded-md border border-red-500/20">
               <FaPaperPlane className="text-red-500 text-2xl" />
             </div>
             <div>
@@ -213,7 +213,7 @@ export default function EmailManagementPage() {
         </div>
 
         {/* Email Form Card */}
-        <div className="bg-neutral-800 rounded-xl shadow-2xl border border-neutral-700 overflow-hidden">
+        <div className="bg-neutral-800 rounded-md shadow-2xl border border-neutral-700 overflow-hidden">
           {/* Card Header */}
           <div className="bg-primary px-6 py-4 border-b border-red-800">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -234,7 +234,7 @@ export default function EmailManagementPage() {
                 <select
                   value={selectedTemplate}
                   onChange={(e) => handleTemplateChange(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
+                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
                 >
                   {Object.entries(EMAIL_TEMPLATES).map(([key, template]) => (
                     <option key={key} value={key}>
@@ -253,7 +253,7 @@ export default function EmailManagementPage() {
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
+                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
                 >
                   {Object.entries(EMAIL_TYPES).map(([key, label]) => (
                     <option key={key} value={key}>
@@ -280,7 +280,7 @@ export default function EmailManagementPage() {
                 onChange={(e) => setRecipientEmail(e.target.value)}
                 placeholder="recipient@example.com"
                 required
-                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
+                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
               />
             </div>
 
@@ -298,7 +298,7 @@ export default function EmailManagementPage() {
                 placeholder="Email subject"
                 required
                 maxLength={200}
-                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
+                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
               />
               <div className="flex justify-between mt-2">
                 <p className="text-xs text-neutral-400">Keep it clear and concise</p>
@@ -319,11 +319,11 @@ export default function EmailManagementPage() {
                 placeholder="Entrez le contenu de votre email (texte simple, pas besoin de HTML complexe)..."
                 required
                 rows={12}
-                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 text-sm font-mono resize-y"
+                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 text-sm font-mono resize-y"
               />
               
               {/* Helper Information Box */}
-              <div className="mt-3 bg-neutral-700/50 border border-neutral-600 rounded-lg p-4 space-y-2">
+              <div className="mt-3 bg-neutral-700/50 border border-neutral-600 rounded p-4 space-y-2">
                 <div className="flex items-start gap-2">
                   <span className="text-blue-400 mt-0.5">ℹ️</span>
                   <p className="text-xs text-neutral-300">
@@ -355,7 +355,7 @@ export default function EmailManagementPage() {
             <button
               type="submit"
               disabled={isSending || !recipientEmail || !subject || !emailHtml}
-              className="w-full bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
             >
               {isSending ? (
                 <>
@@ -373,7 +373,7 @@ export default function EmailManagementPage() {
             {/* Send Result */}
             {sendResult && (
               <div
-                className={`p-4 rounded-lg border-2 ${
+                className={`p-4 rounded border-2 ${
                   sendResult.success
                     ? 'bg-green-900/20 border-green-500'
                     : 'bg-red-900/20 border-red-500'

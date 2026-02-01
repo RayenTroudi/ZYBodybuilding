@@ -4,6 +4,20 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from '@/lib/auth';
+import { 
+  LayoutDashboard, 
+  Users, 
+  UserCog, 
+  CreditCard, 
+  ClipboardList, 
+  Dumbbell, 
+  GraduationCap, 
+  Calendar, 
+  Mail, 
+  Settings,
+  Globe,
+  LogOut
+} from 'lucide-react';
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,16 +32,16 @@ export default function AdminLayout({ children }) {
   };
 
   const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
-    { name: 'Users', href: '/admin/users', icon: '👤' },
-    { name: 'Members', href: '/admin/members', icon: '👥' },
-    { name: 'Payments', href: '/admin/payments', icon: '💳' },
-    { name: 'Plans', href: '/admin/plans', icon: '📋' },
-    { name: 'Programs', href: '/admin/programs', icon: '🏋️' },
-    { name: 'Trainers', href: '/admin/trainers', icon: '👨‍🏫' },
-    { name: 'Classes', href: '/admin/classes', icon: '📅' },
-    { name: 'Email', href: '/admin/email', icon: '📧' },
-    { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
+    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Members', href: '/admin/members', icon: UserCog },
+    { name: 'Payments', href: '/admin/payments', icon: CreditCard },
+    { name: 'Plans', href: '/admin/plans', icon: ClipboardList },
+    { name: 'Programs', href: '/admin/programs', icon: Dumbbell },
+    { name: 'Trainers', href: '/admin/trainers', icon: GraduationCap },
+    { name: 'Classes', href: '/admin/classes', icon: Calendar },
+    { name: 'Email', href: '/admin/email', icon: Mail },
+    { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 
   // Don't show layout on login page
@@ -41,28 +55,29 @@ export default function AdminLayout({ children }) {
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-black border-r border-neutral-900 transform transition-transform duration-200 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-neutral-900">
+          <div className="flex items-center justify-between h-16 px-5 border-b border-neutral-900">
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">ZY Gym Admin</h2>
+              <h2 className="text-lg font-bold text-white">ZY Gym Admin</h2>
               <p className="text-xs text-neutral-500 font-medium">Management Panel</p>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <nav className="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+              const IconComponent = item.icon;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-4 py-3 text-sm font-semibold rounded-lg transition-colors ${
+                  className={`flex items-center px-4 py-2.5 text-sm font-semibold rounded transition-colors ${
                     isActive
                       ? 'bg-primary text-white'
                       : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
                   }`}
                 >
-                  <span className="mr-3 text-lg">{item.icon}</span>
+                  <IconComponent className="mr-3 w-5 h-5" />
                   {item.name}
                 </Link>
               );
@@ -73,9 +88,9 @@ export default function AdminLayout({ children }) {
               <Link
                 href="/"
                 target="_blank"
-                className="flex items-center px-4 py-3 text-sm font-semibold text-neutral-400 hover:bg-neutral-900 hover:text-white rounded-lg transition-colors"
+                className="flex items-center px-4 py-2.5 text-sm font-semibold text-neutral-400 hover:bg-neutral-900 hover:text-white rounded transition-colors"
               >
-                <span className="mr-3 text-lg">🌐</span>
+                <Globe className="mr-3 w-5 h-5" />
                 View Public Site
               </Link>
             </div>
@@ -86,9 +101,9 @@ export default function AdminLayout({ children }) {
             <button
               onClick={handleSignOut}
               disabled={loading}
-              className="w-full flex items-center px-4 py-3 text-sm font-semibold text-neutral-400 rounded-lg hover:bg-neutral-900 hover:text-white transition-colors disabled:opacity-50"
+              className="w-full flex items-center px-4 py-2.5 text-sm font-semibold text-neutral-400 rounded hover:bg-neutral-900 hover:text-white transition-colors disabled:opacity-50"
             >
-              <span className="mr-3 text-lg">🚪</span>
+              <LogOut className="mr-3 w-5 h-5" />
               {loading ? 'Signing out...' : 'Sign Out'}
             </button>
           </div>
@@ -98,7 +113,7 @@ export default function AdminLayout({ children }) {
       {/* Main Content */}
       <div className={`transition-all duration-200 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
         {/* Header */}
-        <header className="h-16 bg-black border-b border-neutral-900 flex items-center justify-between px-6">
+        <header className="h-14 bg-black border-b border-neutral-900 flex items-center justify-between px-5">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-neutral-500 hover:text-white transition-colors"

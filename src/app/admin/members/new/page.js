@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
+import { CreditCard, DollarSign, Shield, Loader, Sparkles, CheckCircle, XCircle } from 'lucide-react';
 
 // Dynamically import PDFReceipt and pdf renderer to avoid SSR issues
 const PDFReceipt = dynamic(() => import('@/app/components/PDFReceipt'), {
@@ -279,7 +280,7 @@ export default function NewMemberPage() {
               {/* Member Summary */}
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div className="bg-neutral-100 rounded-xl p-6">
-                  <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">
+                  <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-normal mb-4">
                     Informations Membre
                   </h3>
                   <div className="space-y-3">
@@ -303,7 +304,7 @@ export default function NewMemberPage() {
                 </div>
 
                 <div className="bg-red-50 rounded-xl p-6 border-2 border-red-200">
-                  <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">
+                  <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-normal mb-4">
                     Détails Abonnement
                   </h3>
                   <div className="space-y-3">
@@ -333,7 +334,7 @@ export default function NewMemberPage() {
 
               {/* Payment Summary */}
               <div className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
-                <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">
+                <h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-normal mb-4">
                   Résumé Paiement
                 </h3>
                 <div className="space-y-3">
@@ -501,8 +502,8 @@ export default function NewMemberPage() {
 
             {/* Subscription Details */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-neutral-700">
-                💳 Subscription Details
+              <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-neutral-700 flex items-center gap-2">
+                <CreditCard className="w-6 h-6" /> Subscription Details
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -582,8 +583,8 @@ export default function NewMemberPage() {
 
             {/* Payment Information */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-neutral-700">
-                💰 Initial Payment
+              <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-neutral-700 flex items-center gap-2">
+                <DollarSign className="w-6 h-6" /> Initial Payment
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -614,7 +615,7 @@ export default function NewMemberPage() {
                 className="w-full px-4 py-3 bg-neutral-700/50 border border-neutral-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
               >
                 <option value="Cash">💵 Cash</option>
-                <option value="Card">💳 Card</option>
+                <option value="Card">Card</option>
                 <option value="Online">🌐 Online</option>
               </select>
             </div>
@@ -638,7 +639,9 @@ export default function NewMemberPage() {
                   className="w-5 h-5 text-blue-600 bg-neutral-700 border-neutral-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
                 <div className="flex-1">
-                  <span className="text-white font-semibold">🛡️ Include Assurance</span>
+                  <span className="text-white font-semibold flex items-center gap-2">
+                    <Shield className="w-4 h-4" /> Include Assurance
+                  </span>
                   <p className="text-sm text-neutral-400 mt-1">
                     Add insurance coverage for 20 DT
                   </p>
@@ -655,7 +658,7 @@ export default function NewMemberPage() {
             {selectedPlan && formData.initialPayment && (
               <div className="md:col-span-2 p-5 bg-green-500/10 border border-green-500/20 rounded-xl">
                 <h3 className="font-bold text-white mb-3 flex items-center gap-2">
-                  <span>💰</span> Payment Breakdown
+                  <DollarSign className="w-5 h-5" /> Payment Breakdown
                 </h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -664,7 +667,9 @@ export default function NewMemberPage() {
                   </div>
                   {formData.includeAssurance && (
                     <div className="flex justify-between">
-                      <span className="text-neutral-400">🛡️ Assurance:</span>
+                      <span className="text-neutral-400 flex items-center gap-1">
+                        <Shield className="w-4 h-4" /> Assurance:
+                      </span>
                       <span className="text-blue-400 font-semibold">20.00 DT</span>
                     </div>
                   )}
@@ -691,9 +696,13 @@ export default function NewMemberPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-3.5 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+            className="flex-1 px-6 py-3.5 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
           >
-            {loading ? '⏳ Creating...' : '✨ Create Member'}
+            {loading ? (
+              <><Loader className="w-5 h-5 animate-spin" /> Creating...</>
+            ) : (
+              <><Sparkles className="w-5 h-5" /> Create Member</>
+            )}
           </button>
         </div>
           </form>
@@ -710,8 +719,12 @@ export default function NewMemberPage() {
               }`}
             >
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 text-2xl">
-                  {toast.type === 'success' ? '✅' : '❌'}
+                <div className="flex-shrink-0">
+                  {toast.type === 'success' ? (
+                    <CheckCircle className="w-6 h-6" />
+                  ) : (
+                    <XCircle className="w-6 h-6" />
+                  )}
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-white">{toast.message}</p>

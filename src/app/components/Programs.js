@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { Dumbbell } from 'lucide-react';
 
 export default function Programs() {
   const [programs, setPrograms] = useState([]);

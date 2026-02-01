@@ -7,6 +7,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      letterSpacing: {
+        tighter: '-0.02em',
+        tight: '-0.011em',
+        normal: '0',
+        wide: '0.01em',
+      },
       colors: {
         // Brand Colors from Logo
         primary: {

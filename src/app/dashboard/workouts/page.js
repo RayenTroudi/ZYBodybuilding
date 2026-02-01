@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { FileText, Star } from 'lucide-react';
 
 export default function WorkoutsPage() {
   const [workoutPlans, setWorkoutPlans] = useState([]);
