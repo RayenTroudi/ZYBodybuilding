@@ -79,7 +79,7 @@ export default function PaymentsPage() {
   };
 
   const handleDeletePayment = async (payment) => {
-    if (!window.confirm(`Are you sure you want to delete this payment of $${payment.amount.toFixed(2)}?`)) {
+    if (!window.confirm(`Are you sure you want to delete this payment of ${payment.amount.toFixed(2)} TND?`)) {
       return;
     }
 
@@ -169,7 +169,7 @@ export default function PaymentsPage() {
       header: 'Amount',
       cell: ({ row }) => (
         <p className="text-green-500 font-bold text-lg">
-          ${row.original.amount.toFixed(2)}
+          {row.original.amount.toFixed(2)} TND
         </p>
       ),
     },
@@ -263,7 +263,7 @@ export default function PaymentsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Total Revenue</p>
-              <p className="text-3xl font-bold text-white mt-2">${totalRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-white mt-2">{totalRevenue.toFixed(2)} TND</p>
             </div>
             <div className="text-4xl">💰</div>
           </div>
@@ -273,7 +273,7 @@ export default function PaymentsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">This Month</p>
-              <p className="text-3xl font-bold text-green-500 mt-2">${monthlyRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-green-500 mt-2">{monthlyRevenue.toFixed(2)} TND</p>
             </div>
             <div className="text-4xl">📈</div>
           </div>
@@ -321,7 +321,7 @@ export default function PaymentsPage() {
             return (
               <div key={method} className="p-4 bg-neutral-700 rounded-lg">
                 <p className="text-neutral-400 text-sm mb-2">{method}</p>
-                <p className="text-2xl font-bold text-white">${total.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-white">{total.toFixed(2)} TND</p>
                 <p className="text-xs text-neutral-400 mt-1">{count} transactions</p>
               </div>
             );

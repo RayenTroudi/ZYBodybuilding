@@ -533,7 +533,7 @@ export default function MemberDetailPage({ params }) {
                   <option value="">Choose a plan...</option>
                   {plans.map((plan) => (
                     <option key={plan.$id} value={plan.$id}>
-                      {plan.name} - ${plan.price} ({plan.duration} days)
+                      {plan.name} - {plan.price} TND ({plan.duration} days)
                     </option>
                   ))}
                 </select>
@@ -678,7 +678,7 @@ export default function MemberDetailPage({ params }) {
                       <option value="">Choose a plan...</option>
                       {plans.map((plan) => (
                         <option key={plan.$id} value={plan.$id}>
-                          {plan.name} - ${plan.price} ({plan.duration} days)
+                          {plan.name} - {plan.price} TND ({plan.duration} days)
                         </option>
                       ))}
                     </select>

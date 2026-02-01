@@ -198,7 +198,7 @@ export default function PlansPage() {
               {/* Price */}
               <div className="mb-4">
                 <div className="flex items-baseline">
-                  <span className="text-4xl font-bold text-white">${plan.price}</span>
+                  <span className="text-4xl font-bold text-white">{plan.price} TND</span>
                   <span className="text-neutral-400 ml-2">/ {plan.duration} days</span>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function PlansPage() {
 
               <div>
                 <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Price ($)
+                  Price (TND)
                 </label>
                 <input
                   type="number"
@@ -350,7 +350,7 @@ export default function PlansPage() {
           <div className="p-4 bg-neutral-700 rounded-lg">
             <p className="text-neutral-400 text-sm">Price Range</p>
             <p className="text-2xl font-bold text-white mt-1">
-              ${Math.min(...plans.map(p => p.price))} - ${Math.max(...plans.map(p => p.price))}
+              {Math.min(...plans.map(p => p.price))} - {Math.max(...plans.map(p => p.price))} TND
             </p>
           </div>
         </div>
