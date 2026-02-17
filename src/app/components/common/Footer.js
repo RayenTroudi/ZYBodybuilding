@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Mail, Phone } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear(); 
@@ -39,13 +40,13 @@ const Footer = () => {
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <ul className="space-y-3 text-neutral-300">
                 <li className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                  <span className="text-primary text-lg flex-shrink-0">✉</span> 
+                  <Mail className="text-primary w-5 h-5 flex-shrink-0" /> 
                   <a href="mailto:zybodybuildingstudio@gmail.com" className="hover:text-primary transition-colors break-all">
                     zybodybuildingstudio@gmail.com
                   </a>
                 </li>
                 <li className="flex items-center justify-center sm:justify-start gap-2">
-                  <span className="text-primary text-lg flex-shrink-0">📞</span>
+                  <Phone className="text-primary w-5 h-5 flex-shrink-0" />
                   <a href="tel:+21658800554" className="hover:text-primary transition-colors">
                     +216 58800554
                   </a>

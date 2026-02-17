@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { DataTable, createSelectColumn, createActionsColumn } from '@/app/components/ui/data-table';
 import { Button } from '@/app/components/ui/button';
+import { DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
 
 export default function PaymentsPage() {
   const router = useRouter();
@@ -79,7 +80,7 @@ export default function PaymentsPage() {
   };
 
   const handleDeletePayment = async (payment) => {
-    if (!window.confirm(`Are you sure you want to delete this payment of $${payment.amount.toFixed(2)}?`)) {
+    if (!window.confirm(`Are you sure you want to delete this payment of ${payment.amount.toFixed(2)} TND?`)) {
       return;
     }
 
@@ -169,7 +170,7 @@ export default function PaymentsPage() {
       header: 'Amount',
       cell: ({ row }) => (
         <p className="text-green-500 font-bold text-lg">
-          ${row.original.amount.toFixed(2)}
+          {row.original.amount.toFixed(2)} TND
         </p>
       ),
     },
@@ -209,14 +210,14 @@ export default function PaymentsPage() {
         </div>
         <button
           onClick={exportToCSV}
-          className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+          className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
         >
           📥 Export CSV
         </button>
       </div>
 
       {/* Date Filters */}
-      <div className="bg-neutral-800 rounded-lg p-4 sm:p-6 border border-neutral-700">
+      <div className="bg-neutral-800 rounded p-4 sm:p-6 border border-neutral-700">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">From Date</label>
@@ -224,7 +225,7 @@ export default function PaymentsPage() {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
           
@@ -234,7 +235,7 @@ export default function PaymentsPage() {
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
         </div>
@@ -259,40 +260,40 @@ export default function PaymentsPage() {
 
       {/* Revenue Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Total Revenue</p>
-              <p className="text-3xl font-bold text-white mt-2">${totalRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-white mt-2">{totalRevenue.toFixed(2)} TND</p>
             </div>
-            <div className="text-4xl">💰</div>
+            <DollarSign className="w-10 h-10 text-green-500" />
           </div>
         </div>
 
-        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">This Month</p>
-              <p className="text-3xl font-bold text-green-500 mt-2">${monthlyRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-green-500 mt-2">{monthlyRevenue.toFixed(2)} TND</p>
             </div>
-            <div className="text-4xl">📈</div>
+            <TrendingUp className="w-10 h-10 text-blue-500" />
           </div>
         </div>
 
-        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Total Transactions</p>
               <p className="text-3xl font-bold text-white mt-2">{payments.length}</p>
             </div>
-            <div className="text-4xl">📊</div>
+            <BarChart3 className="w-10 h-10 text-purple-500" />
           </div>
         </div>
       </div>
 
       {/* Data Table */}
       {loading ? (
-        <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-12 flex flex-col items-center justify-center">
+        <div className="bg-neutral-800 rounded border border-neutral-700 p-12 flex flex-col items-center justify-center">
           <div className="relative w-16 h-16">
             <div className="absolute top-0 left-0 w-full h-full border-4 border-green-500/30 rounded-full"></div>
             <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-green-500 rounded-full animate-spin"></div>
@@ -309,7 +310,7 @@ export default function PaymentsPage() {
       )}
 
       {/* Payment Methods Breakdown */}
-      <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+      <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
         <h2 className="text-xl font-bold text-white mb-4">Payment Methods</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {['Cash', 'Card', 'Online'].map((method) => {
@@ -319,9 +320,9 @@ export default function PaymentsPage() {
               .reduce((sum, p) => sum + p.amount, 0);
 
             return (
-              <div key={method} className="p-4 bg-neutral-700 rounded-lg">
+              <div key={method} className="p-4 bg-neutral-700 rounded">
                 <p className="text-neutral-400 text-sm mb-2">{method}</p>
-                <p className="text-2xl font-bold text-white">${total.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-white">{total.toFixed(2)} TND</p>
                 <p className="text-xs text-neutral-400 mt-1">{count} transactions</p>
               </div>
             );
@@ -333,7 +334,7 @@ export default function PaymentsPage() {
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
           <div
-            className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
+            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
               toast.type === 'success'
                 ? 'bg-neutral-800 border-green-500 text-white'
                 : 'bg-neutral-800 border-red-500 text-white'

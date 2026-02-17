@@ -94,7 +94,7 @@ export default function SettingsPage() {
       {/* Toast Notification */}
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white ${
+          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded shadow-lg text-white ${
             toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
           }`}
         >
@@ -108,7 +108,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Change Password Section */}
-      <div className="bg-neutral-800 rounded-lg border border-neutral-700">
+      <div className="bg-neutral-800 rounded border border-neutral-700">
         <div className="p-6 border-b border-neutral-700">
           <h2 className="text-xl font-semibold text-white mb-1">Change Password</h2>
           <p className="text-neutral-400 text-sm">Update your password to keep your account secure</p>
@@ -125,7 +125,7 @@ export default function SettingsPage() {
               name="oldPassword"
               value={formData.oldPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Enter your current password"
               disabled={loading}
             />
@@ -141,7 +141,7 @@ export default function SettingsPage() {
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Enter your new password (min. 8 characters)"
               disabled={loading}
             />
@@ -160,7 +160,7 @@ export default function SettingsPage() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Confirm your new password"
               disabled={loading}
             />
@@ -171,7 +171,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-3 bg-red-600 text-white font-medium rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? (
                 <span className="flex items-center">
@@ -190,7 +190,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Security Tips */}
-      <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6">
+      <div className="bg-neutral-800 rounded border border-neutral-700 p-6">
         <h3 className="text-lg font-semibold text-white mb-3">🔐 Password Security Tips</h3>
         <ul className="space-y-2 text-neutral-400 text-sm">
           <li className="flex items-start">

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Mail } from 'lucide-react';
 
 export default function TrainersPage() {
   const [trainers, setTrainers] = useState([]);
@@ -98,7 +99,7 @@ export default function TrainersPage() {
         </div>
         <Link
           href="/admin/trainers/new"
-          className="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded transition-colors"
         >
           <span className="mr-2">+</span>
           Add Trainer
@@ -107,15 +108,15 @@ export default function TrainersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
           <div className="text-neutral-400 text-sm mb-1">Total Trainers</div>
           <div className="text-3xl font-bold text-white">{stats.total}</div>
         </div>
-        <div className="bg-neutral-800 rounded-lg p-6 border border-green-500/30">
+        <div className="bg-neutral-800 rounded p-6 border border-green-500/30">
           <div className="text-neutral-400 text-sm mb-1">Active</div>
           <div className="text-3xl font-bold text-green-400">{stats.active}</div>
         </div>
-        <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
           <div className="text-neutral-400 text-sm mb-1">Inactive</div>
           <div className="text-3xl font-bold text-neutral-400">{stats.inactive}</div>
         </div>
@@ -127,7 +128,7 @@ export default function TrainersPage() {
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
       ) : trainers.length === 0 ? (
-        <div className="text-center py-12 bg-neutral-800 rounded-lg border border-neutral-700">
+        <div className="text-center py-12 bg-neutral-800 rounded border border-neutral-700">
           <p className="text-neutral-400">No trainers found. Add your first trainer!</p>
         </div>
       ) : (
@@ -137,7 +138,7 @@ export default function TrainersPage() {
               key={trainer.$id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-neutral-800 rounded-lg overflow-hidden border ${
+              className={`bg-neutral-800 rounded overflow-hidden border ${
                 trainer.isActive ? 'border-green-500/50' : 'border-neutral-700'
               } hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
             >
@@ -235,7 +236,7 @@ export default function TrainersPage() {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-neutral-800 rounded-xl p-6 max-w-md w-full border border-neutral-700"
+              className="bg-neutral-800 rounded-md p-6 max-w-md w-full border border-neutral-700"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center mb-6">
@@ -248,13 +249,13 @@ export default function TrainersPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteModal({ show: false, trainer: null })}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteModal.trainer.$id)}
-                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
                 >
                   Delete
                 </button>
@@ -271,7 +272,7 @@ export default function TrainersPage() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-6 right-6 px-6 py-4 rounded-lg shadow-lg ${
+            className={`fixed bottom-6 right-6 px-6 py-4 rounded shadow-lg ${
               toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
             } text-white font-medium z-50`}
           >

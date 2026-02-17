@@ -109,7 +109,7 @@ export default function DashboardLayout({ children }) {
                 height={40}
                 className="object-contain"
               />
-              <span className="text-lg font-bold text-white tracking-wide">ZY BODYBUILDING</span>
+              <span className="text-lg font-bold text-white tracking-tight">ZY BODYBUILDING</span>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}

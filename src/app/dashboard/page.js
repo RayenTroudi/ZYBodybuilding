@@ -101,7 +101,7 @@ export default function DashboardPage() {
               📅
             </div>
             <div>
-              <p className="text-xs text-neutral-400 uppercase tracking-wide">Membership</p>
+              <p className="text-xs text-neutral-400 uppercase tracking-normal">Membership</p>
               <p className={`text-lg font-bold ${
                 membership?.daysRemaining <= 7 
                   ? 'text-orange-400' 

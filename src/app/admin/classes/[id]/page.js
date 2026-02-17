@@ -144,7 +144,7 @@ export default function EditClassPage({ params }) {
       <div className="grid md:grid-cols-3 gap-6">
         {/* Form */}
         <div className="md:col-span-2">
-          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg border border-gray-700 p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="bg-gray-800 rounded border border-gray-700 p-6 space-y-6">
             {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -156,7 +156,7 @@ export default function EditClassPage({ params }) {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="HIIT Explosif"
               />
             </div>
@@ -171,7 +171,7 @@ export default function EditClassPage({ params }) {
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 placeholder="High-intensity interval training for maximum results..."
               />
             </div>
@@ -187,7 +187,7 @@ export default function EditClassPage({ params }) {
                   value={formData.dayOfWeek}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   {DAYS_OF_WEEK.map(day => (
                     <option key={day} value={day}>{day}</option>
@@ -204,7 +204,7 @@ export default function EditClassPage({ params }) {
                   value={formData.startTime}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -217,7 +217,7 @@ export default function EditClassPage({ params }) {
                   value={formData.endTime}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function EditClassPage({ params }) {
                 name="trainerId"
                 value={formData.trainerId}
                 onChange={handleChange}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               >
                 <option value="">No trainer assigned</option>
                 {trainers.map(trainer => (
@@ -252,7 +252,7 @@ export default function EditClassPage({ params }) {
                   name="difficulty"
                   value={formData.difficulty}
                   onChange={handleChange}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   {DIFFICULTIES.map(diff => (
                     <option key={diff} value={diff}>{diff}</option>
@@ -267,7 +267,7 @@ export default function EditClassPage({ params }) {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   {CATEGORIES.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -288,7 +288,7 @@ export default function EditClassPage({ params }) {
                   value={formData.caloriesBurn}
                   onChange={handleChange}
                   min="0"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -302,7 +302,7 @@ export default function EditClassPage({ params }) {
                   onChange={handleChange}
                   required
                   min="1"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               <div>
@@ -315,7 +315,7 @@ export default function EditClassPage({ params }) {
                   value={formData.availableSpots}
                   onChange={handleChange}
                   min="0"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -332,7 +332,7 @@ export default function EditClassPage({ params }) {
                 onChange={handleChange}
                 min="0"
                 max={formData.availableSpots}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
             </div>
 
@@ -348,7 +348,7 @@ export default function EditClassPage({ params }) {
                       key={icon}
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, icon }))}
-                      className={`text-2xl p-3 rounded-lg border-2 transition-all ${
+                      className={`text-2xl p-3 rounded border-2 transition-all ${
                         formData.icon === icon
                           ? 'border-red-500 bg-gray-700'
                           : 'border-gray-600 bg-gray-800 hover:border-gray-500'
@@ -368,7 +368,7 @@ export default function EditClassPage({ params }) {
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
-                  className="w-full h-12 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer"
+                  className="w-full h-12 bg-gray-700 border border-gray-600 rounded cursor-pointer"
                 />
               </div>
             </div>
@@ -384,7 +384,7 @@ export default function EditClassPage({ params }) {
                 value={formData.order}
                 onChange={handleChange}
                 min="0"
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
             </div>
 
@@ -404,14 +404,14 @@ export default function EditClassPage({ params }) {
             <div className="flex gap-3">
               <Link
                 href="/admin/classes"
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors"
+                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded font-medium text-center transition-colors"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded font-medium transition-colors disabled:opacity-50"
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>
@@ -421,12 +421,12 @@ export default function EditClassPage({ params }) {
 
         {/* Preview */}
         <div className="md:col-span-1">
-          <div className="bg-gray-800 rounded-lg border border-gray-700 p-6 sticky top-6">
+          <div className="bg-gray-800 rounded border border-gray-700 p-6 sticky top-6">
             <h3 className="text-lg font-bold text-white mb-4">Preview</h3>
-            <div className="bg-gray-900 rounded-lg overflow-hidden border border-gray-700 p-4">
+            <div className="bg-gray-900 rounded overflow-hidden border border-gray-700 p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
+                  className="w-12 h-12 rounded flex items-center justify-center text-2xl"
                   style={{ backgroundColor: formData.color }}
                 >
                   {formData.icon}

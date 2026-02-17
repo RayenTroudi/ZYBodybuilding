@@ -150,7 +150,7 @@ export default function PlansPage() {
             });
             setShowModal(true);
           }}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
         >
           ➕ Add Plan
         </button>
@@ -172,7 +172,7 @@ export default function PlansPage() {
           plans.map((plan) => (
             <div
               key={plan.$id}
-              className={`bg-neutral-800 rounded-lg p-6 border-2 transition-all ${
+              className={`bg-neutral-800 rounded p-6 border-2 transition-all ${
                 plan.isActive ? 'border-red-600' : 'border-neutral-700 opacity-60'
               }`}
             >
@@ -198,7 +198,7 @@ export default function PlansPage() {
               {/* Price */}
               <div className="mb-4">
                 <div className="flex items-baseline">
-                  <span className="text-4xl font-bold text-white">${plan.price}</span>
+                  <span className="text-4xl font-bold text-white">{plan.price} TND</span>
                   <span className="text-neutral-400 ml-2">/ {plan.duration} days</span>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function PlansPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(plan)}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors text-sm"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors text-sm"
                 >
                   ✏️ Edit
                 </button>
@@ -221,7 +221,7 @@ export default function PlansPage() {
                     setPlanToDelete(plan);
                     setShowDeleteModal(true);
                   }}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm"
                 >
                   🗑️
                 </button>
@@ -234,7 +234,7 @@ export default function PlansPage() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded-lg p-6 max-w-md w-full border border-neutral-700 max-h-[90vh] overflow-y-auto">
+          <div className="bg-neutral-800 rounded p-6 max-w-md w-full border border-neutral-700 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-white mb-4">
               {editingPlan ? 'Edit Plan' : 'Create New Plan'}
             </h2>
@@ -248,7 +248,7 @@ export default function PlansPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="e.g., Monthly Plan"
                 />
               </div>
@@ -261,7 +261,7 @@ export default function PlansPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Brief description of the plan..."
                 />
               </div>
@@ -276,14 +276,14 @@ export default function PlansPage() {
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                   required
                   min="1"
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="30"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Price ($)
+                  Price (TND)
                 </label>
                 <input
                   type="number"
@@ -292,7 +292,7 @@ export default function PlansPage() {
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   required
                   min="0"
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="50.00"
                 />
               </div>
@@ -317,13 +317,13 @@ export default function PlansPage() {
                     setShowModal(false);
                     setEditingPlan(null);
                   }}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
                 >
                   {editingPlan ? 'Update' : 'Create'}
                 </button>
@@ -334,23 +334,23 @@ export default function PlansPage() {
       )}
 
       {/* Stats */}
-      <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+      <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
         <h2 className="text-xl font-bold text-white mb-4">Plan Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-neutral-700 rounded-lg">
+          <div className="p-4 bg-neutral-700 rounded">
             <p className="text-neutral-400 text-sm">Total Plans</p>
             <p className="text-2xl font-bold text-white mt-1">{plans.length}</p>
           </div>
-          <div className="p-4 bg-neutral-700 rounded-lg">
+          <div className="p-4 bg-neutral-700 rounded">
             <p className="text-neutral-400 text-sm">Active Plans</p>
             <p className="text-2xl font-bold text-green-500 mt-1">
               {plans.filter(p => p.isActive).length}
             </p>
           </div>
-          <div className="p-4 bg-neutral-700 rounded-lg">
+          <div className="p-4 bg-neutral-700 rounded">
             <p className="text-neutral-400 text-sm">Price Range</p>
             <p className="text-2xl font-bold text-white mt-1">
-              ${Math.min(...plans.map(p => p.price))} - ${Math.max(...plans.map(p => p.price))}
+              {Math.min(...plans.map(p => p.price))} - {Math.max(...plans.map(p => p.price))} TND
             </p>
           </div>
         </div>
@@ -359,7 +359,7 @@ export default function PlansPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && planToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded-lg max-w-md w-full border border-neutral-700 shadow-2xl">
+          <div className="bg-neutral-800 rounded max-w-md w-full border border-neutral-700 shadow-2xl">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
@@ -385,14 +385,14 @@ export default function PlansPage() {
                     setShowDeleteModal(false);
                     setPlanToDelete(null);
                   }}
-                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleDelete}
-                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded transition-colors"
                 >
                   Delete Plan
                 </button>
@@ -406,7 +406,7 @@ export default function PlansPage() {
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
           <div
-            className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
+            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
               toast.type === 'success'
                 ? 'bg-neutral-800 border-green-500 text-white'
                 : 'bg-neutral-800 border-red-500 text-white'

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -67,11 +67,11 @@
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   background-color: var(--background);
   color: var(--foreground);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.011em; /* Tighter, more precise tracking */
   /* Prevent FOUC - Force immediate style application */
   visibility: visible !important;
 }
@@ -109,7 +109,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 /* ========================================
@@ -119,34 +119,34 @@ h1, h2, h3, h4, h5, h6 {
 @layer components {
   /* Primary Button */
   .btn-primary {
-    @apply px-6 py-3 bg-primary text-white font-bold rounded-lg 
+    @apply px-6 py-3 bg-primary text-white font-bold rounded 
            shadow-md hover:shadow-lg transform hover:scale-105 
            transition-all duration-300 ease-in-out;
   }
   
   /* Secondary Button */
   .btn-secondary {
-    @apply px-6 py-3 bg-transparent border-2 border-primary text-primary font-bold rounded-lg 
+    @apply px-6 py-3 bg-transparent border-2 border-primary text-primary font-bold rounded 
            hover:bg-primary hover:text-white transform hover:scale-105 
            transition-all duration-300 ease-in-out;
   }
   
   /* Outline Button */
   .btn-outline {
-    @apply px-6 py-3 bg-transparent border-2 border-white text-white font-bold rounded-lg 
+    @apply px-6 py-3 bg-transparent border-2 border-white text-white font-bold rounded 
            hover:bg-white hover:text-dark transform hover:scale-105 
            transition-all duration-300 ease-in-out;
   }
   
   /* Card Component */
   .card {
-    @apply bg-neutral-900 rounded-xl 
+    @apply bg-neutral-900 rounded-md 
            shadow-md hover:shadow-lg border border-neutral-800 
            transition-all duration-300 overflow-hidden;
   }
   
   .card-primary {
-    @apply bg-neutral-900 rounded-xl 
+    @apply bg-neutral-900 rounded-md 
            shadow-md border border-neutral-800 
            transition-all duration-300 hover:shadow-lg;
   }
@@ -163,7 +163,7 @@ h1, h2, h3, h4, h5, h6 {
   /* Input Fields */
   .input-field {
     @apply w-full px-4 py-3 bg-neutral-900 border border-neutral-700 
-           rounded-lg text-white placeholder-neutral-500 
+           rounded text-white placeholder-neutral-500 
            focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/50 
            transition-all duration-300;
   }

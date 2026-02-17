@@ -82,7 +82,7 @@ export default function ProgramsManagement() {
         </div>
         <button
           onClick={() => router.push('/admin/programs/new')}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
         >
           ➕ Add Program
         </button>
@@ -104,7 +104,7 @@ export default function ProgramsManagement() {
           programs.map((program) => (
             <div
               key={program.$id}
-              className={`bg-neutral-800 rounded-lg p-6 border-2 transition-all ${
+              className={`bg-neutral-800 rounded p-6 border-2 transition-all ${
                 program.isActive ? 'border-red-600' : 'border-neutral-700 opacity-60'
               }`}
             >
@@ -145,7 +145,7 @@ export default function ProgramsManagement() {
               <div className="flex gap-2">
                 <button
                   onClick={() => router.push(`/admin/programs/${program.$id}`)}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors text-sm"
+                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors text-sm"
                 >
                   ✏️ Edit
                 </button>
@@ -154,7 +154,7 @@ export default function ProgramsManagement() {
                     setProgramToDelete(program);
                     setShowDeleteModal(true);
                   }}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm"
                 >
                   🗑️
                 </button>
@@ -165,20 +165,20 @@ export default function ProgramsManagement() {
       </div>
 
       {/* Stats */}
-      <div className="bg-neutral-800 rounded-lg p-6 border border-neutral-700">
+      <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
         <h2 className="text-xl font-bold text-white mb-4">Program Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-neutral-700 rounded-lg">
+          <div className="p-4 bg-neutral-700 rounded">
             <p className="text-neutral-400 text-sm">Total Programs</p>
             <p className="text-2xl font-bold text-white mt-1">{programs.length}</p>
           </div>
-          <div className="p-4 bg-neutral-700 rounded-lg">
+          <div className="p-4 bg-neutral-700 rounded">
             <p className="text-neutral-400 text-sm">Active Programs</p>
             <p className="text-2xl font-bold text-green-500 mt-1">
               {programs.filter(p => p.isActive).length}
             </p>
           </div>
-          <div className="p-4 bg-neutral-700 rounded-lg">
+          <div className="p-4 bg-neutral-700 rounded">
             <p className="text-neutral-400 text-sm">Inactive Programs</p>
             <p className="text-2xl font-bold text-neutral-500 mt-1">
               {programs.filter(p => !p.isActive).length}
@@ -190,7 +190,7 @@ export default function ProgramsManagement() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && programToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded-lg max-w-md w-full border border-neutral-700 shadow-2xl">
+          <div className="bg-neutral-800 rounded max-w-md w-full border border-neutral-700 shadow-2xl">
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
@@ -216,14 +216,14 @@ export default function ProgramsManagement() {
                     setShowDeleteModal(false);
                     setProgramToDelete(null);
                   }}
-                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleDelete}
-                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded transition-colors"
                 >
                   Delete Program
                 </button>
@@ -237,7 +237,7 @@ export default function ProgramsManagement() {
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
           <div
-            className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
+            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
               toast.type === 'success'
                 ? 'bg-neutral-800 border-green-500 text-white'
                 : 'bg-neutral-800 border-red-500 text-white'

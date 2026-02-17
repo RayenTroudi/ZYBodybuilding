@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Pause, X, Clock, Phone, MapPin, Dumbbell, GraduationCap, TrendingUp, Target, Users, Trophy } from 'lucide-react';
 
 export default function MembershipExpiredPage() {
   const router = useRouter();
@@ -83,7 +84,7 @@ export default function MembershipExpiredPage() {
               height={60}
               className="object-contain"
             />
-            <span className="text-2xl font-bold text-white tracking-widest">ZY BODYBUILDING</span>
+            <span className="text-2xl font-bold text-white tracking-tight">ZY BODYBUILDING</span>
           </Link>
         </div>
 
@@ -91,8 +92,14 @@ export default function MembershipExpiredPage() {
         <div className="bg-neutral-900 backdrop-blur-sm rounded-2xl shadow-lg border border-neutral-800 overflow-hidden">
           {/* Header */}
           <div className="bg-primary p-6 text-center">
-            <div className="text-6xl mb-4">
-              {isPaused ? '⏸️' : isCancelled ? '❌' : '⏰'}
+            <div className="flex justify-center mb-4">
+              {isPaused ? (
+                <Pause className="w-16 h-16 text-white" />
+              ) : isCancelled ? (
+                <X className="w-16 h-16 text-white" />
+              ) : (
+                <Clock className="w-16 h-16 text-white" />
+              )}
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">
               {isPaused 
@@ -174,15 +181,15 @@ export default function MembershipExpiredPage() {
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { icon: '🏋️', text: 'Full Gym Access' },
-                  { icon: '👨‍🏫', text: 'Expert Trainers' },
-                  { icon: '📊', text: 'Progress Tracking' },
-                  { icon: '🎯', text: 'Personalized Workouts' },
-                  { icon: '💪', text: 'Fitness Classes' },
-                  { icon: '🏆', text: 'Community Support' },
+                  { Icon: Dumbbell, text: 'Full Gym Access' },
+                  { Icon: GraduationCap, text: 'Expert Trainers' },
+                  { Icon: TrendingUp, text: 'Progress Tracking' },
+                  { Icon: Target, text: 'Personalized Workouts' },
+                  { Icon: Users, text: 'Fitness Classes' },
+                  { Icon: Trophy, text: 'Community Support' },
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-2 text-neutral-300">
-                    <span className="text-lg">{item.icon}</span>
+                    <item.Icon className="w-5 h-5 text-primary" />
                     <span className="text-sm">{item.text}</span>
                   </div>
                 ))}
@@ -208,17 +215,17 @@ export default function MembershipExpiredPage() {
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   href="/#contact"
-                  className="block bg-neutral-700 hover:bg-neutral-600 text-white font-medium py-3 px-4 rounded-xl text-center transition-colors"
+                  className="flex items-center justify-center gap-2 bg-neutral-700 hover:bg-neutral-600 text-white font-medium py-3 px-4 rounded-xl text-center transition-colors"
                 >
-                  📞 Contact Us
+                  <Phone className="w-4 h-4" /> Contact Us
                 </Link>
                 <a
                   href="https://maps.google.com/?q=ZY+Bodybuilding+Gym"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block bg-neutral-700 hover:bg-neutral-600 text-white font-medium py-3 px-4 rounded-xl text-center transition-colors"
+                  className="flex items-center justify-center gap-2 bg-neutral-700 hover:bg-neutral-600 text-white font-medium py-3 px-4 rounded-xl text-center transition-colors"
                 >
-                  📍 Visit Gym
+                  <MapPin className="w-4 h-4" /> Visit Gym
                 </a>
               </div>
 

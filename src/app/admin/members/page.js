@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { DataTable, createSelectColumn, createActionsColumn } from '@/app/components/ui/data-table';
 import { Button } from '@/app/components/ui/button';
+import { CheckCircle, XCircle, Upload, Download, Plus, Loader } from 'lucide-react';
 
 export default function MembersPage() {
   const router = useRouter();
@@ -358,7 +359,7 @@ export default function MembersPage() {
       {/* Result Modal */}
       {showResultModal && resultMessage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-neutral-800 rounded border border-neutral-700 p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 {resultMessage.type === 'success' && (
@@ -388,19 +389,19 @@ export default function MembersPage() {
 
             {resultMessage.stats && (
               <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-neutral-700 rounded-lg p-4">
+                <div className="bg-neutral-700 rounded p-4">
                   <p className="text-neutral-400 text-sm">Total Rows</p>
                   <p className="text-2xl font-bold text-white">{resultMessage.stats.total}</p>
                 </div>
-                <div className="bg-green-500/20 rounded-lg p-4">
+                <div className="bg-green-500/20 rounded p-4">
                   <p className="text-neutral-400 text-sm">Successful</p>
                   <p className="text-2xl font-bold text-green-500">{resultMessage.stats.success}</p>
                 </div>
-                <div className="bg-red-500/20 rounded-lg p-4">
+                <div className="bg-red-500/20 rounded p-4">
                   <p className="text-neutral-400 text-sm">Failed</p>
                   <p className="text-2xl font-bold text-red-500">{resultMessage.stats.failed}</p>
                 </div>
-                <div className="bg-yellow-500/20 rounded-lg p-4">
+                <div className="bg-yellow-500/20 rounded p-4">
                   <p className="text-neutral-400 text-sm">Duplicates</p>
                   <p className="text-2xl font-bold text-yellow-500">{resultMessage.stats.duplicates}</p>
                 </div>
@@ -408,13 +409,13 @@ export default function MembersPage() {
             )}
 
             {resultMessage.message && (
-              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-4">
+              <div className="bg-red-500/20 border border-red-500/50 rounded p-4 mb-4">
                 <p className="text-red-400">{resultMessage.message}</p>
               </div>
             )}
 
             {resultMessage.errors && (
-              <div className="bg-neutral-700 rounded-lg p-4 mb-4">
+              <div className="bg-neutral-700 rounded p-4 mb-4">
                 <p className="text-neutral-400 text-sm font-semibold mb-2">First Errors:</p>
                 <pre className="text-xs text-neutral-300 whitespace-pre-wrap">{resultMessage.errors}</pre>
               </div>
@@ -422,7 +423,7 @@ export default function MembersPage() {
 
             <button
               onClick={() => setShowResultModal(false)}
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
             >
               Close
             </button>
@@ -433,7 +434,7 @@ export default function MembersPage() {
       {/* Year Selection Dialog */}
       {showYearDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 max-w-md w-full">
+          <div className="bg-neutral-800 rounded border border-neutral-700 p-6 max-w-md w-full">
             <h3 className="text-xl font-bold text-white mb-4">Select Data Year</h3>
             <p className="text-neutral-400 mb-6">
               What year does this Excel file data belong to?
@@ -449,7 +450,7 @@ export default function MembersPage() {
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                 min="2000"
                 max="2100"
-                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-sm text-neutral-500 mt-2">
                 Dates without a year (e.g., "04-août") will use this year
@@ -459,13 +460,13 @@ export default function MembersPage() {
             <div className="flex gap-3">
               <button
                 onClick={handleCancelImport}
-                className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmImport}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
               >
                 Import
               </button>
@@ -489,34 +490,38 @@ export default function MembersPage() {
               disabled={importing}
               className="hidden"
             />
-            <span className={`block px-4 py-2 ${importing ? 'bg-neutral-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg transition-colors text-sm sm:text-base w-full sm:w-auto text-center`}>
-              {importing ? '⏳ Importing...' : '📤 Import Excel'}
+            <span className={`flex items-center justify-center gap-2 px-4 py-2 ${importing ? 'bg-neutral-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded transition-colors text-sm sm:text-base w-full sm:w-auto`}>
+              {importing ? (
+                <><Loader className="w-4 h-4 animate-spin" /> Importing...</>
+              ) : (
+                <><Upload className="w-4 h-4" /> Import Excel</>
+              )}
             </span>
           </label>
           <button
             onClick={exportToCSV}
-            className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors text-sm sm:text-base w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors text-sm sm:text-base w-full sm:w-auto"
           >
-            📥 Export CSV
+            <Download className="w-4 h-4" /> Export CSV
           </button>
           <Link
             href="/admin/members/new"
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-center text-sm sm:text-base w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm sm:text-base w-full sm:w-auto"
           >
-            ➕ Add Member
+            <Plus className="w-4 h-4" /> Add Member
           </Link>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-neutral-800 rounded-lg p-4 sm:p-6 border border-neutral-700">
+      <div className="bg-neutral-800 rounded p-4 sm:p-6 border border-neutral-700">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               <option value="all">All Status</option>
               <option value="Active">Active</option>
@@ -531,7 +536,7 @@ export default function MembersPage() {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
           
@@ -541,7 +546,7 @@ export default function MembersPage() {
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
         </div>
@@ -566,7 +571,7 @@ export default function MembersPage() {
 
       {/* Data Table */}
       {loading ? (
-        <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-12 flex flex-col items-center justify-center">
+        <div className="bg-neutral-800 rounded border border-neutral-700 p-12 flex flex-col items-center justify-center">
           <div className="relative w-16 h-16">
             <div className="absolute top-0 left-0 w-full h-full border-4 border-red-500/30 rounded-full"></div>
             <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
@@ -585,17 +590,17 @@ export default function MembersPage() {
 
       {/* Stats Footer */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-neutral-800 rounded-lg p-4 sm:p-5 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-4 sm:p-5 border border-neutral-700">
           <p className="text-neutral-400 text-xs sm:text-sm">Total Members</p>
           <p className="text-xl sm:text-2xl font-bold text-white mt-1">{members.length}</p>
         </div>
-        <div className="bg-neutral-800 rounded-lg p-4 sm:p-5 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-4 sm:p-5 border border-neutral-700">
           <p className="text-neutral-400 text-xs sm:text-sm">Active Members</p>
           <p className="text-xl sm:text-2xl font-bold text-green-500 mt-1">
             {members.filter(m => getActualStatus(m) === 'Active').length}
           </p>
         </div>
-        <div className="bg-neutral-800 rounded-lg p-4 sm:p-5 border border-neutral-700">
+        <div className="bg-neutral-800 rounded p-4 sm:p-5 border border-neutral-700">
           <p className="text-neutral-400 text-xs sm:text-sm">Total Revenue</p>
           <p className="text-xl sm:text-2xl font-bold text-white mt-1">
             {members.reduce((sum, m) => sum + m.totalPaid, 0).toFixed(2)} TND
@@ -607,15 +612,19 @@ export default function MembersPage() {
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
           <div
-            className={`px-6 py-4 rounded-lg shadow-2xl border-l-4 min-w-[320px] ${
+            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
               toast.type === 'success'
                 ? 'bg-neutral-800 border-green-500 text-white'
                 : 'bg-neutral-800 border-red-500 text-white'
             }`}
           >
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 text-2xl">
-                {toast.type === 'success' ? '✅' : '❌'}
+              <div className="flex-shrink-0">
+                {toast.type === 'success' ? (
+                  <CheckCircle className="w-6 h-6" />
+                ) : (
+                  <XCircle className="w-6 h-6" />
+                )}
               </div>
               <div className="flex-1">
                 <p className="font-medium text-white">{toast.message}</p>

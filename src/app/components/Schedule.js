@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCalendarAlt, FaClock, FaFire, FaUsers, FaTrophy, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import Image from 'next/image';
+import { Calendar } from 'lucide-react';
 
 const Schedule = () => {
   const [activeTab, setActiveTab] = useState('Lundi');
