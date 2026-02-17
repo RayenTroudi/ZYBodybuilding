@@ -45,17 +45,36 @@ export async function POST(request) {
 
     // Get session from cookie
     const cookieStore = await cookies();
-    const session = cookieStore.get('session');
+    const sessionCookie = cookieStore.get('session');
 
-    if (!session) {
+    if (!sessionCookie) {
       return NextResponse.json(
         { error: 'No active session found' },
         { status: 401 }
       );
     }
 
+    // Parse the session JSON
+    let session;
+    try {
+      session = JSON.parse(sessionCookie.value);
+    } catch (parseError) {
+      console.error('❌ Failed to parse session cookie:', parseError);
+      return NextResponse.json(
+        { error: 'Invalid session data' },
+        { status: 401 }
+      );
+    }
+
+    if (!session || !session.secret) {
+      return NextResponse.json(
+        { error: 'Invalid session data' },
+        { status: 401 }
+      );
+    }
+
     // Create session client to update password
-    const { account } = createSessionClient(session.value);
+    const { account } = createSessionClient(session.secret);
 
     // Update password using Appwrite's updatePassword method
     // This method requires the old password for verification
