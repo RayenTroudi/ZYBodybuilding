@@ -33,28 +33,32 @@ export default function DashboardLayout({ children }) {
       
       if (!data.success || !data.user) {
         router.push('/login');
+        // Keep loading true to prevent flash of content
         return;
       }
 
       // Check if user requires password reset (first login)
       if (data.membership?.requiresPasswordReset) {
         router.push('/reset-password');
+        // Keep loading true to prevent flash of content
         return;
       }
 
       // Check if membership is valid
       if (data.membership && !data.membership.isValid) {
         router.push('/membership-expired');
+        // Keep loading true to prevent flash of content
         return;
       }
 
+      // Only set loading to false if we're not redirecting
       setUser(data.user);
       setMembership(data.membership);
+      setLoading(false);
     } catch (error) {
       console.error('Auth check failed:', error);
       router.push('/login');
-    } finally {
-      setLoading(false);
+      // Keep loading true to prevent flash of content
     }
   };
 
