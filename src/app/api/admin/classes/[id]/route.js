@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/appwrite/server';
 import { appwriteConfig } from '@/lib/appwrite/config';
 import { requireAdmin } from '@/lib/auth';
+import { Client, Storage } from 'node-appwrite';
 
 // GET - Fetch single class
 export async function GET(request, { params }) {
@@ -42,21 +43,11 @@ export async function PATCH(request, { params }) {
     // Build update object (only include provided fields)
     const updateData = {};
     if (data.title !== undefined) updateData.title = data.title;
-    if (data.description !== undefined) updateData.description = data.description;
     if (data.dayOfWeek !== undefined) updateData.dayOfWeek = data.dayOfWeek;
     if (data.startTime !== undefined) updateData.startTime = data.startTime;
     if (data.endTime !== undefined) updateData.endTime = data.endTime;
     if (data.trainerId !== undefined) updateData.trainerId = data.trainerId;
-    if (data.difficulty !== undefined) updateData.difficulty = data.difficulty;
-    if (data.category !== undefined) updateData.category = data.category;
-    if (data.caloriesBurn !== undefined) updateData.caloriesBurn = data.caloriesBurn;
-    if (data.duration !== undefined) updateData.duration = data.duration;
-    if (data.availableSpots !== undefined) updateData.availableSpots = data.availableSpots;
-    if (data.bookedSpots !== undefined) updateData.bookedSpots = data.bookedSpots;
-    if (data.color !== undefined) updateData.color = data.color;
-    if (data.icon !== undefined) updateData.icon = data.icon;
-    if (data.isActive !== undefined) updateData.isActive = data.isActive;
-    if (data.order !== undefined) updateData.order = data.order;
+    if (data.imageFileId !== undefined) updateData.imageFileId = data.imageFileId;
 
     const classDoc = await databases.updateDocument(
       appwriteConfig.databaseId,
@@ -86,6 +77,33 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     const { databases } = createAdminClient();
 
+    // Get class to check if it has an image
+    const classDoc = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.classesCollectionId,
+      id
+    );
+
+    // Delete associated image if exists
+    if (classDoc.imageFileId) {
+      try {
+        const client = new Client()
+          .setEndpoint(appwriteConfig.endpoint)
+          .setProject(appwriteConfig.projectId)
+          .setKey(process.env.APPWRITE_API_KEY);
+
+        const storage = new Storage(client);
+        await storage.deleteFile(
+          appwriteConfig.trainerImagesBucketId,
+          classDoc.imageFileId
+        );
+      } catch (deleteError) {
+        console.error('Failed to delete image:', deleteError);
+        // Continue with class deletion even if image deletion fails
+      }
+    }
+
+    // Delete class document
     await databases.deleteDocument(
       appwriteConfig.databaseId,
       appwriteConfig.classesCollectionId,

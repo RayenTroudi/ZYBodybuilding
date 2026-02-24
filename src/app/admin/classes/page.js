@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { cachedFetch, invalidateCache } from '@/lib/cache';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 
 export default function ClassesPage() {
   const [classes, setClasses] = useState([]);
@@ -23,8 +23,8 @@ export default function ClassesPage() {
     try {
       setLoading(true);
       const [classesData, trainersData] = await Promise.all([
-        cachedFetch('/api/admin/classes', {}, 60000), // 1 min cache
-        cachedFetch('/api/admin/trainers', {}, 300000), // 5 min cache
+        fetch('/api/admin/classes', { cache: 'no-store' }).then(r => r.json()),
+        fetch('/api/admin/trainers', { cache: 'no-store' }).then(r => r.json()),
       ]);
       
       if (classesData.success) setClasses(classesData.classes);
@@ -37,24 +37,6 @@ export default function ClassesPage() {
     }
   };
 
-  const handleToggleActive = async (classItem) => {
-    try {
-      const response = await fetch(`/api/admin/classes/${classItem.$id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !classItem.isActive }),
-      });
-
-      if (response.ok) {
-        invalidateCache('/api/admin/classes');
-        fetchData();
-        showToast(`Class ${classItem.isActive ? 'deactivated' : 'activated'}`, 'success');
-      }
-    } catch (error) {
-      showToast('Failed to update class', 'error');
-    }
-  };
-
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/admin/classes/${deleteModal.classItem.$id}`, {
@@ -62,10 +44,12 @@ export default function ClassesPage() {
       });
 
       if (response.ok) {
-        invalidateCache('/api/admin/classes');
         fetchData();
         showToast('Class deleted successfully', 'success');
         setDeleteModal({ show: false, classItem: null });
+      } else {
+        const data = await response.json();
+        showToast(data.error || 'Failed to delete class', 'error');
       }
     } catch (error) {
       showToast('Failed to delete class', 'error');
@@ -82,23 +66,12 @@ export default function ClassesPage() {
     return trainer ? trainer.name : 'No trainer';
   };
 
-  const getDifficultyColor = (difficulty) => {
-    switch (difficulty) {
-      case 'Débutant': return 'bg-green-600';
-      case 'Intermédiaire': return 'bg-yellow-600';
-      case 'Avancé': return 'bg-red-600';
-      default: return 'bg-neutral-600';
-    }
-  };
-
   const filteredClasses = selectedDay === 'all' 
     ? classes 
     : classes.filter(c => c.dayOfWeek === selectedDay);
 
   const stats = {
     total: classes.length,
-    active: classes.filter(c => c.isActive).length,
-    inactive: classes.filter(c => !c.isActive).length,
   };
 
   return (
@@ -107,7 +80,7 @@ export default function ClassesPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Classes</h1>
-          <p className="text-neutral-400 mt-1">Manage your gym class schedule</p>
+          <p className="text-neutral-400 mt-1">Manage weekly group classes</p>
         </div>
         <Link
           href="/admin/classes/new"
@@ -118,18 +91,16 @@ export default function ClassesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-neutral-800 p-6 rounded-lg border border-neutral-700">
           <div className="text-neutral-400 text-sm">Total Classes</div>
           <div className="text-3xl font-bold text-white mt-2">{stats.total}</div>
         </div>
-        <div className="bg-neutral-800 p-6 rounded-lg border border-green-600">
-          <div className="text-neutral-400 text-sm">Active</div>
-          <div className="text-3xl font-bold text-green-500 mt-2">{stats.active}</div>
-        </div>
         <div className="bg-neutral-800 p-6 rounded-lg border border-neutral-700">
-          <div className="text-neutral-400 text-sm">Inactive</div>
-          <div className="text-3xl font-bold text-neutral-500 mt-2">{stats.inactive}</div>
+          <div className="text-neutral-400 text-sm">Selected Day</div>
+          <div className="text-3xl font-bold text-white mt-2">
+            {selectedDay === 'all' ? 'All' : selectedDay}
+          </div>
         </div>
       </div>
 
@@ -174,46 +145,30 @@ export default function ClassesPage() {
               key={classItem.$id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-neutral-800 rounded-lg border ${
-                classItem.isActive ? 'border-green-600' : 'border-neutral-700'
-              } p-6 hover:shadow-xl transition-all`}
+              className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 hover:shadow-xl transition-all"
             >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 {/* Class Info */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">{classItem.icon || '🏋️'}</span>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">{classItem.title}</h3>
-                      <p className="text-neutral-400 text-sm">
-                        {classItem.dayOfWeek} • {classItem.startTime} - {classItem.endTime}
-                      </p>
+                <div className="flex-1 flex gap-4">
+                  {classItem.imageFileId && (
+                    <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID}/files/${classItem.imageFileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
+                        alt={classItem.title}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${getDifficultyColor(classItem.difficulty)} text-white`}>
-                      {classItem.difficulty}
-                    </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-600 text-white">
-                      {classItem.category}
-                    </span>
-                    {classItem.caloriesBurn > 0 && (
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-orange-600 text-white">
-                        🔥 {classItem.caloriesBurn} kcal
-                      </span>
-                    )}
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white">
-                      👤 {getTrainerName(classItem.trainerId)}
-                    </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-600 text-white">
-                      📍 {classItem.bookedSpots || 0}/{classItem.availableSpots} spots
-                    </span>
-                  </div>
-
-                  {classItem.description && (
-                    <p className="text-neutral-400 text-sm">{classItem.description}</p>
                   )}
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-white mb-1">{classItem.title}</h3>
+                    <p className="text-neutral-400 text-sm mb-2">
+                      {classItem.dayOfWeek} • {classItem.startTime} - {classItem.endTime}
+                    </p>
+                    <p className="text-neutral-300 text-sm">
+                      Coach: {getTrainerName(classItem.trainerId)}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Actions */}
@@ -224,16 +179,6 @@ export default function ClassesPage() {
                   >
                     Edit
                   </Link>
-                  <button
-                    onClick={() => handleToggleActive(classItem)}
-                    className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                      classItem.isActive
-                        ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
-                        : 'bg-green-600 hover:bg-green-700 text-white'
-                    }`}
-                  >
-                    {classItem.isActive ? 'Deactivate' : 'Activate'}
-                  </button>
                   <button
                     onClick={() => setDeleteModal({ show: true, classItem })}
                     className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
@@ -249,13 +194,12 @@ export default function ClassesPage() {
 
       {filteredClasses.length === 0 && !loading && (
         <div className="text-center py-12 bg-neutral-800 rounded-lg border border-neutral-700">
-          <div className="text-6xl mb-4">📅</div>
-          <p className="text-neutral-400 text-lg">
+          <p className="text-neutral-400 text-lg mb-4">
             {selectedDay === 'all' ? 'No classes found' : `No classes on ${selectedDay}`}
           </p>
           <Link
             href="/admin/classes/new"
-            className="inline-block mt-4 text-red-500 hover:text-red-400"
+            className="inline-block text-red-500 hover:text-red-400"
           >
             Add your first class
           </Link>
@@ -273,7 +217,6 @@ export default function ClassesPage() {
               className="bg-neutral-800 rounded-lg p-6 max-w-md w-full border border-neutral-700"
             >
               <div className="text-center">
-                <div className="text-5xl mb-4">⚠️</div>
                 <h3 className="text-xl font-bold text-white mb-2">Delete Class</h3>
                 <p className="text-neutral-400 mb-6">
                   Are you sure you want to delete <strong>{deleteModal.classItem?.title}</strong>?

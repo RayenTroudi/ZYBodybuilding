@@ -8,13 +8,11 @@ export async function GET(request) {
   try {
     const { databases } = createAdminClient();
     
-    // Fetch active classes ordered by day and time
+    // Fetch classes ordered by day and time
     const classes = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.classesCollectionId,
       [
-        Query.equal('isActive', true),
-        Query.orderAsc('dayOfWeek'),
         Query.orderAsc('startTime')
       ]
     );

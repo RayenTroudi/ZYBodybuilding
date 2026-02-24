@@ -1,17 +1,30 @@
 'use client'; 
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaCalendarAlt, FaClock, FaFire, FaUsers, FaTrophy, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import Image from 'next/image';
-import { Calendar } from 'lucide-react';
 
 const Schedule = () => {
   const [activeTab, setActiveTab] = useState('Lundi');
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [expandedCards, setExpandedCards] = useState({});
 
   useEffect(() => {
+    // Set initial day based on current day
+    const today = new Date();
+    const dayIndex = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+    const frenchDays = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const weekdayDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+    
+    const currentDay = frenchDays[dayIndex];
+    
+    // If today is a weekday, select it; otherwise default to Lundi
+    if (weekdayDays.includes(currentDay)) {
+      setActiveTab(currentDay);
+    } else {
+      setActiveTab('Lundi');
+    }
+
     fetchClasses();
   }, []);
 
@@ -28,22 +41,6 @@ const Schedule = () => {
       console.error('Error fetching classes:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const toggleCard = (id) => {
-    setExpandedCards(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
-
-  const getDifficultyColor = (difficulty) => {
-    switch (difficulty) {
-      case 'Débutant': return 'bg-green-500';
-      case 'Intermédiaire': return 'bg-yellow-500';
-      case 'Avancé': return 'bg-red-500';
-      default: return 'bg-neutral-500';
     }
   };
 
@@ -125,9 +122,11 @@ const Schedule = () => {
             animate="animate"
           >
             <AnimatePresence mode="wait">
-              {filteredClasses.map((classItem, index) => {
-                const isExpanded = expandedCards[classItem.$id];
-                
+              {filteredClasses.map((classItem) => {
+                const imageUrl = classItem.imageFileId
+                  ? `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID}/files/${classItem.imageFileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
+                  : null;
+
                 return (
                   <motion.div
                     key={classItem.$id}
@@ -135,126 +134,61 @@ const Schedule = () => {
                     layout
                     className="bg-neutral-900 backdrop-blur-md rounded-2xl overflow-hidden border border-neutral-800 hover:border-primary/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-primary/20"
                   >
-                    {/* Main Card Content */}
-                    <div 
-                      className="p-5 sm:p-6 cursor-pointer"
-                      onClick={() => toggleCard(classItem.$id)}
-                    >
+                    <div className="p-5 sm:p-6">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                         
-                        {/* Class Icon & Time */}
-                        <div className="flex items-center gap-4">
-                          <div 
-                            className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl shadow-lg"
-                            style={{ 
-                              backgroundColor: `${classItem.color}20`,
-                              border: `2px solid ${classItem.color}`
-                            }}
-                          >
-                            {classItem.icon}
+                        {/* Class Image */}
+                        {imageUrl && (
+                          <div className="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden">
+                            <Image
+                              src={imageUrl}
+                              alt={classItem.title}
+                              width={96}
+                              height={96}
+                              className="object-cover w-full h-full"
+                            />
                           </div>
-                          
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-2 text-neutral-400 text-sm mb-1">
-                              <FaClock className="text-primary" />
-                              <span className="font-medium">{classItem.startTime} - {classItem.endTime}</span>
-                              <span className="text-xs bg-neutral-700 px-2 py-0.5 rounded-full">
-                                {classItem.duration} min
-                              </span>
-                            </div>
-                            <h3 
-                              className="text-xl sm:text-2xl font-bold mb-1"
-                              style={{ color: classItem.color }}
-                            >
+                        )}
+                        
+                        {/* Class Info */}
+                        <div className="flex-1">
+                          <div className="mb-2">
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
                               {classItem.title}
                             </h3>
+                            <p className="text-neutral-400 text-sm">
+                              {classItem.startTime} - {classItem.endTime}
+                            </p>
                           </div>
+                          
+                          {/* Trainer Info */}
+                          {classItem.trainer && (
+                            <div className="flex items-center gap-3 p-3 bg-neutral-800/50 rounded-lg border border-neutral-700/30">
+                              {classItem.trainer.imageUrl ? (
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary/50 flex-shrink-0">
+                                  <Image
+                                    src={classItem.trainer.imageUrl}
+                                    alt={classItem.trainer.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+                                  {classItem.trainer.name.charAt(0)}
+                                </div>
+                              )}
+                              <div>
+                                <p className="text-white font-bold text-sm">{classItem.trainer.name}</p>
+                                {classItem.trainer.specialty && (
+                                  <p className="text-primary text-xs">{classItem.trainer.specialty}</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
-
-                        {/* Badges & Stats */}
-                        <div className="flex flex-wrap gap-2 sm:ml-auto">
-                          <span className={`${getDifficultyColor(classItem.difficulty)} px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1`}>
-                            <FaTrophy className="text-xs" />
-                            {classItem.difficulty}
-                          </span>
-                          {classItem.category && (
-                            <span className="bg-primary/20 border border-primary text-primary px-3 py-1 rounded-full text-xs font-bold">
-                              {classItem.category}
-                            </span>
-                          )}
-                          {classItem.caloriesBurn > 0 && (
-                            <span className="bg-orange-500/20 border border-orange-500 text-orange-400 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                              <FaFire />
-                              {classItem.caloriesBurn} cal
-                            </span>
-                          )}
-                          {classItem.availableSpots > 0 && (
-                            <span className="bg-green-500/20 border border-green-500 text-green-400 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                              <FaUsers />
-                              {classItem.availableSpots - (classItem.bookedSpots || 0)} places
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Expand Button */}
-                        <motion.div
-                          className="sm:ml-4 flex items-center justify-center"
-                          animate={{ rotate: isExpanded ? 180 : 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <FaChevronDown className="text-primary text-xl" />
-                        </motion.div>
                       </div>
                     </div>
-
-                    {/* Expanded Content */}
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden border-t border-neutral-700/50"
-                        >
-                          <div className="p-5 sm:p-6 bg-neutral-900/50">
-                            {/* Trainer Info */}
-                            {classItem.trainer && (
-                              <div className="flex items-center gap-4 mb-4 p-4 bg-neutral-800/50 rounded-xl border border-neutral-700/30">
-                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden ring-2 ring-primary/50">
-                                  {classItem.trainer.imageUrl ? (
-                                    <Image
-                                      src={classItem.trainer.imageUrl}
-                                      alt={classItem.trainer.name}
-                                      fill
-                                      className="object-cover"
-                                    />
-                                  ) : (
-                                    <div className="w-full h-full bg-primary flex items-center justify-center text-2xl font-bold">
-                                      {classItem.trainer.name.charAt(0)}
-                                    </div>
-                                  )}
-                                </div>
-                                <div>
-                                  <p className="text-neutral-400 text-sm mb-1">Coach</p>
-                                  <p className="text-white font-bold text-lg">{classItem.trainer.name}</p>
-                                  {classItem.trainer.specialty && (
-                                    <p className="text-primary text-sm">{classItem.trainer.specialty}</p>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Description */}
-                            {classItem.description && (
-                              <p className="text-neutral-300 text-sm sm:text-base leading-relaxed">
-                                {classItem.description}
-                              </p>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </motion.div>
                 );
               })}
@@ -267,7 +201,6 @@ const Schedule = () => {
                 animate={{ opacity: 1 }}
                 className="text-center py-16"
               >
-                <div className="text-6xl mb-4">📅</div>
                 <p className="text-neutral-400 text-lg">Aucun cours prévu pour ce jour.</p>
               </motion.div>
             )}

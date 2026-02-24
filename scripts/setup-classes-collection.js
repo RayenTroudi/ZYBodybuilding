@@ -51,23 +51,13 @@ async function setupClassesCollection() {
     console.log('Collection created successfully!');
     console.log('Creating attributes...');
 
-    // Create attributes
+    // Create attributes - simplified schema
     await databases.createStringAttribute(databaseId, collectionId, 'title', 200, true);
-    await databases.createStringAttribute(databaseId, collectionId, 'description', 1000, false);
-    await databases.createStringAttribute(databaseId, collectionId, 'dayOfWeek', 20, true); // Lundi, Mardi, etc.
+    await databases.createStringAttribute(databaseId, collectionId, 'dayOfWeek', 20, true); // Lundi, Mardi, Mercredi, Jeudi, Vendredi
     await databases.createStringAttribute(databaseId, collectionId, 'startTime', 10, true); // HH:MM format
     await databases.createStringAttribute(databaseId, collectionId, 'endTime', 10, true); // HH:MM format
     await databases.createStringAttribute(databaseId, collectionId, 'trainerId', 255, false); // Relationship to trainer
-    await databases.createStringAttribute(databaseId, collectionId, 'difficulty', 20, false); // Débutant, Intermédiaire, Avancé
-    await databases.createStringAttribute(databaseId, collectionId, 'category', 50, false); // Cardio, Strength, Stretching, etc.
-    await databases.createIntegerAttribute(databaseId, collectionId, 'caloriesBurn', false); // Estimated calories
-    await databases.createIntegerAttribute(databaseId, collectionId, 'duration', true); // Minutes
-    await databases.createIntegerAttribute(databaseId, collectionId, 'availableSpots', false);
-    await databases.createIntegerAttribute(databaseId, collectionId, 'bookedSpots', false);
-    await databases.createStringAttribute(databaseId, collectionId, 'color', 20, false); // Hex color
-    await databases.createStringAttribute(databaseId, collectionId, 'icon', 10, false); // Emoji icon
-    await databases.createBooleanAttribute(databaseId, collectionId, 'isActive', false, true);
-    await databases.createIntegerAttribute(databaseId, collectionId, 'order', false);
+    await databases.createStringAttribute(databaseId, collectionId, 'imageFileId', 255, false); // Optional class image
 
     console.log('Attributes created successfully!');
     console.log('Waiting for attributes to be ready...');
@@ -81,25 +71,16 @@ async function setupClassesCollection() {
     await databases.createIndex(
       databaseId,
       collectionId,
-      'day_time',
+      'day_start_time',
       'key',
-      ['dayOfWeek', 'startTime', 'isActive'],
-      ['ASC', 'ASC', 'ASC']
-    );
-
-    await databases.createIndex(
-      databaseId,
-      collectionId,
-      'active_category',
-      'key',
-      ['isActive', 'category'],
+      ['dayOfWeek', 'startTime'],
       ['ASC', 'ASC']
     );
 
     await databases.createIndex(
       databaseId,
       collectionId,
-      'trainer',
+      'trainer_id',
       'key',
       ['trainerId'],
       ['ASC']

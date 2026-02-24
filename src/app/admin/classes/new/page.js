@@ -3,34 +3,23 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { cachedFetch, invalidateCache } from '@/lib/cache';
+import Image from 'next/image';
 
-const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-const DIFFICULTIES = ['Débutant', 'Intermédiaire', 'Avancé'];
-const CATEGORIES = ['Cardio', 'Musculation', 'Yoga', 'HIIT', 'Fitness', 'CrossFit', 'Stretching', 'Boxing', 'Pilates', 'Cycling'];
-const ICONS = ['🏋️', '🏃', '🧘', '🥊', '🚴', '💪', '⚡', '🔥', '🎯', '💯'];
+const DAYS_OF_WEEK = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 
 export default function NewClassPage() {
   const router = useRouter();
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
-    description: '',
     dayOfWeek: 'Lundi',
     startTime: '07:00',
     endTime: '08:00',
     trainerId: '',
-    difficulty: 'Intermédiaire',
-    category: 'Fitness',
-    caloriesBurn: 300,
-    duration: 60,
-    availableSpots: 20,
-    bookedSpots: 0,
-    color: '#CC1303',
-    icon: '🏋️',
-    isActive: true,
-    order: 0,
+    imageFileId: '',
   });
 
   useEffect(() => {
@@ -39,7 +28,8 @@ export default function NewClassPage() {
 
   const fetchTrainers = async () => {
     try {
-      const data = await cachedFetch('/api/admin/trainers', {}, 300000); // 5 min cache
+      const response = await fetch('/api/admin/trainers', { cache: 'no-store' });
+      const data = await response.json();
       if (data.success && data.trainers.length > 0) {
         setTrainers(data.trainers.filter(t => t.isActive));
         setFormData(prev => ({ ...prev, trainerId: data.trainers[0].$id }));
@@ -57,14 +47,7 @@ export default function NewClassPage() {
       const response = await fetch('/api/admin/classes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          caloriesBurn: parseInt(formData.caloriesBurn),
-          duration: parseInt(formData.duration),
-          availableSpots: parseInt(formData.availableSpots),
-          bookedSpots: parseInt(formData.bookedSpots),
-          order: parseInt(formData.order),
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -81,11 +64,81 @@ export default function NewClassPage() {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
+  };
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Invalid file type. Please upload a JPEG, PNG, or WebP image.');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert('File size exceeds 5MB limit.');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      if (formData.imageFileId) {
+        try {
+          await fetch(`/api/admin/upload-trainer-image?fileId=${formData.imageFileId}`, {
+            method: 'DELETE',
+          });
+        } catch (deleteError) {
+          console.error('Failed to delete old image:', deleteError);
+        }
+      }
+
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await fetch('/api/admin/upload-trainer-image', {
+        method: 'POST',
+        body: formDataUpload,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setFormData(prev => ({ ...prev, imageFileId: data.fileId }));
+        setImagePreview(data.fileUrl);
+      } else {
+        alert(data.error || 'Failed to upload image');
+      }
+    } catch (error) {
+      alert('Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageUpload(file);
+  };
+
+  const handleRemoveImage = async () => {
+    if (formData.imageFileId) {
+      try {
+        await fetch(`/api/admin/upload-trainer-image?fileId=${formData.imageFileId}`, {
+          method: 'DELETE',
+        });
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+      }
+    }
+    setFormData(prev => ({ ...prev, imageFileId: '' }));
+    setImagePreview(null);
   };
 
   return (
@@ -120,22 +173,7 @@ export default function NewClassPage() {
                 onChange={handleChange}
                 required
                 className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="HIIT Explosif"
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                placeholder="High-intensity interval training for maximum results..."
+                placeholder="Yoga"
               />
             </div>
 
@@ -205,153 +243,11 @@ export default function NewClassPage() {
               </select>
             </div>
 
-            {/* Difficulty and Category */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Difficulty
-                </label>
-                <select
-                  name="difficulty"
-                  value={formData.difficulty}
-                  onChange={handleChange}
-                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                >
-                  {DIFFICULTIES.map(diff => (
-                    <option key={diff} value={diff}>{diff}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Category
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                >
-                  {CATEGORIES.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Calories, Duration, Spots */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Calories
-                </label>
-                <input
-                  type="number"
-                  name="caloriesBurn"
-                  value={formData.caloriesBurn}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Duration (min) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="duration"
-                  value={formData.duration}
-                  onChange={handleChange}
-                  required
-                  min="1"
-                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Available Spots
-                </label>
-                <input
-                  type="number"
-                  name="availableSpots"
-                  value={formData.availableSpots}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            {/* Icon and Color */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Icon
-                </label>
-                <div className="grid grid-cols-5 gap-2">
-                  {ICONS.map(icon => (
-                    <button
-                      key={icon}
-                      type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, icon }))}
-                      className={`text-2xl p-3 rounded-lg border-2 transition-all ${
-                        formData.icon === icon
-                          ? 'border-red-500 bg-neutral-700'
-                          : 'border-neutral-600 bg-neutral-800 hover:border-neutral-500'
-                      }`}
-                    >
-                      {icon}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Color
-                </label>
-                <input
-                  type="color"
-                  name="color"
-                  value={formData.color}
-                  onChange={handleChange}
-                  className="w-full h-12 bg-neutral-700 border border-neutral-600 rounded-lg cursor-pointer"
-                />
-              </div>
-            </div>
-
-            {/* Order */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Display Order
-              </label>
-              <input
-                type="number"
-                name="order"
-                value={formData.order}
-                onChange={handleChange}
-                min="0"
-                className="w-full bg-neutral-700 border border-neutral-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Is Active */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
-                onChange={handleChange}
-                className="w-4 h-4 text-red-600 bg-neutral-700 border-neutral-600 rounded focus:ring-red-500"
-              />
-              <label className="ml-2 text-sm text-neutral-300">Active</label>
-            </div>
-
-            {/* Submit */}
-            <div className="flex gap-3">
+            {/* Submit Button */}
+            <div className="flex gap-3 pt-4">
               <Link
                 href="/admin/classes"
-                className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-6 py-3 rounded-lg font-medium text-center transition-colors"
+                className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-6 py-3 rounded-lg font-medium transition-colors text-center"
               >
                 Cancel
               </Link>
@@ -366,44 +262,61 @@ export default function NewClassPage() {
           </form>
         </div>
 
-        {/* Preview */}
+        {/* Image Upload Preview */}
         <div className="md:col-span-1">
-          <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 sticky top-6">
-            <h3 className="text-lg font-bold text-white mb-4">Preview</h3>
-            <div className="bg-neutral-900 rounded-lg overflow-hidden border border-neutral-700 p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-                  style={{ backgroundColor: formData.color }}
+          <div className="bg-neutral-800 rounded-lg border border-neutral-700 p-6 space-y-4">
+            <h3 className="text-lg font-bold text-white">Class Image</h3>
+            <p className="text-sm text-neutral-400">Optional image for the class</p>
+
+            {imagePreview ? (
+              <div className="space-y-4">
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden">
+                  <Image
+                    src={imagePreview}
+                    alt="Class preview"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
-                  {formData.icon}
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-bold text-white">
-                    {formData.title || 'Class Title'}
-                  </h4>
-                  <p className="text-xs text-neutral-400">
-                    {formData.startTime} - {formData.endTime}
-                  </p>
+                  Remove Image
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-neutral-600 rounded-lg p-8 text-center">
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    id="imageUpload"
+                    disabled={uploading}
+                  />
+                  <label
+                    htmlFor="imageUpload"
+                    className="cursor-pointer block"
+                  >
+                    {uploading ? (
+                      <div className="space-y-4">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-600"></div>
+                        <p className="text-sm text-neutral-400">Uploading...</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="text-4xl text-neutral-600">+</div>
+                        <p className="text-sm text-neutral-400">Click to upload image</p>
+                        <p className="text-xs text-neutral-500">JPEG, PNG, WebP (max 5MB)</p>
+                      </div>
+                    )}
+                  </label>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                  formData.difficulty === 'Débutant' ? 'bg-green-600' :
-                  formData.difficulty === 'Intermédiaire' ? 'bg-yellow-600' : 'bg-red-600'
-                } text-white`}>
-                  {formData.difficulty}
-                </span>
-                <span className="px-2 py-1 rounded-full text-xs font-bold bg-purple-600 text-white">
-                  {formData.category}
-                </span>
-                {formData.caloriesBurn > 0 && (
-                  <span className="px-2 py-1 rounded-full text-xs font-bold bg-orange-600 text-white">
-                    🔥 {formData.caloriesBurn}
-                  </span>
-                )}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

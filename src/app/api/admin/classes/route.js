@@ -70,31 +70,15 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-    if (!data.duration) {
-      return NextResponse.json(
-        { success: false, error: 'Duration is required' },
-        { status: 400 }
-      );
-    }
 
     // Create class document
     const classData = {
       title: data.title,
-      description: data.description || '',
       dayOfWeek: data.dayOfWeek,
       startTime: data.startTime,
       endTime: data.endTime,
       trainerId: data.trainerId || '',
-      difficulty: data.difficulty || 'Intermédiaire',
-      category: data.category || 'Fitness',
-      caloriesBurn: data.caloriesBurn || 0,
-      duration: data.duration,
-      availableSpots: data.availableSpots || 0,
-      bookedSpots: data.bookedSpots || 0,
-      color: data.color || '#CC1303',
-      icon: data.icon || '🏋️',
-      isActive: data.isActive !== undefined ? data.isActive : true,
-      order: data.order || 0
+      imageFileId: data.imageFileId || '',
     };
 
     const classDoc = await databases.createDocument(
