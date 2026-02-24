@@ -36,6 +36,12 @@ export default function NewMemberPage() {
   });
   const router = useRouter();
 
+  // Helper function to get assurance amount based on plan
+  const getAssuranceAmount = (plan) => {
+    if (!plan) return 20;
+    return plan.name.toLowerCase().includes('couple') ? 40 : 20;
+  };
+
   useEffect(() => {
     fetchPlans();
   }, []);
@@ -86,6 +92,7 @@ export default function NewMemberPage() {
         endDate.setDate(endDate.getDate() + parseInt(selectedPlan.duration));
         
         // Set receipt data
+        const assuranceAmount = getAssuranceAmount(selectedPlan);
         setReceiptData({
           member,
           plan: selectedPlan,
@@ -95,7 +102,7 @@ export default function NewMemberPage() {
           paymentMethod: formData.paymentMethod,
           timestamp: new Date().toISOString(),
           includeAssurance: formData.includeAssurance,
-          assuranceAmount: formData.includeAssurance ? 20 : 0,
+          assuranceAmount: formData.includeAssurance ? assuranceAmount : 0,
         });
         
         setShowReceipt(true);
@@ -346,13 +353,13 @@ export default function NewMemberPage() {
                     <div className="flex justify-between">
                       <span className="text-neutral-600">Abonnement ({receiptData.plan.name}):</span>
                       <span className="font-semibold text-neutral-900">
-                        {(parseFloat(receiptData.payment) - (receiptData.includeAssurance ? 20 : 0)).toFixed(2)} TND
+                        {(parseFloat(receiptData.payment) - (receiptData.includeAssurance ? receiptData.assuranceAmount : 0)).toFixed(2)} TND
                       </span>
                     </div>
                     {receiptData.includeAssurance && (
                       <div className="flex justify-between">
                         <span className="text-neutral-600">🛡️ Assurance:</span>
-                        <span className="font-semibold text-blue-600">20.00 TND</span>
+                        <span className="font-semibold text-blue-600">{receiptData.assuranceAmount.toFixed(2)} TND</span>
                       </div>
                     )}
                   </div>
@@ -515,7 +522,8 @@ export default function NewMemberPage() {
                 onChange={(e) => {
                   const plan = plans.find(p => p.$id === e.target.value);
                   const planPrice = plan ? parseFloat(plan.price) : 0;
-                  const assuranceFee = formData.includeAssurance ? 20 : 0;
+                  const assuranceAmount = getAssuranceAmount(plan);
+                  const assuranceFee = formData.includeAssurance ? assuranceAmount : 0;
                   const totalAmount = planPrice + assuranceFee;
                   setFormData({ 
                     ...formData, 
@@ -598,7 +606,7 @@ export default function NewMemberPage() {
                 onChange={(e) => setFormData({ ...formData, initialPayment: e.target.value })}
                 min="0"
                 className="w-full px-4 py-3 bg-neutral-700/50 border border-neutral-600 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                placeholder={selectedPlan ? `${parseFloat(selectedPlan.price) + (formData.includeAssurance ? 20 : 0)}` : '0.00'}
+                placeholder={selectedPlan ? `${parseFloat(selectedPlan.price) + (formData.includeAssurance ? getAssuranceAmount(selectedPlan) : 0)}` : '0.00'}
               />
               <p className="text-xs text-neutral-500 mt-2">
                 💡 Updates automatically when plan or assurance is selected
@@ -628,7 +636,8 @@ export default function NewMemberPage() {
                   onChange={(e) => {
                     const checked = e.target.checked;
                     const planPrice = selectedPlan ? parseFloat(selectedPlan.price) : 0;
-                    const assuranceFee = checked ? 20 : 0;
+                    const assuranceAmount = getAssuranceAmount(selectedPlan);
+                    const assuranceFee = checked ? assuranceAmount : 0;
                     const totalAmount = planPrice + assuranceFee;
                     setFormData({ 
                       ...formData, 
@@ -643,12 +652,12 @@ export default function NewMemberPage() {
                     <Shield className="w-4 h-4" /> Include Assurance
                   </span>
                   <p className="text-sm text-neutral-400 mt-1">
-                    Add insurance coverage for 20 DT
+                    Add insurance coverage for {selectedPlan && selectedPlan.name.toLowerCase().includes('couple') ? '40 DT' : '20 DT'}
                   </p>
                 </div>
                 {formData.includeAssurance && (
                   <span className="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-lg">
-                    +20 DT
+                    +{getAssuranceAmount(selectedPlan)} DT
                   </span>
                 )}
               </label>
@@ -670,7 +679,7 @@ export default function NewMemberPage() {
                       <span className="text-neutral-400 flex items-center gap-1">
                         <Shield className="w-4 h-4" /> Assurance:
                       </span>
-                      <span className="text-blue-400 font-semibold">20.00 DT</span>
+                      <span className="text-blue-400 font-semibold">{getAssuranceAmount(selectedPlan).toFixed(2)} DT</span>
                     </div>
                   )}
                   <div className="pt-2 border-t border-green-500/30 flex justify-between">

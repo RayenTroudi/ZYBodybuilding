@@ -131,13 +131,16 @@ export async function POST(request) {
     // Remove fields that aren't part of the member schema
     const { initialPayment, paymentMethod, planDuration, includeAssurance, ...memberFields } = data;
 
+    // Calculate assurance amount based on plan name
+    const assuranceAmount = data.planName && data.planName.toLowerCase().includes('couple') ? 40 : 20;
+
     const memberData = {
       ...memberFields,
       subscriptionEndDate: endDate.toISOString(),
       status: 'Active',
       totalPaid: parseFloat(initialPayment || 0),
       hasAssurance: includeAssurance || false,
-      assuranceAmount: includeAssurance ? 20 : 0,
+      assuranceAmount: includeAssurance ? assuranceAmount : 0,
     };
 
     const member = await databases.createDocument(
@@ -150,7 +153,7 @@ export async function POST(request) {
     // Create initial payment record if payment was made
     if (initialPayment && parseFloat(initialPayment) > 0) {
       const paymentNotes = data.includeAssurance 
-        ? 'Initial payment (includes 20 DT assurance)'
+        ? `Initial payment (includes ${assuranceAmount} DT assurance)`
         : 'Initial payment';
       
       await databases.createDocument(
@@ -168,7 +171,7 @@ export async function POST(request) {
           status: 'Completed',
           notes: paymentNotes,
           includesAssurance: data.includeAssurance || false,
-          assuranceAmount: data.includeAssurance ? 20 : 0,
+          assuranceAmount: data.includeAssurance ? assuranceAmount : 0,
         }
       );
     }

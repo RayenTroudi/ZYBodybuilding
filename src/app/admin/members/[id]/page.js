@@ -667,10 +667,12 @@ export default function MemberDetailPage({ params }) {
                       value={editData.planId}
                       onChange={(e) => {
                         const selectedPlan = plans.find(p => p.$id === e.target.value);
+                        const assuranceAmount = selectedPlan && selectedPlan.name.toLowerCase().includes('couple') ? 40 : 20;
                         setEditData({ 
                           ...editData, 
                           planId: e.target.value,
-                          planName: selectedPlan ? selectedPlan.name : ''
+                          planName: selectedPlan ? selectedPlan.name : '',
+                          assuranceAmount: editData.hasAssurance ? assuranceAmount : 0
                         });
                       }}
                       required
@@ -736,11 +738,15 @@ export default function MemberDetailPage({ params }) {
                   <input
                     type="checkbox"
                     checked={editData.hasAssurance}
-                    onChange={(e) => setEditData({ 
-                      ...editData, 
-                      hasAssurance: e.target.checked,
-                      assuranceAmount: e.target.checked ? 20 : 0
-                    })}
+                    onChange={(e) => {
+                      const selectedPlan = plans.find(p => p.$id === editData.planId);
+                      const assuranceAmount = selectedPlan && selectedPlan.name.toLowerCase().includes('couple') ? 40 : 20;
+                      setEditData({ 
+                        ...editData, 
+                        hasAssurance: e.target.checked,
+                        assuranceAmount: e.target.checked ? assuranceAmount : 0
+                      });
+                    }}
                     className="w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
                   <div className="flex-1">
@@ -748,12 +754,15 @@ export default function MemberDetailPage({ params }) {
                       <Shield className="w-4 h-4" /> Has Assurance
                     </span>
                     <p className="text-sm text-gray-400 mt-1">
-                      Member has insurance coverage (20 DT)
+                      Member has insurance coverage ({editData.assuranceAmount > 0 ? editData.assuranceAmount : (() => {
+                        const selectedPlan = plans.find(p => p.$id === editData.planId);
+                        return selectedPlan && selectedPlan.name.toLowerCase().includes('couple') ? 40 : 20;
+                      })()} DT)
                     </p>
                   </div>
                   {editData.hasAssurance && (
                     <span className="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-lg">
-                      20 DT
+                      {editData.assuranceAmount} DT
                     </span>
                   )}
                 </label>
