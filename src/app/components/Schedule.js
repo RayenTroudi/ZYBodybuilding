@@ -14,16 +14,9 @@ const Schedule = () => {
     const today = new Date();
     const dayIndex = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
     const frenchDays = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-    const weekdayDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     
     const currentDay = frenchDays[dayIndex];
-    
-    // If today is a weekday, select it; otherwise default to Lundi
-    if (weekdayDays.includes(currentDay)) {
-      setActiveTab(currentDay);
-    } else {
-      setActiveTab('Lundi');
-    }
+    setActiveTab(currentDay);
 
     fetchClasses();
   }, []);
@@ -44,7 +37,7 @@ const Schedule = () => {
     }
   };
 
-  const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+  const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
   const containerVariants = {
     initial: { opacity: 0 },
