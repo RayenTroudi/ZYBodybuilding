@@ -1,0 +1,108 @@
+name: Appwrite Keepalive
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      keepalive_url:
+        description: 'Optional base URL or full keepalive endpoint URL'
+        required: false
+        type: string
+
+jobs:
+  ping-appwrite-keepalive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve keepalive URL
+        id: resolve
+        shell: bash
+        env:
+          INPUT_KEEPALIVE_URL: ${{ github.event.inputs.keepalive_url }}
+          SECRET_KEEPALIVE_URL: ${{ secrets.KEEPALIVE_URL }}
+          VAR_KEEPALIVE_URL: ${{ vars.KEEPALIVE_URL }}
+          SECRET_NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          VAR_NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL }}
+        run: |
+          set -euo pipefail
+
+          KEEPALIVE_PATH="/api/cron/appwrite-keepalive"
+          RESOLVED_SOURCE=""
+          RAW_URL=""
+
+          if [ -n "${INPUT_KEEPALIVE_URL:-}" ]; then
+            RAW_URL="$INPUT_KEEPALIVE_URL"
+            RESOLVED_SOURCE="workflow_dispatch input keepalive_url"
+          elif [ -n "${SECRET_KEEPALIVE_URL:-}" ]; then
+            RAW_URL="$SECRET_KEEPALIVE_URL"
+            RESOLVED_SOURCE="secret KEEPALIVE_URL"
+          elif [ -n "${VAR_KEEPALIVE_URL:-}" ]; then
+            RAW_URL="$VAR_KEEPALIVE_URL"
+            RESOLVED_SOURCE="variable KEEPALIVE_URL"
+          elif [ -n "${SECRET_NEXTAUTH_URL:-}" ]; then
+            RAW_URL="$SECRET_NEXTAUTH_URL"
+            RESOLVED_SOURCE="secret NEXTAUTH_URL"
+          elif [ -n "${VAR_NEXTAUTH_URL:-}" ]; then
+            RAW_URL="$VAR_NEXTAUTH_URL"
+            RESOLVED_SOURCE="variable NEXTAUTH_URL"
+          fi
+
+          if [ -z "${RAW_URL:-}" ]; then
+            echo "::error::Keepalive URL could not be resolved. Provide workflow input keepalive_url, or set KEEPALIVE_URL/NEXTAUTH_URL in repository secrets or variables."
+            exit 1
+          fi
+
+          TRIMMED_URL="$(echo "$RAW_URL" | sed 's/^\s*//; s/\s*$//')"
+
+          if [[ "$TRIMMED_URL" == *"$KEEPALIVE_PATH" ]]; then
+            FINAL_URL="$TRIMMED_URL"
+          else
+            FINAL_URL="${TRIMMED_URL%/}$KEEPALIVE_PATH"
+          fi
+
+          if [[ "$RESOLVED_SOURCE" == *"NEXTAUTH_URL" ]] && ([[ "$TRIMMED_URL" == *"localhost"* ]] || [[ "$TRIMMED_URL" == *"127.0.0.1"* ]]); then
+            echo "::warning::Resolved URL source is NEXTAUTH_URL and appears to be localhost. This will fail from GitHub-hosted runners unless publicly reachable."
+          fi
+
+          echo "Resolved source: $RESOLVED_SOURCE"
+          echo "Final ping URL: $FINAL_URL"
+
+          echo "final_url=$FINAL_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Ping keepalive endpoint
+        shell: bash
+        env:
+          FINAL_URL: ${{ steps.resolve.outputs.final_url }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${FINAL_URL:-}" ]; then
+            echo "::error::Resolved keepalive URL is empty."
+            exit 1
+          fi
+
+          RESPONSE_BODY_FILE="$(mktemp)"
+          RESPONSE_HEADERS_FILE="$(mktemp)"
+
+          if [ -n "${CRON_SECRET:-}" ]; then
+            echo "CRON_SECRET is configured. Sending Authorization header."
+            HTTP_STATUS="$(curl -sS -o "$RESPONSE_BODY_FILE" -D "$RESPONSE_HEADERS_FILE" -w "%{http_code}" -H "Authorization: Bearer ${CRON_SECRET}" "$FINAL_URL")"
+          else
+            echo "CRON_SECRET is not configured. Sending request without Authorization header."
+            HTTP_STATUS="$(curl -sS -o "$RESPONSE_BODY_FILE" -D "$RESPONSE_HEADERS_FILE" -w "%{http_code}" "$FINAL_URL")"
+          fi
+
+          echo "HTTP status: $HTTP_STATUS"
+          echo "Response body:"
+          cat "$RESPONSE_BODY_FILE"
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "::error::Keepalive call failed with non-2xx status."
+            echo "Response headers:"
+            cat "$RESPONSE_HEADERS_FILE"
+            exit 1
+          fi
+
+          echo "Keepalive call succeeded."
