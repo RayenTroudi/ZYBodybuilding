@@ -116,7 +116,7 @@ const Footer = () => {
       <div className="bg-dark py-4 sm:py-5 border-t border-primary/30">
         <div className="container mx-auto text-center px-4">
           <p className="text-neutral-400 text-xs sm:text-sm md:text-base">
-            &copy; {currentYear} <span className="text-primary font-semibold">ZY BODYBUILDING</span>. Tous droits réservés. Crée par <span className="text-primary font-semibold">Rayen Troudi</span>.
+            &copy; {currentYear} <span className="text-primary font-semibold">ZY BODYBUILDING</span>. Tous droits réservés. Crée par <a href="https://rayentroudi.work" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">Rayen Troudi</a>.
           </p>
         </div>
       </div>
