@@ -92,33 +92,35 @@ export default function TrainersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
         <div>
-          <h1 className="text-3xl font-bold text-white">Trainers</h1>
-          <p className="text-neutral-400 mt-1">Manage gym trainers and coaches</p>
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>Staff</p>
+          <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
+            Trainers
+          </h1>
         </div>
         <Link
           href="/admin/trainers/new"
-          className="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 transition-colors"
+          style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
         >
-          <span className="mr-2">+</span>
-          Add Trainer
+          + Add Trainer
         </Link>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-          <div className="text-neutral-400 text-sm mb-1">Total Trainers</div>
-          <div className="text-3xl font-bold text-white">{stats.total}</div>
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Total</p>
+          <p className="text-white font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem' }}>{stats.total}</p>
         </div>
-        <div className="bg-neutral-800 rounded p-6 border border-green-500/30">
-          <div className="text-neutral-400 text-sm mb-1">Active</div>
-          <div className="text-3xl font-bold text-green-400">{stats.active}</div>
+        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Active</p>
+          <p className="font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem', color: '#10B981' }}>{stats.active}</p>
         </div>
-        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-          <div className="text-neutral-400 text-sm mb-1">Inactive</div>
-          <div className="text-3xl font-bold text-neutral-400">{stats.inactive}</div>
+        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Inactive</p>
+          <p className="font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem', color: '#333' }}>{stats.inactive}</p>
         </div>
       </div>
 
@@ -128,92 +130,73 @@ export default function TrainersPage() {
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
       ) : trainers.length === 0 ? (
-        <div className="text-center py-12 bg-neutral-800 rounded border border-neutral-700">
-          <p className="text-neutral-400">No trainers found. Add your first trainer!</p>
+        <div className="bg-[#0c0c0c] border border-[#161616] py-16 text-center">
+          <p className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>No trainers found</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {trainers.map((trainer) => (
             <motion.div
               key={trainer.$id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`bg-neutral-800 rounded overflow-hidden border ${
-                trainer.isActive ? 'border-green-500/50' : 'border-neutral-700'
-              } hover:shadow-xl hover:scale-[1.02] transition-all duration-300`}
+              className={`bg-[#0c0c0c] border overflow-hidden group transition-colors duration-200 ${
+                trainer.isActive ? 'border-[#1e1e1e] hover:border-[#2a2a2a]' : 'border-[#111] opacity-60'
+              }`}
             >
-              {/* Trainer Image */}
-              <div className="relative h-32 bg-neutral-700">
+              {/* Image */}
+              <div className="relative h-36 bg-[#0a0a0a]">
                 {trainer.imageUrl ? (
-                  <Image
-                    src={trainer.imageUrl}
-                    alt={trainer.name}
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src={trainer.imageUrl} alt={trainer.name} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-primary text-white text-lg font-bold">
-                    <span className="text-4xl font-bold text-white">
+                  <div className="w-full h-full flex items-center justify-center bg-[#111]">
+                    <span className="text-neutral-700 font-black" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.5rem' }}>
                       {trainer.name.charAt(0)}
                     </span>
                   </div>
                 )}
-                <div className="absolute top-2 right-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleActive(trainer.$id, trainer.isActive);
-                    }}
-                    className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                      trainer.isActive
-                        ? 'bg-green-500 text-white'
-                        : 'bg-neutral-600 text-neutral-300'
-                    }`}
-                  >
-                    {trainer.isActive ? 'Active' : 'Inactive'}
-                  </button>
-                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); toggleActive(trainer.$id, trainer.isActive); }}
+                  className={`absolute top-2 right-2 px-2 py-0.5 text-[9px] font-bold uppercase border transition-colors ${
+                    trainer.isActive
+                      ? 'bg-green-500/10 border-green-500/30 text-green-500 hover:bg-green-500/20'
+                      : 'bg-[#111] border-[#222] text-neutral-600 hover:text-white'
+                  }`}
+                  style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
+                >
+                  {trainer.isActive ? 'Active' : 'Inactive'}
+                </button>
               </div>
 
-              {/* Trainer Info */}
-              <div className="p-4">
-                <h3 className="text-lg font-bold text-white mb-1 truncate">{trainer.name}</h3>
+              {/* Info */}
+              <div className="p-4 border-t border-[#161616]">
+                <h3 className="text-white font-black uppercase leading-none mb-1 truncate" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem', letterSpacing: '0.03em' }}>
+                  {trainer.name}
+                </h3>
                 {trainer.specialty && (
-                  <p className="text-red-400 text-xs font-medium mb-2">{trainer.specialty}</p>
+                  <p className="text-primary text-[10px] uppercase font-semibold mb-2" style={{ letterSpacing: '0.08em' }}>{trainer.specialty}</p>
                 )}
                 {trainer.bio && (
-                  <p className="text-neutral-400 text-xs mb-3 line-clamp-2">{trainer.bio}</p>
+                  <p className="text-neutral-600 text-xs mb-3 line-clamp-2 leading-relaxed">{trainer.bio}</p>
                 )}
-                
-                {/* Experience & Email */}
-                <div className="space-y-1 mb-3 text-xs">
-                  {trainer.experienceYears > 0 && (
-                    <div className="flex items-center text-neutral-400">
-                      <span className="mr-1.5">⭐</span>
-                      <span>{trainer.experienceYears} yrs exp</span>
-                    </div>
-                  )}
-                  {trainer.email && (
-                    <div className="flex items-center text-neutral-400">
-                      <span className="mr-1.5">✉️</span>
-                      <span className="truncate">{trainer.email}</span>
-                    </div>
-                  )}
+                <div className="space-y-1 mb-4 text-[10px] text-neutral-600">
+                  {trainer.experienceYears > 0 && <p>{trainer.experienceYears} yrs experience</p>}
+                  {trainer.email && <p className="truncate">{trainer.email}</p>}
                 </div>
-
-                {/* Actions */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 border-t border-[#111] pt-3">
                   <Link
                     href={`/admin/trainers/${trainer.$id}`}
-                    className="flex-1 px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 text-white text-center rounded-md transition-colors text-xs font-medium"
+                    className="flex-1 py-1.5 border border-[#1e1e1e] text-neutral-600 text-center text-[10px] font-semibold uppercase hover:border-[#2a2a2a] hover:text-white transition-colors"
+                    style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
                     Edit
                   </Link>
                   <button
                     onClick={() => setDeleteModal({ show: true, trainer })}
-                    className="px-3 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-md transition-colors text-xs font-medium"
+                    className="px-3 py-1.5 border border-red-600/20 text-red-600/50 text-[10px] font-semibold uppercase hover:border-red-600/40 hover:text-red-500 transition-colors"
+                    style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
-                    Delete
+                    Del
                   </button>
                 </div>
               </div>
@@ -226,36 +209,37 @@ export default function TrainersPage() {
       <AnimatePresence>
         {deleteModal.show && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
             onClick={() => setDeleteModal({ show: false, trainer: null })}
           >
             <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="bg-neutral-800 rounded-md p-6 max-w-md w-full border border-neutral-700"
+              initial={{ scale: 0.96, y: 8 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96 }}
+              className="bg-[#0c0c0c] border border-[#1e1e1e] max-w-sm w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-4">⚠️</div>
-                <h3 className="text-xl font-bold text-white mb-2">Delete Trainer</h3>
-                <p className="text-neutral-400">
-                  Are you sure you want to delete <span className="text-white font-medium">{deleteModal.trainer?.name}</span>? This action cannot be undone.
+              <div className="px-5 py-4 border-b border-[#161616]">
+                <h3 className="text-white font-black uppercase text-sm" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}>
+                  Delete Trainer
+                </h3>
+              </div>
+              <div className="px-5 py-4">
+                <p className="text-neutral-500 text-xs leading-relaxed">
+                  Delete <span className="text-white font-semibold">{deleteModal.trainer?.name}</span>? This cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex border-t border-[#161616]">
                 <button
                   onClick={() => setDeleteModal({ show: false, trainer: null })}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
+                  className="flex-1 py-3 text-neutral-600 text-xs font-semibold uppercase hover:text-white hover:bg-[#111] transition-colors border-r border-[#161616]"
+                  style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteModal.trainer.$id)}
-                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                  className="flex-1 py-3 text-red-500 text-xs font-semibold uppercase hover:text-white hover:bg-red-600 transition-colors"
+                  style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
                   Delete
                 </button>
@@ -265,18 +249,16 @@ export default function TrainersPage() {
         )}
       </AnimatePresence>
 
-      {/* Toast Notification */}
+      {/* Toast */}
       <AnimatePresence>
         {toast.show && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-6 right-6 px-6 py-4 rounded shadow-lg ${
-              toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-            } text-white font-medium z-50`}
+            initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 40 }}
+            className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[260px] bg-[#0c0c0c] border border-[#1e1e1e] ${
+              toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'
+            }`}
           >
-            {toast.message}
+            <p className="text-white text-xs flex-1">{toast.message}</p>
           </motion.div>
         )}
       </AnimatePresence>

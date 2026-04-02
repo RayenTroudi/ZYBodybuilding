@@ -4,6 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+const navLinks = [
+  { href: '/', label: 'Accueil' },
+  { href: '#about', label: 'À propos' },
+  { href: '#schedule', label: 'Programme' },
+  { href: '#pricing', label: 'Tarifs' },
+  { href: '#contact', label: 'Contact' },
+];
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,32 +20,22 @@ export default function Navbar() {
   const [loadingAuth, setLoadingAuth] = useState(true);
   const router = useRouter();
 
-  // Check authentication status
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await fetch('/api/auth/check');
         const data = await res.json();
-        if (data.success && data.user) {
-          setUser(data.user);
-        }
-      } catch (error) {
-        console.log('Not authenticated');
-      } finally {
-        setLoadingAuth(false);
-      }
+        if (data.success && data.user) setUser(data.user);
+      } catch {}
+      finally { setLoadingAuth(false); }
     };
     checkAuth();
   }, []);
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
-    // Prevent body scroll when menu is open on mobile
-    if (!isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    const next = !isOpen;
+    setIsOpen(next);
+    document.body.style.overflow = next ? 'hidden' : 'unset';
   };
 
   const closeMenu = () => {
@@ -45,164 +43,93 @@ export default function Navbar() {
     document.body.style.overflow = 'unset';
   };
 
-  const handleScroll = () => {
-    if (typeof window !== 'undefined' && window.scrollY > 0) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  };
-
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', handleScroll);
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-        document.body.style.overflow = 'unset';
-      };
-    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.style.overflow = 'unset';
+    };
   }, []);
 
-  // Prevent hydration mismatch by not rendering scroll-dependent styles until mounted
-  if (!mounted) {
-    return (
-      <nav className="absolute top-0 left-0 w-full z-50">
-        <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <Link href="/" className="flex items-center gap-2 sm:gap-3">
-            <Image 
-              src="/images/logoNobg.png" 
-              alt="ZY Bodybuilding Logo" 
-              width={40} 
-              height={40}
-              className="object-contain sm:w-[50px] sm:h-[50px]"
-            />
-            <span className="text-base sm:text-xl font-bold text-primary tracking-tight">
-              ZY BODYBUILDING
-            </span>
-          </Link>
-          {/* Improved Hamburger Menu Icon */}
-          <button 
-            className="lg:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none focus:ring-2 focus:ring-primary rounded-md transition-all" 
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <span className="block h-0.5 w-6 bg-white transition-all duration-300"></span>
-            <span className="block h-0.5 w-6 bg-white mt-1.5 transition-all duration-300"></span>
-            <span className="block h-0.5 w-6 bg-white mt-1.5 transition-all duration-300"></span>
-          </button>
-          <div className="hidden lg:flex lg:items-center lg:space-x-6 text-white font-medium">
-            <Link href="/" className="block py-2 px-4 hover:text-primary transition-colors">
-              Accueil
-            </Link>
-            <Link href="#about" className="block py-2 px-4 hover:text-primary transition-colors">
-              A propos
-            </Link>
-            <Link href="#schedule" className="block py-2 px-4 hover:text-primary transition-colors">
-              Programme
-            </Link>
-            <Link href="#pricing" className="block py-2 px-4 hover:text-primary transition-colors">
-              Tarifs
-            </Link>
-            <Link href="#contact" className="block py-2 px-4 hover:text-primary transition-colors">
-              Contact
-            </Link>
-            
-            <div className="flex flex-row gap-3 ml-4">
-              <Link 
-                href="/login" 
-                className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-neutral-700 rounded hover:border-primary"
-              >
-                Connexion
-              </Link>
-              <Link 
-                href="/admin/ironcore/login" 
-                className="btn-primary text-center"
-              >
-                S'inscrire
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-    );
-  }
+  const navClass = mounted
+    ? isScrolled
+      ? 'fixed top-0 left-0 w-full z-50 bg-[#080808]/97 backdrop-blur-md border-b border-primary/20 glow-red-subtle'
+      : 'absolute top-0 left-0 w-full z-50'
+    : 'absolute top-0 left-0 w-full z-50';
 
   return (
-    <nav
-      className={`${
-        isScrolled ? 'fixed top-0 left-0 w-full z-50 bg-dark/95 backdrop-blur-md border-b border-primary/20' : 'absolute top-0 left-0 w-full z-50'
-      } transition-all duration-300`}
-    >
-      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-        <Link href="/" className="flex items-center gap-2 sm:gap-3 relative z-50">
-          <Image 
-            src="/images/logoNobg.png" 
-            alt="ZY Bodybuilding Logo" 
-            width={40} 
-            height={40}
-            className="object-contain sm:w-[50px] sm:h-[50px]"
+    <nav className={`${navClass} transition-all duration-300`}>
+      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-10 py-4 sm:py-5">
+
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-3 relative z-50">
+          <Image
+            src="/images/logoNobg.png"
+            alt="ZY Bodybuilding Logo"
+            width={34}
+            height={34}
+            className="object-contain"
           />
-          <span className="text-base sm:text-xl font-bold text-primary tracking-tight">
-            ZY BODYBUILDING
+          <span
+            className="text-white font-black uppercase text-base sm:text-lg"
+            style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
+          >
+            ZY <span className="text-primary">Bodybuilding</span>
           </span>
         </Link>
 
-        {/* Enhanced Hamburger Menu Icon with Animation */}
+        {/* Hamburger */}
         <button
-          className="lg:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none focus:ring-2 focus:ring-primary rounded-md transition-all relative z-50"
+          className="lg:hidden relative z-50 flex flex-col justify-center items-center w-10 h-10 gap-[6px] focus:outline-none"
           onClick={toggleMenu}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
         >
-          <span className={`block h-0.5 w-6 bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-          <span className={`block h-0.5 w-6 bg-white mt-1.5 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
-          <span className={`block h-0.5 w-6 bg-white mt-1.5 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          <span className={`block h-[2px] w-6 bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block h-[2px] w-6 bg-white transition-all duration-300 ${isOpen ? 'opacity-0 scale-x-0' : ''}`} />
+          <span className={`block h-[2px] w-6 bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`} />
         </button>
 
-        {/* Mobile Menu Overlay - Dark backdrop for better focus */}
-        {isOpen && (
-          <div 
-            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 transition-opacity duration-300"
+        {/* Backdrop */}
+        {mounted && isOpen && (
+          <div
+            className="lg:hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-30"
             onClick={closeMenu}
-            aria-hidden="true"
           />
         )}
 
-        {/* Mobile Menu - Solid Background Drawer */}
+        {/* Mobile drawer */}
         <div
           className={`${
             isOpen ? 'translate-x-0' : 'translate-x-full'
-          } lg:hidden fixed top-0 right-0 w-full h-screen bg-black transition-all duration-300 ease-in-out flex flex-col justify-center items-center space-y-6 text-white text-center z-40 shadow-2xl`}
+          } lg:hidden fixed top-0 right-0 w-full h-screen bg-[#080808] transition-transform duration-300 ease-in-out flex flex-col justify-center items-center z-40`}
         >
-          <Link href="/" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
-            Accueil
-          </Link>
-          <Link href="#about" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
-            A propos
-          </Link>
-          <Link href="#schedule" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
-            Programme
-          </Link>
-          <Link href="#pricing" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
-            Tarifs
-          </Link>
-          <Link href="#contact" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
-            Contact
-          </Link>
-          
-          {/* Auth Buttons in Mobile Menu */}
-          <div className="flex flex-col gap-4 mt-8 w-64">
+          {/* Top red bar */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary" />
+
+          <div className="flex flex-col items-center gap-1 mb-8">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-2xl sm:text-3xl py-3 px-8 text-neutral-400 hover:text-white transition-colors uppercase font-black"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.06em' }}
+                onClick={closeMenu}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-3 w-52">
             {user ? (
               <>
-                <Link 
-                  href="/dashboard" 
-                  className="px-6 py-3 text-lg text-white hover:text-primary transition-colors text-center border-2 border-primary rounded-lg transform hover:scale-105 duration-200"
-                  onClick={closeMenu}
-                >
+                <Link href="/dashboard" className="btn-secondary py-3 text-center" onClick={closeMenu}>
                   Mon Espace
                 </Link>
-                <button 
+                <button
                   onClick={async () => {
                     await fetch('/api/auth/logout', { method: 'POST' });
                     setUser(null);
@@ -210,90 +137,79 @@ export default function Navbar() {
                     router.push('/');
                     router.refresh();
                   }}
-                  className="px-6 py-3 text-lg text-white hover:text-red-400 transition-colors text-center border-2 border-neutral-700 rounded-lg hover:border-red-400 transform hover:scale-105 duration-200"
+                  className="py-3 text-sm text-neutral-600 hover:text-white uppercase tracking-widest transition-colors"
+                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
                   Déconnexion
                 </button>
               </>
             ) : (
               <>
-                <Link 
-                  href="/login" 
-                  className="px-6 py-3 text-lg text-white hover:text-primary transition-colors text-center border-2 border-neutral-700 rounded-lg hover:border-primary transform hover:scale-105 duration-200"
-                  onClick={closeMenu}
-                >
+                <Link href="/login" className="btn-outline py-3 text-center" onClick={closeMenu}>
                   Connexion
                 </Link>
-                <Link 
-                  href="/register" 
-                  className="btn-primary text-lg text-center transform hover:scale-105 duration-200"
-                  onClick={closeMenu}
-                >
-                  S'inscrire
+                <Link href="/register" className="btn-primary py-3 text-center" onClick={closeMenu}>
+                  S&apos;inscrire
                 </Link>
               </>
             )}
           </div>
         </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden lg:flex lg:items-center lg:space-x-6 text-white font-medium">
-          <Link href="/" className="block py-2 px-4 hover:text-primary transition-colors">
-            Accueil
-          </Link>
-          <Link href="#about" className="block py-2 px-4 hover:text-primary transition-colors">
-            A propos
-          </Link>
-          <Link href="#schedule" className="block py-2 px-4 hover:text-primary transition-colors">
-            Programme
-          </Link>
-          <Link href="#pricing" className="block py-2 px-4 hover:text-primary transition-colors">
-            Tarifs
-          </Link>
-          <Link href="#contact" className="block py-2 px-4 hover:text-primary transition-colors">
-            Contact
-          </Link>
-          
-          {/* Auth Buttons */}
-          <div className="flex flex-row gap-3 ml-4">
-            {user ? (
-              <>
-                <Link 
-                  href="/dashboard" 
-                  className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-primary rounded hover:bg-primary/10"
-                >
-                  Mon Espace
-                </Link>
-                <button 
-                  onClick={async () => {
-                    await fetch('/api/auth/logout', { method: 'POST' });
-                    setUser(null);
-                    router.push('/');
-                    router.refresh();
-                  }}
-                  className="px-4 py-2 text-white hover:text-red-400 transition-colors text-center border border-neutral-700 rounded hover:border-red-400"
-                >
-                  Déconnexion
-                </button>
-              </>
-            ) : (
-              <>
-                <Link 
-                  href="/login" 
-                  className="px-4 py-2 text-white hover:text-primary transition-colors text-center border border-neutral-700 rounded hover:border-primary"
-                >
-                  Connexion
-                </Link>
-                <Link 
-                  href="/register" 
-                  className="btn-primary text-center"
-                >
-                  S'inscrire
-                </Link>
-              </>
-            )}
-          </div>
+        {/* Desktop nav links */}
+        <div className="hidden lg:flex items-center gap-0">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="relative px-4 py-2 text-neutral-400 hover:text-white text-xs font-semibold uppercase tracking-widest transition-colors duration-200 group"
+              style={{ fontFamily: "'DM Sans', sans-serif", letterSpacing: '0.12em' }}
+            >
+              {label}
+              <span className="absolute bottom-0 left-4 right-4 h-[1px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+            </Link>
+          ))}
         </div>
+
+        {/* Desktop auth */}
+        <div className="hidden lg:flex items-center gap-2">
+          {user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="btn-secondary py-2 text-xs"
+              >
+                Mon Espace
+              </Link>
+              <button
+                onClick={async () => {
+                  await fetch('/api/auth/logout', { method: 'POST' });
+                  setUser(null);
+                  router.push('/');
+                  router.refresh();
+                }}
+                className="px-4 py-2 text-neutral-600 hover:text-white text-xs uppercase tracking-widest transition-colors"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                Déconnexion
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-5 py-2 text-neutral-400 hover:text-white text-xs font-semibold uppercase tracking-widest transition-colors"
+                style={{ fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Connexion
+              </Link>
+              <Link href="/register" className="btn-primary py-2 text-xs">
+                S&apos;inscrire
+              </Link>
+            </>
+          )}
+        </div>
+
       </div>
     </nav>
   );

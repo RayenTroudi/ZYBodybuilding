@@ -9,9 +9,7 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown, MoreHorizontal, Trash2 } from "lucide-react"
-
-import { Button } from "@/app/components/ui/button"
+import { Trash2, ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react"
 import { Checkbox } from "@/app/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -21,20 +19,16 @@ import {
   DropdownMenuTrigger,
 } from "@/app/components/ui/dropdown-menu"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead,
+  TableHeader, TableRow,
 } from "@/app/components/ui/table"
+import { MoreHorizontal } from "lucide-react"
 
 export function DataTable({
   columns,
   data,
   onDelete,
   searchPlaceholder = "Search...",
-  searchColumn,
   customToolbar,
   onRowClick,
 }) {
@@ -45,28 +39,18 @@ export function DataTable({
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const [pendingDeleteIds, setPendingDeleteIds] = React.useState([])
 
-  // Custom global filter function that searches through all row data
   const globalFilterFn = React.useCallback((row, columnId, filterValue) => {
     const search = filterValue.toLowerCase()
-    
-    // Search through all values in the original data object
     const searchInObject = (obj) => {
       if (!obj) return false
-      
       for (const key in obj) {
         const value = obj[key]
         if (value === null || value === undefined) continue
-        
-        if (typeof value === 'string' && value.toLowerCase().includes(search)) {
-          return true
-        }
-        if (typeof value === 'number' && value.toString().includes(search)) {
-          return true
-        }
+        if (typeof value === 'string' && value.toLowerCase().includes(search)) return true
+        if (typeof value === 'number' && value.toString().includes(search)) return true
       }
       return false
     }
-    
     return searchInObject(row.original)
   }, [])
 
@@ -82,12 +66,7 @@ export function DataTable({
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn,
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-      globalFilter,
-    },
+    state: { sorting, columnFilters, rowSelection, globalFilter },
   })
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -95,11 +74,7 @@ export function DataTable({
 
   const handleBulkDelete = () => {
     if (selectedCount === 0) return
-    
     const selectedIds = selectedRows.map(row => row.original.$id || row.original.id)
-    console.log('Selected rows:', selectedRows);
-    console.log('Extracted IDs:', selectedIds);
-    
     setPendingDeleteIds(selectedIds)
     setShowDeleteModal(true)
   }
@@ -109,7 +84,6 @@ export function DataTable({
       await onDelete(pendingDeleteIds)
       setShowDeleteModal(false)
       setPendingDeleteIds([])
-      // Clear selection after delete
       table.resetRowSelection()
       setRowSelection({})
     } catch (error) {
@@ -119,48 +93,46 @@ export function DataTable({
   }
 
   return (
-    <div className="w-full space-y-4">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:flex-1">
+    <div className="w-full space-y-3">
+
+      {/* Toolbar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:flex-1">
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={globalFilter ?? ""}
-            onChange={(event) => setGlobalFilter(event.target.value)}
-            className="w-full sm:max-w-md px-4 py-2 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 font-medium focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="w-full sm:max-w-sm px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs placeholder-neutral-700 focus:outline-none focus:border-primary transition-colors"
+            style={{ borderRadius: 0, fontFamily: "'DM Sans', sans-serif" }}
           />
           {selectedCount > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
+            <button
               onClick={handleBulkDelete}
-              className="flex items-center gap-2 whitespace-nowrap"
+              className="flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-600/30 text-red-500 text-xs font-semibold uppercase hover:bg-red-600/20 transition-colors whitespace-nowrap"
+              style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              <Trash2 className="h-4 w-4" />
-              Delete {selectedCount} {selectedCount === 1 ? 'item' : 'items'}
-            </Button>
+              <Trash2 size={12} />
+              Delete {selectedCount}
+            </button>
           )}
         </div>
         {customToolbar && <div className="flex items-center gap-2">{customToolbar}</div>}
       </div>
 
-      <div className="rounded-md border border-neutral-800 bg-neutral-900">
+      {/* Table */}
+      <div className="border border-[#161616] bg-[#0c0c0c] overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="text-neutral-400 font-semibold">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+              <tr key={headerGroup.id} className="bg-[#080808]">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </tr>
             ))}
           </TableHeader>
@@ -170,23 +142,15 @@ export function DataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`text-white border-neutral-800 ${onRowClick ? 'cursor-pointer hover:bg-neutral-800' : ''}`}
+                  className={`text-white ${onRowClick ? 'cursor-pointer' : ''}`}
                   onClick={(e) => {
-                    // Don't trigger row click if clicking on checkbox or action buttons
-                    if (e.target.closest('button') || e.target.closest('[role="checkbox"]')) {
-                      return;
-                    }
-                    if (onRowClick) {
-                      onRowClick(row.original);
-                    }
+                    if (e.target.closest('button') || e.target.closest('[role="checkbox"]')) return
+                    if (onRowClick) onRowClick(row.original)
                   }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -195,9 +159,10 @@ export function DataTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-neutral-500 font-medium"
+                  className="h-20 text-center text-neutral-700 text-xs uppercase"
+                  style={{ letterSpacing: '0.15em' }}
                 >
-                  No results.
+                  No results found
                 </TableCell>
               </TableRow>
             )}
@@ -205,79 +170,69 @@ export function DataTable({
         </Table>
       </div>
 
+      {/* Pagination */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-400">
-          {selectedCount > 0 && (
-            <span>
-              {selectedCount} of {table.getFilteredRowModel().rows.length} row(s) selected
-            </span>
-          )}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <p className="text-neutral-700 text-[10px] uppercase" style={{ letterSpacing: '0.15em' }}>
+          {selectedCount > 0
+            ? `${selectedCount} of ${table.getFilteredRowModel().rows.length} selected`
+            : `${table.getFilteredRowModel().rows.length} rows`}
+        </p>
+        <div className="flex items-center gap-1">
+          <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="flex items-center gap-1 px-3 py-1.5 border border-[#1c1c1c] text-neutral-600 text-[10px] uppercase font-semibold hover:border-[#2a2a2a] hover:text-neutral-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            style={{ letterSpacing: '0.12em', borderRadius: 0 }}
           >
-            Previous
-          </Button>
-          <div className="text-sm text-gray-400">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
+            <ChevronLeft size={12} /> Prev
+          </button>
+          <span className="px-3 py-1.5 border border-[#1c1c1c] text-neutral-600 text-[10px] min-w-[60px] text-center" style={{ borderRadius: 0 }}>
+            {table.getState().pagination.pageIndex + 1} / {table.getPageCount() || 1}
+          </span>
+          <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="flex items-center gap-1 px-3 py-1.5 border border-[#1c1c1c] text-neutral-600 text-[10px] uppercase font-semibold hover:border-[#2a2a2a] hover:text-neutral-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            style={{ letterSpacing: '0.12em', borderRadius: 0 }}
           >
-            Next
-          </Button>
+            Next <ChevronRight size={12} />
+          </button>
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg max-w-md w-full border border-gray-700 shadow-2xl">
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <span className="text-2xl">⚠️</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white">Delete {pendingDeleteIds.length} {pendingDeleteIds.length === 1 ? 'Item' : 'Items'}</h3>
-                  <p className="text-gray-400 text-sm mt-1">This action cannot be undone</p>
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <p className="text-gray-300">
-                  Are you sure you want to delete {pendingDeleteIds.length} {pendingDeleteIds.length === 1 ? 'item' : 'items'}? 
-                  This will permanently remove {pendingDeleteIds.length === 1 ? 'it' : 'them'} from your records.
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowDeleteModal(false)
-                    setPendingDeleteIds([])
-                  }}
-                  className="flex-1 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmDelete}
-                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  Delete {pendingDeleteIds.length === 1 ? 'Item' : 'Items'}
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0c0c0c] border border-[#1e1e1e] max-w-sm w-full">
+            <div className="border-b border-[#161616] px-5 py-4 flex items-center gap-3">
+              <AlertTriangle size={14} className="text-red-500 flex-shrink-0" />
+              <h3
+                className="text-white font-black uppercase text-sm"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
+              >
+                Delete {pendingDeleteIds.length} {pendingDeleteIds.length === 1 ? 'Item' : 'Items'}
+              </h3>
+            </div>
+            <div className="px-5 py-4">
+              <p className="text-neutral-500 text-xs leading-relaxed">
+                This will permanently remove {pendingDeleteIds.length === 1 ? 'this item' : 'these items'} and cannot be undone.
+              </p>
+            </div>
+            <div className="flex border-t border-[#161616]">
+              <button
+                onClick={() => { setShowDeleteModal(false); setPendingDeleteIds([]) }}
+                className="flex-1 py-3 text-neutral-600 text-xs font-semibold uppercase hover:text-white hover:bg-[#111] transition-colors border-r border-[#161616]"
+                style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 py-3 text-red-500 text-xs font-semibold uppercase hover:text-white hover:bg-red-600 transition-colors"
+                style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -286,16 +241,12 @@ export function DataTable({
   )
 }
 
-// Helper function to create checkbox column
 export function createSelectColumn() {
   return {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
@@ -312,42 +263,25 @@ export function createSelectColumn() {
   }
 }
 
-// Helper function to create actions column
 export function createActionsColumn({ onEdit, onView, onDelete }) {
   return {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
       const item = row.original
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <button className="h-7 w-7 flex items-center justify-center text-neutral-600 hover:text-white transition-colors">
               <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+              <MoreHorizontal size={14} />
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {onView && (
-              <DropdownMenuItem onClick={() => onView(item)}>
-                View details
-              </DropdownMenuItem>
-            )}
-            {onEdit && (
-              <DropdownMenuItem onClick={() => onEdit(item)}>
-                Edit
-              </DropdownMenuItem>
-            )}
-            {onDelete && (
-              <DropdownMenuItem
-                onClick={() => onDelete(item)}
-                className="text-red-400 focus:text-red-400"
-              >
-                Delete
-              </DropdownMenuItem>
-            )}
+          <DropdownMenuContent align="end" className="bg-[#0c0c0c] border-[#1e1e1e] rounded-none">
+            <DropdownMenuLabel className="text-neutral-600 text-[9px] uppercase tracking-widest">Actions</DropdownMenuLabel>
+            {onView && <DropdownMenuItem onClick={() => onView(item)} className="text-xs text-neutral-400 hover:text-white">View</DropdownMenuItem>}
+            {onEdit && <DropdownMenuItem onClick={() => onEdit(item)} className="text-xs text-neutral-400 hover:text-white">Edit</DropdownMenuItem>}
+            {onDelete && <DropdownMenuItem onClick={() => onDelete(item)} className="text-xs text-red-500 hover:text-red-400">Delete</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
       )

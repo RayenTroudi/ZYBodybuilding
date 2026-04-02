@@ -2,6 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
+import { Plus, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+
+const FL = (text) => (
+  <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>{text}</p>
+);
+
+const inputCls = "w-full px-4 py-2.5 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs placeholder-neutral-700 focus:outline-none focus:border-primary transition-colors";
+const inputStyle = { borderRadius: 0, fontFamily: "'DM Sans', sans-serif" };
 
 export default function PlansPage() {
   const [plans, setPlans] = useState([]);
@@ -11,29 +19,16 @@ export default function PlansPage() {
   const [toast, setToast] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [planToDelete, setPlanToDelete] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    duration: '',
-    price: '',
-    isActive: true,
-  });
+  const [formData, setFormData] = useState({ name: '', description: '', duration: '', price: '', isActive: true });
 
-  useEffect(() => {
-    fetchPlans();
-  }, []);
+  useEffect(() => { fetchPlans(); }, []);
 
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      const data = await cachedFetch('/api/admin/plans', {}, 120000); // 2 min cache
+      const data = await cachedFetch('/api/admin/plans', {}, 120000);
       setPlans(data.documents || []);
-    } catch (error) {
-      console.error('Error fetching plans:', error);
-      setPlans([]);
-    } finally {
-      setLoading(false);
-    }
+    } catch { setPlans([]); } finally { setLoading(false); }
   };
 
   const showToast = (message, type = 'success') => {
@@ -43,288 +38,190 @@ export default function PlansPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
-      const url = editingPlan 
-        ? `/api/admin/plans/${editingPlan.$id}`
-        : '/api/admin/plans';
-      
-      const method = editingPlan ? 'PATCH' : 'POST';
-
-      const response = await fetch(url, {
-        method,
+      const url = editingPlan ? `/api/admin/plans/${editingPlan.$id}` : '/api/admin/plans';
+      const res = await fetch(url, {
+        method: editingPlan ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
-      if (response.ok) {
-        invalidateCache('/api/admin/plans'); // Invalidate plans cache
+      if (res.ok) {
+        invalidateCache('/api/admin/plans');
         setShowModal(false);
         setEditingPlan(null);
-        setFormData({
-          name: '',
-          description: '',
-          duration: '',
-          price: '',
-          isActive: true,
-        });
+        setFormData({ name: '', description: '', duration: '', price: '', isActive: true });
         fetchPlans();
-        showToast(editingPlan ? 'Plan updated successfully!' : 'Plan created successfully!', 'success');
-      } else {
-        showToast('Failed to save plan', 'error');
-      }
-    } catch (error) {
-      console.error('Error saving plan:', error);
-      showToast('Failed to save plan', 'error');
-    }
+        showToast(editingPlan ? 'Plan updated' : 'Plan created', 'success');
+      } else { showToast('Failed to save plan', 'error'); }
+    } catch { showToast('Failed to save plan', 'error'); }
   };
 
   const handleEdit = (plan) => {
     setEditingPlan(plan);
-    setFormData({
-      name: plan.name,
-      description: plan.description || '',
-      duration: plan.duration,
-      price: plan.price,
-      isActive: plan.isActive,
-    });
+    setFormData({ name: plan.name, description: plan.description || '', duration: plan.duration, price: plan.price, isActive: plan.isActive });
     setShowModal(true);
   };
 
   const handleDelete = async () => {
     if (!planToDelete) return;
-
     try {
-      const response = await fetch(`/api/admin/plans/${planToDelete.$id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        invalidateCache('/api/admin/plans'); // Invalidate plans cache
+      const res = await fetch(`/api/admin/plans/${planToDelete.$id}`, { method: 'DELETE' });
+      if (res.ok) {
+        invalidateCache('/api/admin/plans');
         setShowDeleteModal(false);
         setPlanToDelete(null);
         fetchPlans();
-        showToast('Plan deleted successfully!', 'success');
-      } else {
-        showToast('Failed to delete plan', 'error');
-      }
-    } catch (error) {
-      console.error('Error deleting plan:', error);
-      showToast('Failed to delete plan', 'error');
-    }
+        showToast('Plan deleted', 'success');
+      } else { showToast('Failed to delete plan', 'error'); }
+    } catch { showToast('Failed to delete plan', 'error'); }
   };
 
-  const handleToggleStatus = async (plan) => {
+  const handleToggle = async (plan) => {
     try {
-      const response = await fetch(`/api/admin/plans/${plan.$id}`, {
+      await fetch(`/api/admin/plans/${plan.$id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !plan.isActive }),
       });
+      fetchPlans();
+    } catch {}
+  };
 
-      if (response.ok) {
-        fetchPlans();
-      }
-    } catch (error) {
-      console.error('Error updating plan status:', error);
-    }
+  const openNew = () => {
+    setEditingPlan(null);
+    setFormData({ name: '', description: '', duration: '', price: '', isActive: true });
+    setShowModal(true);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 max-w-7xl">
+
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Subscription Plans</h1>
-          <p className="text-neutral-400">Manage membership plans and pricing</p>
+          {FL('Subscriptions')}
+          <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
+            Plans
+          </h1>
         </div>
-        <button
-          onClick={() => {
-            setEditingPlan(null);
-            setFormData({
-              name: '',
-              description: '',
-              duration: '',
-              price: '',
-              isActive: true,
-            });
-            setShowModal(true);
-          }}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
-        >
-          ➕ Add Plan
+        <button onClick={openNew}
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 transition-colors"
+          style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+          <Plus size={12} /> Add Plan
         </button>
       </div>
 
-      {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {loading ? (
-          <div className="col-span-3 p-12 flex flex-col items-center justify-center">
-            <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500/30 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
-            </div>
-            <p className="text-neutral-400 mt-4">Loading plans...</p>
+      {/* KPI */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { label: 'Total Plans', value: plans.length, color: 'text-white' },
+          { label: 'Active', value: plans.filter(p => p.isActive).length, color: 'text-green-400' },
+          { label: 'Inactive', value: plans.filter(p => !p.isActive).length, color: 'text-neutral-600' },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="bg-[#0c0c0c] border border-[#161616] p-5">
+            {FL(label)}
+            <p className={`font-black leading-none mt-2 ${color}`} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem' }}>{value}</p>
           </div>
-        ) : plans.length === 0 ? (
-          <div className="col-span-3 p-12 text-center text-neutral-400">No subscription plans yet. Create your first plan!</div>
-        ) : (
-          plans.map((plan) => (
-            <div
-              key={plan.$id}
-              className={`bg-neutral-800 rounded p-6 border-2 transition-all ${
-                plan.isActive ? 'border-red-600' : 'border-neutral-700 opacity-60'
-              }`}
-            >
-              {/* Plan Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleToggleStatus(plan)}
-                    className={`px-2 py-1 rounded text-xs font-semibold ${
-                      plan.isActive
-                        ? 'bg-green-500/20 text-green-500'
-                        : 'bg-neutral-500/20 text-neutral-500'
-                    }`}
-                  >
+        ))}
+      </div>
+
+      {/* Plans Grid */}
+      {loading ? (
+        <div className="bg-[#0c0c0c] border border-[#161616] flex items-center justify-center gap-3 py-16">
+          <div className="w-4 h-4 border-t-2 border-primary animate-spin rounded-full" />
+          <span className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>Loading...</span>
+        </div>
+      ) : plans.length === 0 ? (
+        <div className="bg-[#0c0c0c] border border-[#161616] py-16 text-center">
+          <p className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>No plans yet</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {plans.map((plan) => (
+            <div key={plan.$id} className={`bg-[#0c0c0c] border flex flex-col overflow-hidden transition-colors ${plan.isActive ? 'border-[#1e1e1e] hover:border-[#2a2a2a]' : 'border-[#111] opacity-50'}`}>
+              {/* Top accent */}
+              <div className={`h-[2px] ${plan.isActive ? 'bg-primary' : 'bg-[#1a1a1a]'}`} />
+
+              <div className="p-5 flex-1 flex flex-col">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.2rem', letterSpacing: '0.04em' }}>
+                    {plan.name}
+                  </h3>
+                  <button onClick={() => handleToggle(plan)}
+                    className={`px-2 py-0.5 text-[9px] font-bold uppercase border transition-colors ${plan.isActive ? 'admin-badge badge-active' : 'border-[#222] text-neutral-700 bg-[#0a0a0a]'}`}
+                    style={{ letterSpacing: '0.12em' }}>
                     {plan.isActive ? 'Active' : 'Inactive'}
                   </button>
                 </div>
-              </div>
 
-              {/* Price */}
-              <div className="mb-4">
-                <div className="flex items-baseline">
-                  <span className="text-4xl font-bold text-white">{plan.price} TND</span>
-                  <span className="text-neutral-400 ml-2">/ {plan.duration} days</span>
+                {plan.description && (
+                  <p className="text-neutral-600 text-xs mb-4 leading-relaxed line-clamp-2">{plan.description}</p>
+                )}
+
+                <div className="flex-1 flex flex-col justify-center py-4 border-y border-[#161616] my-3">
+                  <p className="text-primary font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem' }}>
+                    {parseFloat(plan.price).toFixed(0)}<span className="text-neutral-600 text-base ml-1">TND</span>
+                  </p>
+                  <p className="text-neutral-700 text-[10px] mt-1">{plan.duration} days</p>
                 </div>
               </div>
 
-              {/* Description */}
-              <p className="text-neutral-400 text-sm mb-6 min-h-[60px]">
-                {plan.description || 'No description provided'}
-              </p>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(plan)}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors text-sm"
-                >
-                  ✏️ Edit
+              <div className="flex border-t border-[#161616]">
+                <button onClick={() => handleEdit(plan)}
+                  className="flex-1 py-3 text-neutral-600 text-[10px] font-bold uppercase hover:text-white hover:bg-[#111] transition-colors border-r border-[#161616]"
+                  style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+                  Edit
                 </button>
-                <button
-                  onClick={() => {
-                    setPlanToDelete(plan);
-                    setShowDeleteModal(true);
-                  }}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm"
-                >
-                  🗑️
+                <button onClick={() => { setPlanToDelete(plan); setShowDeleteModal(true); }}
+                  className="flex-1 py-3 text-red-600/50 text-[10px] font-bold uppercase hover:text-red-500 hover:bg-[#111] transition-colors"
+                  style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+                  Delete
                 </button>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Modal */}
+      {/* Create / Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded p-6 max-w-md w-full border border-neutral-700 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              {editingPlan ? 'Edit Plan' : 'Create New Plan'}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0c0c0c] border border-[#1e1e1e] w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="px-5 py-4 border-b border-[#161616]">
+              <h2 className="text-white font-black uppercase" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem', letterSpacing: '0.06em' }}>
+                {editingPlan ? 'Edit Plan' : 'New Plan'}
+              </h2>
+            </div>
+            <form onSubmit={handleSubmit} className="p-5 space-y-4">
+              {[
+                { label: 'Plan Name', key: 'name', type: 'text', placeholder: 'e.g. Monthly' },
+                { label: 'Duration (days)', key: 'duration', type: 'number', placeholder: '30', min: '1' },
+                { label: 'Price (TND)', key: 'price', type: 'number', placeholder: '50.00', step: '0.01', min: '0' },
+              ].map(({ label, key, ...rest }) => (
+                <div key={key}>
+                  <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>{label}</label>
+                  <input value={formData[key]} onChange={(e) => setFormData({ ...formData, [key]: e.target.value })} required className={inputCls} style={inputStyle} {...rest} />
+                </div>
+              ))}
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Plan Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="e.g., Monthly Plan"
-                />
+                <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>Description</label>
+                <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3}
+                  className={inputCls} style={inputStyle} placeholder="Brief description..." />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Brief description of the plan..."
-                />
+              <div className="flex items-center gap-3">
+                <input type="checkbox" id="isActive" checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  className="w-3.5 h-3.5 accent-red-600" />
+                <label htmlFor="isActive" className="text-xs text-neutral-500">Active (visible to members)</label>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Duration (days)
-                </label>
-                <input
-                  type="number"
-                  value={formData.duration}
-                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  required
-                  min="1"
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="30"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Price (TND)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  required
-                  min="0"
-                  className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="50.00"
-                />
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="isActive"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="w-4 h-4 text-red-600 bg-neutral-700 border-neutral-600 rounded focus:ring-red-500"
-                />
-                <label htmlFor="isActive" className="ml-2 text-sm text-neutral-300">
-                  Active (visible to members)
-                </label>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowModal(false);
-                    setEditingPlan(null);
-                  }}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
-                >
+              <div className="flex border-t border-[#161616] pt-4 gap-3">
+                <button type="button" onClick={() => { setShowModal(false); setEditingPlan(null); }}
+                  className="flex-1 py-2.5 border border-[#1e1e1e] text-neutral-600 text-xs font-bold uppercase hover:text-white hover:border-[#2a2a2a] transition-colors"
+                  style={{ borderRadius: 0, letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
-                >
+                <button type="submit"
+                  className="flex-1 py-2.5 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 transition-colors"
+                  style={{ borderRadius: 0, letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>
                   {editingPlan ? 'Update' : 'Create'}
                 </button>
               </div>
@@ -333,118 +230,41 @@ export default function PlansPage() {
         </div>
       )}
 
-      {/* Stats */}
-      <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-        <h2 className="text-xl font-bold text-white mb-4">Plan Statistics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-neutral-700 rounded">
-            <p className="text-neutral-400 text-sm">Total Plans</p>
-            <p className="text-2xl font-bold text-white mt-1">{plans.length}</p>
-          </div>
-          <div className="p-4 bg-neutral-700 rounded">
-            <p className="text-neutral-400 text-sm">Active Plans</p>
-            <p className="text-2xl font-bold text-green-500 mt-1">
-              {plans.filter(p => p.isActive).length}
-            </p>
-          </div>
-          <div className="p-4 bg-neutral-700 rounded">
-            <p className="text-neutral-400 text-sm">Price Range</p>
-            <p className="text-2xl font-bold text-white mt-1">
-              {Math.min(...plans.map(p => p.price))} - {Math.max(...plans.map(p => p.price))} TND
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       {showDeleteModal && planToDelete && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded max-w-md w-full border border-neutral-700 shadow-2xl">
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <span className="text-2xl">⚠️</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white">Delete Plan</h3>
-                  <p className="text-neutral-400 text-sm mt-1">This action cannot be undone</p>
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <p className="text-neutral-300">
-                  Are you sure you want to delete the <span className="font-semibold text-white">{planToDelete.name}</span> plan? 
-                  This will permanently remove it from your subscription options.
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowDeleteModal(false);
-                    setPlanToDelete(null);
-                  }}
-                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded transition-colors"
-                >
-                  Delete Plan
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0c0c0c] border border-[#1e1e1e] max-w-sm w-full">
+            <div className="px-5 py-4 border-b border-[#161616] flex items-center gap-3">
+              <AlertTriangle size={14} className="text-red-500 flex-shrink-0" />
+              <h3 className="text-white font-black uppercase text-sm" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}>Delete Plan</h3>
+            </div>
+            <div className="px-5 py-4">
+              <p className="text-neutral-500 text-xs leading-relaxed">
+                Delete <span className="text-white font-semibold">{planToDelete.name}</span>? This cannot be undone.
+              </p>
+            </div>
+            <div className="flex border-t border-[#161616]">
+              <button onClick={() => { setShowDeleteModal(false); setPlanToDelete(null); }}
+                className="flex-1 py-3 text-neutral-600 text-xs font-bold uppercase hover:text-white hover:bg-[#111] transition-colors border-r border-[#161616]"
+                style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>Cancel</button>
+              <button onClick={handleDelete}
+                className="flex-1 py-3 text-red-500 text-xs font-bold uppercase hover:text-white hover:bg-red-600 transition-colors"
+                style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>Delete</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Toast Notification */}
+      {/* Toast */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
-          <div
-            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
-              toast.type === 'success'
-                ? 'bg-neutral-800 border-green-500 text-white'
-                : 'bg-neutral-800 border-red-500 text-white'
-            }`}
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 text-2xl">
-                {toast.type === 'success' ? '✅' : '❌'}
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-white">{toast.message}</p>
-              </div>
-              <button
-                onClick={() => setToast(null)}
-                className="flex-shrink-0 text-neutral-400 hover:text-white transition-colors"
-              >
-                ✕
-              </button>
-            </div>
+          <div className={`flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[260px] bg-[#0c0c0c] border border-[#1e1e1e] ${toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'}`}>
+            {toast.type === 'success' ? <CheckCircle size={14} className="text-green-500 flex-shrink-0" /> : <XCircle size={14} className="text-red-500 flex-shrink-0" />}
+            <p className="text-white text-xs flex-1">{toast.message}</p>
+            <button onClick={() => setToast(null)} className="text-neutral-600 hover:text-white transition-colors text-xs">✕</button>
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes slide-in-right {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }

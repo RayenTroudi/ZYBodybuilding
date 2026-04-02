@@ -2,15 +2,19 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CheckCircle, XCircle } from 'lucide-react';
+
+const FL = (text) => (
+  <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1.5" style={{ letterSpacing: '0.18em' }}>{text}</p>
+);
+
+const inputCls = "w-full px-4 py-2.5 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs placeholder-neutral-700 focus:outline-none focus:border-primary transition-colors disabled:opacity-40";
+const inputStyle = { borderRadius: 0, fontFamily: "'DM Sans', sans-serif" };
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
-  const [formData, setFormData] = useState({
-    oldPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
+  const [formData, setFormData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
   const router = useRouter();
 
   const showToast = (message, type = 'success') => {
@@ -20,201 +24,158 @@ export default function SettingsPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validation
     if (!formData.oldPassword || !formData.newPassword || !formData.confirmPassword) {
-      showToast('All fields are required', 'error');
-      return;
+      showToast('All fields are required', 'error'); return;
     }
-
     if (formData.newPassword.length < 8) {
-      showToast('New password must be at least 8 characters long', 'error');
-      return;
+      showToast('New password must be at least 8 characters', 'error'); return;
     }
-
     if (formData.newPassword !== formData.confirmPassword) {
-      showToast('New passwords do not match', 'error');
-      return;
+      showToast('New passwords do not match', 'error'); return;
     }
-
     if (formData.oldPassword === formData.newPassword) {
-      showToast('New password must be different from old password', 'error');
-      return;
+      showToast('New password must differ from old password', 'error'); return;
     }
 
     setLoading(true);
-
     try {
       const response = await fetch('/api/admin/settings/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-        }),
+        body: JSON.stringify({ oldPassword: formData.oldPassword, newPassword: formData.newPassword }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        showToast('Password changed successfully! Please login again.', 'success');
-        
-        // Reset form
-        setFormData({
-          oldPassword: '',
-          newPassword: '',
-          confirmPassword: '',
-        });
-
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          router.push('/admin/ironcore/login');
-        }, 2000);
+        showToast('Password changed. Please login again.', 'success');
+        setFormData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+        setTimeout(() => router.push('/admin/ironcore/login'), 2000);
       } else {
         showToast(data.error || 'Failed to change password', 'error');
       }
-    } catch (error) {
-      console.error('Error changing password:', error);
-      showToast('Failed to change password. Please try again.', 'error');
+    } catch {
+      showToast('Failed to change password', 'error');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Toast Notification */}
-      {toast && (
-        <div
-          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded shadow-lg text-white ${
-            toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-          }`}
-        >
-          {toast.message}
-        </div>
-      )}
+    <div className="space-y-5 max-w-2xl">
 
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-        <p className="text-neutral-400">Manage your account settings</p>
+      {/* Header */}
+      <div className="pb-4 border-b border-[#141414]">
+        <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>Account</p>
+        <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
+          Settings
+        </h1>
       </div>
 
-      {/* Change Password Section */}
-      <div className="bg-neutral-800 rounded border border-neutral-700">
-        <div className="p-6 border-b border-neutral-700">
-          <h2 className="text-xl font-semibold text-white mb-1">Change Password</h2>
-          <p className="text-neutral-400 text-sm">Update your password to keep your account secure</p>
+      {/* Change Password */}
+      <div className="bg-[#0c0c0c] border border-[#161616]">
+        <div className="px-5 py-4 border-b border-[#161616]">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase" style={{ letterSpacing: '0.2em' }}>Security</p>
+          <h2 className="text-white font-black uppercase leading-none mt-0.5" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.15rem', letterSpacing: '0.04em' }}>
+            Change Password
+          </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Old Password */}
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">
-              Current Password *
-            </label>
+            {FL('Current Password *')}
             <input
               type="password"
               name="oldPassword"
               value={formData.oldPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
               placeholder="Enter your current password"
               disabled={loading}
+              className={inputCls}
+              style={inputStyle}
             />
           </div>
-
-          {/* New Password */}
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">
-              New Password *
-            </label>
+            {FL('New Password *')}
             <input
               type="password"
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
-              placeholder="Enter your new password (min. 8 characters)"
+              placeholder="Minimum 8 characters"
               disabled={loading}
+              className={inputCls}
+              style={inputStyle}
             />
-            <p className="mt-1 text-xs text-neutral-400">
-              Password must be at least 8 characters long
-            </p>
           </div>
-
-          {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">
-              Confirm New Password *
-            </label>
+            {FL('Confirm New Password *')}
             <input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
-              placeholder="Confirm your new password"
+              placeholder="Repeat new password"
               disabled={loading}
+              className={inputCls}
+              style={inputStyle}
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="flex items-center justify-end pt-4">
+          <div className="flex justify-end pt-2 border-t border-[#111]">
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-red-600 text-white font-medium rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
+              className="px-6 py-2.5 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+              style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
               {loading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Updating Password...
-                </span>
-              ) : (
-                'Change Password'
-              )}
+                <>
+                  <div className="w-3.5 h-3.5 border-t-2 border-white animate-spin rounded-full" />
+                  Updating...
+                </>
+              ) : 'Update Password'}
             </button>
           </div>
         </form>
       </div>
 
       {/* Security Tips */}
-      <div className="bg-neutral-800 rounded border border-neutral-700 p-6">
-        <h3 className="text-lg font-semibold text-white mb-3">🔐 Password Security Tips</h3>
-        <ul className="space-y-2 text-neutral-400 text-sm">
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>Use a password with at least 8 characters</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>Include a mix of uppercase, lowercase, numbers, and symbols</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>Avoid using common words or personal information</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>Don't reuse passwords from other accounts</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span>Change your password regularly</span>
-          </li>
+      <div className="bg-[#0c0c0c] border border-[#161616]">
+        <div className="px-5 py-4 border-b border-[#161616]">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase" style={{ letterSpacing: '0.2em' }}>Best Practices</p>
+          <h2 className="text-white font-black uppercase leading-none mt-0.5" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.15rem', letterSpacing: '0.04em' }}>
+            Password Tips
+          </h2>
+        </div>
+        <ul className="p-5 space-y-3">
+          {[
+            'Use at least 8 characters',
+            'Include uppercase, lowercase, numbers, and symbols',
+            'Avoid common words or personal information',
+            'Do not reuse passwords from other accounts',
+            'Change your password regularly',
+          ].map((tip, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="w-[2px] h-3.5 bg-primary flex-shrink-0 mt-0.5" />
+              <span className="text-neutral-600 text-xs leading-relaxed">{tip}</span>
+            </li>
+          ))}
         </ul>
       </div>
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
+          <div className={`flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[260px] bg-[#0c0c0c] border border-[#1e1e1e] ${toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'}`}>
+            {toast.type === 'success' ? <CheckCircle size={14} className="text-green-500 flex-shrink-0" /> : <XCircle size={14} className="text-red-500 flex-shrink-0" />}
+            <p className="text-white text-xs flex-1">{toast.message}</p>
+            <button onClick={() => setToast(null)} className="text-neutral-600 hover:text-white transition-colors text-xs">✕</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaCheckCircle } from 'react-icons/fa';
 
 const Pricing = () => {
   const [plans, setPlans] = useState([]);
@@ -26,12 +25,8 @@ const Pricing = () => {
     }
   };
 
-  // Format price with TND
-  const formatPrice = (price) => {
-    return `${parseFloat(price).toLocaleString('fr-TN')} TND`;
-  };
+  const formatPrice = (price) => `${parseFloat(price).toLocaleString('fr-TN')} TND`;
 
-  // Get period label based on duration
   const getPeriodLabel = (duration) => {
     if (duration <= 7) return 'Par semaine';
     if (duration >= 28 && duration <= 31) return 'Par mois';
@@ -40,105 +35,145 @@ const Pricing = () => {
     return `Pour ${duration} jours`;
   };
 
-  if (loading) {
-    return (
-      <div id="pricing" className="bg-dark text-white flex flex-col items-center section-padding">
-        <motion.h1
-          className="section-header mb-4"
-          initial={{ y: -50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          Tarifs
-        </motion.h1>
-        <div className="divider-primary mb-12"></div>
-        <div className="text-center text-neutral-400">
-          Chargement des tarifs...
-        </div>
-      </div>
-    );
-  }
+  const featuredIndex = plans.length > 2 ? Math.floor(plans.length / 2) : plans.length > 1 ? 1 : 0;
 
   return (
-    <motion.div
-      id="pricing"
-      className="bg-dark text-white flex flex-col items-center py-12 sm:py-16 md:py-20 px-4 sm:px-6"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-    >
-      {/* Section Header */}
-      <motion.h1
-        className="section-header text-3xl sm:text-4xl md:text-5xl mb-4"
-        initial={{ y: -50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        Tarifs
-      </motion.h1>
-      <div className="divider-primary mb-8 sm:mb-10 md:mb-12"></div>
-      
-      {/* Pricing Cards Grid */}
-      <motion.div
-        className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full max-w-7xl"
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        {plans.length === 0 ? (
-          <div className="col-span-full text-center text-neutral-400 py-8">
-            Aucun tarif disponible pour le moment.
+    <section id="pricing" className="relative bg-[#080808] text-white py-20 lg:py-32 px-4 sm:px-6 dot-grid-bg overflow-hidden">
+      <div className="noise-overlay" />
+      <div className="container mx-auto relative z-10">
+
+        {/* Header */}
+        <motion.div
+          className="mb-12 lg:mb-16"
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <p className="section-label">Abonnements</p>
+          <h2
+            className="text-white font-black uppercase leading-none mb-4"
+            style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 'clamp(2.8rem, 7vw, 5rem)', letterSpacing: '-0.02em' }}
+          >
+            Tarifs
+          </h2>
+          <div className="divider-primary" />
+        </motion.div>
+
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-primary mb-4" />
+            <p className="text-neutral-600 text-sm">Chargement des tarifs...</p>
           </div>
+        ) : plans.length === 0 ? (
+          <p className="text-center text-neutral-600 py-12">Aucun tarif disponible pour le moment.</p>
         ) : (
-          plans.map((plan, index) => (
-            <motion.div
-              key={plan.$id || index}
-              className="card overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] flex flex-col"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 200, delay: index * 0.1 }}
-            >
-              <div className="p-4 flex-grow">
-                {/* Plan Title */}
-                <h2 className="text-xl font-bold mb-2 text-center text-white">
-                  {plan.name}
-                </h2>
-                
-                {/* Plan Description */}
-                {plan.description && (
-                  <p className="text-xs text-neutral-400 text-center mb-3 line-clamp-2 min-h-[32px]">
-                    {plan.description}
-                  </p>
-                )}
-                
-                {/* Price */}
-                <div className="my-4 text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {formatPrice(plan.price)}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {plans.map((plan, index) => {
+              const isFeatured = index === featuredIndex;
+              return (
+                <motion.div
+                  key={plan.$id || index}
+                  className={`relative flex flex-col overflow-hidden group transition-all duration-300 border ${
+                    isFeatured
+                      ? 'pricing-featured'
+                      : 'bg-[#111111] border-[#1e1e1e] hover:border-primary/40'
+                  }`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  whileHover={{ y: isFeatured ? -6 : -4 }}
+                >
+                  {/* Top bar */}
+                  {isFeatured ? (
+                    <div className="h-[3px] bg-primary" />
+                  ) : (
+                    <div className="h-[3px] bg-[#1e1e1e] relative overflow-hidden">
+                      <div className="absolute inset-0 bg-primary translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
+                    </div>
+                  )}
+
+                  <div className="p-6 flex-1 flex flex-col">
+                    {/* Badge for featured */}
+                    {isFeatured && (
+                      <div className="mb-3 self-start">
+                        <span
+                          className="badge-primary text-[9px]"
+                          style={{ letterSpacing: '0.18em' }}
+                        >
+                          Populaire
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Plan name */}
+                    <h3
+                      className="text-white font-black uppercase mb-1"
+                      style={{
+                        fontFamily: "'Barlow Condensed', sans-serif",
+                        letterSpacing: '0.04em',
+                        fontSize: isFeatured ? '1.4rem' : '1.25rem',
+                      }}
+                    >
+                      {plan.name}
+                    </h3>
+
+                    {plan.description && (
+                      <p
+                        className="text-neutral-600 text-xs mb-5 leading-relaxed line-clamp-2 min-h-[32px]"
+                        style={{ fontFamily: "'DM Sans', sans-serif" }}
+                      >
+                        {plan.description}
+                      </p>
+                    )}
+
+                    {/* Price block */}
+                    <div className={`flex-1 flex flex-col justify-center py-5 my-4 ${isFeatured ? 'border-y border-primary/20' : 'border-y border-[#1a1a1a]'}`}>
+                      <div
+                        className={`font-black leading-none mb-1 ${isFeatured ? 'text-glow-red' : ''}`}
+                        style={{
+                          fontFamily: "'Barlow Condensed', sans-serif",
+                          fontSize: isFeatured ? 'clamp(2rem, 5vw, 2.8rem)' : 'clamp(1.6rem, 4vw, 2.2rem)',
+                          color: 'var(--primary-color)',
+                        }}
+                      >
+                        {formatPrice(plan.price)}
+                      </div>
+                      <div
+                        className="text-neutral-500 text-xs mt-1.5"
+                        style={{ fontFamily: "'DM Sans', sans-serif" }}
+                      >
+                        {getPeriodLabel(plan.duration)}
+                      </div>
+                      <div
+                        className="text-neutral-700 text-xs mt-0.5"
+                        style={{ fontFamily: "'DM Sans', sans-serif" }}
+                      >
+                        {plan.duration} jour{plan.duration > 1 ? 's' : ''}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-neutral-400 text-xs">
-                    {getPeriodLabel(plan.duration)}
-                  </div>
-                  <div className="text-neutral-500 text-xs mt-1">
-                    Durée: {plan.duration} jour{plan.duration > 1 ? 's' : ''}
-                  </div>
-                </div>
-              </div>
-              
-              {/* CTA Button */}
-              <motion.button
-                className="w-full bg-primary text-white text-center py-2.5 text-sm font-bold cursor-pointer hover:shadow-lg transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                S'inscrire
-              </motion.button>
-            </motion.div>
-          ))
+
+                  {/* CTA */}
+                  <motion.button
+                    className={`w-full py-4 text-xs font-bold uppercase transition-all duration-200 ${
+                      isFeatured
+                        ? 'bg-primary text-white border-t border-primary hover:bg-primary-600'
+                        : 'border-t border-[#1e1e1e] text-neutral-500 hover:text-white hover:bg-primary hover:border-primary'
+                    }`}
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.12em' }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    S&apos;inscrire
+                  </motion.button>
+                </motion.div>
+              );
+            })}
+          </div>
         )}
-      </motion.div>
-    </motion.div>
+      </div>
+    </section>
   );
 };
 

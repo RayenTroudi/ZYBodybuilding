@@ -1,122 +1,94 @@
 'use client';
 
-/**
- * Admin Email Management Dashboard
- * Allows admins to send emails with templates and track delivery status
- */
-
 import { useState, useEffect } from 'react';
-import { FaPaperPlane, FaChartBar, FaHistory, FaExclamationTriangle } from 'react-icons/fa';
+import { Send, CheckCircle, XCircle } from 'lucide-react';
 
-// Email Templates
 const EMAIL_TEMPLATES = {
   welcome: {
-    name: 'Email de Bienvenue',
+    name: 'Welcome Email',
     subject: 'Bienvenue chez ZY Bodybuilding!',
     html: `Bonjour {memberName},
 
-Nous sommes ravis de vous accueillir dans notre famille. Votre parcours vers un corps plus fort et plus sain commence maintenant!
+Nous sommes ravis de vous accueillir dans notre famille. Votre parcours vers un corps plus fort commence maintenant!
 
 Ce qui vous attend:
-• Équipements de pointe - Machines et poids de qualité professionnelle
-• Entraîneurs experts - Accompagnement personnalisé pour vos objectifs
-• Cours variés - Planning flexible adapté à votre emploi du temps
-• Communauté motivante - Entourez-vous de passionnés de fitness
+- Equipements de pointe
+- Entraineurs experts
+- Cours varies
+- Communaute motivante
 
-Nous avons hâte de vous voir et de vous accompagner dans votre transformation!
-
-Prochaines étapes:
-• Consultez notre planning de cours
-• Rencontrez nos entraîneurs
-• Commencez votre première séance
-
-Variables: Remplacez {memberName} par le nom du membre`,
+Variables: {memberName}`,
   },
   classReminder: {
-    name: 'Rappel de Cours',
-    subject: 'Rappel: Votre Cours Aujourd\'hui',
-    html: `N'oubliez pas votre cours à venir!
+    name: 'Class Reminder',
+    subject: "Rappel: Votre Cours Aujourd'hui",
+    html: `N'oubliez pas votre cours!
 
 Cours: {className}
 Date: {date}
 Heure: {time}
 
-Nous avons hâte de vous voir! 💪
-
-💡 Conseil: Arrivez 10 minutes en avance pour vous échauffer et préparer votre équipement.
+Arrivez 10 minutes en avance.
 
 Variables: {className}, {date}, {time}`,
   },
   paymentReminder: {
-    name: 'Rappel de Paiement',
+    name: 'Payment Reminder',
     subject: 'Rappel de Paiement - ZY Bodybuilding',
     html: `Bonjour {memberName},
 
-Ceci est un rappel amical concernant votre paiement d'adhésion.
+Rappel concernant votre paiement d'adhesion.
 
-Montant dû: {amount}
-Date d'échéance: {dueDate}
-
-Pour continuer à profiter de nos services sans interruption, veuillez effectuer votre paiement avant la date d'échéance.
-
-Moyens de paiement acceptés:
-• En salle (espèces ou carte bancaire)
-• Virement bancaire
-• Paiement mobile
+Montant du: {amount}
+Date d'echeance: {dueDate}
 
 Variables: {memberName}, {amount}, {dueDate}`,
   },
   promo: {
-    name: 'Offre Promotionnelle',
-    subject: '🎉 Offre Spéciale chez ZY Bodybuilding',
-    html: `🎉 {promoTitle}
+    name: 'Promotional Offer',
+    subject: 'Offre Speciale chez ZY Bodybuilding',
+    html: `{promoTitle}
 
 {promoDescription}
 
 PROMOTION: {discount}% OFF
-Offre à Durée Limitée
-
 Valable jusqu'au: {validUntil}
-
-Ne manquez pas cette opportunité exceptionnelle! Cette offre est valable pour:
-• Nouvelles adhésions
-• Renouvellements anticipés
-• Abonnements longue durée
 
 Variables: {promoTitle}, {promoDescription}, {discount}, {validUntil}`,
   },
   membershipExpiring: {
-    name: 'Adhésion Expire Bientôt',
-    subject: 'Votre Adhésion Expire Bientôt',
+    name: 'Membership Expiring',
+    subject: 'Votre Adhesion Expire Bientot',
     html: `Bonjour {memberName},
 
-Votre adhésion arrive à expiration dans {daysRemaining} jour(s).
+Votre adhesion expire dans {daysRemaining} jour(s).
 
-Ne laissez pas votre parcours fitness s'arrêter! Renouvelez dès aujourd'hui pour continuer à profiter de tous nos services.
-
-Ce que vous conservez en renouvelant:
-• Accès illimité à toutes les installations
-• Tous les cours collectifs inclus
-• Coaching personnalisé sur demande
-• Événements exclusifs réservés aux membres
+Renouvelez des aujourd'hui pour continuer a profiter de nos services.
 
 Variables: {memberName}, {daysRemaining}`,
   },
   custom: {
-    name: 'Email Personnalisé',
+    name: 'Custom Email',
     subject: '',
     html: '',
   },
 };
 
 const EMAIL_TYPES = {
-  verification: 'Vérification',
-  welcome: 'Bienvenue',
+  verification: 'Verification',
+  welcome: 'Welcome',
   promo: 'Promotion',
-  reminder: 'Rappel',
+  reminder: 'Reminder',
   notification: 'Notification',
-  alert: 'Alerte',
+  alert: 'Alert',
 };
+
+const FL = (text) => (
+  <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1.5" style={{ letterSpacing: '0.18em' }}>{text}</p>
+);
+
+const inputCls = "w-full px-4 py-2.5 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs placeholder-neutral-700 focus:outline-none focus:border-primary transition-colors";
+const inputStyle = { borderRadius: 0, fontFamily: "'DM Sans', sans-serif" };
 
 export default function EmailManagementPage() {
   const [recipientEmail, setRecipientEmail] = useState('');
@@ -126,23 +98,6 @@ export default function EmailManagementPage() {
   const [selectedType, setSelectedType] = useState('notification');
   const [isSending, setIsSending] = useState(false);
   const [sendResult, setSendResult] = useState(null);
-  const [metrics, setMetrics] = useState(null);
-
-  useEffect(() => {
-    fetchMetrics();
-  }, []);
-
-  const fetchMetrics = async () => {
-    try {
-      const response = await fetch('/api/email/metrics');
-      const data = await response.json();
-      if (data.success) {
-        setMetrics(data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching metrics:', error);
-    }
-  };
 
   const handleTemplateChange = (templateId) => {
     setSelectedTemplate(templateId);
@@ -153,43 +108,30 @@ export default function EmailManagementPage() {
 
   const handleSendEmail = async (e) => {
     e.preventDefault();
-    
     if (!recipientEmail || !subject || !emailHtml) {
-      setSendResult({ success: false, error: 'Please fill in all required fields' });
+      setSendResult({ success: false, error: 'All fields are required' });
       return;
     }
-
     setIsSending(true);
     setSendResult(null);
-
     try {
       const response = await fetch('/api/email/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: recipientEmail,
-          subject,
-          html: emailHtml,
-          type: selectedType,
-          metadata: { template: selectedTemplate },
-        }),
+        body: JSON.stringify({ to: recipientEmail, subject, html: emailHtml, type: selectedType, metadata: { template: selectedTemplate } }),
       });
-
       const data = await response.json();
       setSendResult(data);
-
       if (data.success) {
-        // Clear form after successful send
         setTimeout(() => {
           setRecipientEmail('');
           setSubject('');
           setEmailHtml('');
           setSelectedTemplate('custom');
           setSendResult(null);
-          fetchMetrics();
         }, 3000);
       }
-    } catch (error) {
+    } catch {
       setSendResult({ success: false, error: 'Failed to send email' });
     } finally {
       setIsSending(false);
@@ -197,212 +139,147 @@ export default function EmailManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Page Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="bg-red-500/10 p-3 rounded-md border border-red-500/20">
-              <FaPaperPlane className="text-red-500 text-2xl" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">Email Management</h1>
-              <p className="text-neutral-400 text-sm mt-1">Send customized emails to your members</p>
-            </div>
-          </div>
+    <div className="space-y-5 max-w-4xl">
+
+      {/* Header */}
+      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
+        <div>
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>Communications</p>
+          <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
+            Email
+          </h1>
+        </div>
+      </div>
+
+      {/* Compose */}
+      <div className="bg-[#0c0c0c] border border-[#161616]">
+        <div className="px-5 py-4 border-b border-[#161616]">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase" style={{ letterSpacing: '0.2em' }}>Compose</p>
+          <h2 className="text-white font-black uppercase leading-none mt-0.5" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.15rem', letterSpacing: '0.04em' }}>
+            New Message
+          </h2>
         </div>
 
-        {/* Email Form Card */}
-        <div className="bg-neutral-800 rounded-md shadow-2xl border border-neutral-700 overflow-hidden">
-          {/* Card Header */}
-          <div className="bg-primary px-6 py-4 border-b border-red-800">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <FaPaperPlane className="text-white" />
-              Compose Email
-            </h2>
+        <form onSubmit={handleSendEmail} className="p-5 space-y-4">
+          {/* Template + Type */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              {FL('Template')}
+              <select
+                value={selectedTemplate}
+                onChange={(e) => handleTemplateChange(e.target.value)}
+                className={inputCls}
+                style={inputStyle}>
+                {Object.entries(EMAIL_TEMPLATES).map(([key, template]) => (
+                  <option key={key} value={key}>{template.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              {FL('Email Type')}
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className={inputCls}
+                style={inputStyle}>
+                {Object.entries(EMAIL_TYPES).map(([key, label]) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <form onSubmit={handleSendEmail} className="p-6 space-y-6">
-            {/* Template and Type Selection - Two Column Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Template Selection */}
+          <div className="border-t border-[#111]" />
+
+          {/* Recipient */}
+          <div>
+            {FL('Recipient Email *')}
+            <input
+              type="email"
+              value={recipientEmail}
+              onChange={(e) => setRecipientEmail(e.target.value)}
+              placeholder="recipient@example.com"
+              required
+              className={inputCls}
+              style={inputStyle}
+            />
+          </div>
+
+          {/* Subject */}
+          <div>
+            {FL('Subject *')}
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Email subject"
+              required
+              maxLength={200}
+              className={inputCls}
+              style={inputStyle}
+            />
+            <p className="text-neutral-700 text-[10px] mt-1 text-right font-mono">{subject.length}/200</p>
+          </div>
+
+          {/* Body */}
+          <div>
+            {FL('Content *')}
+            <textarea
+              value={emailHtml}
+              onChange={(e) => setEmailHtml(e.target.value)}
+              placeholder="Enter email content..."
+              required
+              rows={12}
+              className={`${inputCls} resize-y font-mono`}
+              style={inputStyle}
+            />
+            <div className="mt-2 px-4 py-3 bg-[#080808] border border-[#111]">
+              <p className="text-neutral-700 text-[10px] leading-relaxed">
+                Content is auto-formatted with ZY Bodybuilding branding. Use variables like <span className="text-neutral-500 font-mono">{'{memberName}'}</span>, <span className="text-neutral-500 font-mono">{'{amount}'}</span>, <span className="text-neutral-500 font-mono">{'{dueDate}'}</span>.
+              </p>
+            </div>
+            <p className="text-neutral-700 text-[10px] mt-1 text-right font-mono">{emailHtml.length} chars</p>
+          </div>
+
+          <div className="border-t border-[#111]" />
+
+          {/* Send */}
+          <button
+            type="submit"
+            disabled={isSending || !recipientEmail || !subject || !emailHtml}
+            className="w-full py-3 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+            {isSending ? (
+              <>
+                <div className="w-3.5 h-3.5 border-t-2 border-white animate-spin rounded-full" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send size={12} />
+                Send Email
+              </>
+            )}
+          </button>
+
+          {/* Result */}
+          {sendResult && (
+            <div className={`flex items-start gap-3 px-4 py-3 border-l-2 bg-[#080808] border border-[#1e1e1e] ${sendResult.success ? 'border-l-green-500' : 'border-l-red-500'}`}>
+              {sendResult.success
+                ? <CheckCircle size={14} className="text-green-500 flex-shrink-0 mt-0.5" />
+                : <XCircle size={14} className="text-red-500 flex-shrink-0 mt-0.5" />}
               <div>
-                <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
-                  <span className="text-red-400">📋</span>
-                  Select Template
-                </label>
-                <select
-                  value={selectedTemplate}
-                  onChange={(e) => handleTemplateChange(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
-                >
-                  {Object.entries(EMAIL_TEMPLATES).map(([key, template]) => (
-                    <option key={key} value={key}>
-                      {template.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Email Type */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
-                  <span className="text-red-400">🏷️</span>
-                  Email Type
-                </label>
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 cursor-pointer"
-                >
-                  {Object.entries(EMAIL_TYPES).map(([key, label]) => (
-                    <option key={key} value={key}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-neutral-700"></div>
-
-            {/* Recipient Email */}
-            <div>
-              <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
-                <span className="text-red-400">✉️</span>
-                Recipient Email
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                value={recipientEmail}
-                onChange={(e) => setRecipientEmail(e.target.value)}
-                placeholder="recipient@example.com"
-                required
-                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
-              />
-            </div>
-
-            {/* Subject */}
-            <div>
-              <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
-                <span className="text-red-400">📝</span>
-                Subject
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Email subject"
-                required
-                maxLength={200}
-                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500"
-              />
-              <div className="flex justify-between mt-2">
-                <p className="text-xs text-neutral-400">Keep it clear and concise</p>
-                <p className="text-xs text-neutral-500 font-mono">{subject.length}/200</p>
-              </div>
-            </div>
-
-            {/* Email Body */}
-            <div>
-              <label className="block text-sm font-semibold text-neutral-200 mb-3 flex items-center gap-2">
-                <span className="text-red-400">📄</span>
-                Email Content
-                <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={emailHtml}
-                onChange={(e) => setEmailHtml(e.target.value)}
-                placeholder="Entrez le contenu de votre email (texte simple, pas besoin de HTML complexe)..."
-                required
-                rows={12}
-                className="w-full px-4 py-3 bg-neutral-700 border-2 border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all hover:border-neutral-500 text-sm font-mono resize-y"
-              />
-              
-              {/* Helper Information Box */}
-              <div className="mt-3 bg-neutral-700/50 border border-neutral-600 rounded p-4 space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="text-blue-400 mt-0.5">ℹ️</span>
-                  <p className="text-xs text-neutral-300">
-                    Le contenu sera automatiquement formaté avec le design de ZY Bodybuilding (logo, couleurs, en-tête, pied de page).
-                  </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-yellow-400 mt-0.5">📝</span>
-                  <p className="text-xs text-neutral-300">
-                    <strong className="text-yellow-300">Variables disponibles:</strong> {'{memberName}'}, {'{amount}'}, {'{dueDate}'}, etc. 
-                    <br />
-                    <span className="text-neutral-400 italic">Exemple: "Bonjour {'{memberName}'}, votre paiement de {'{amount}'} est dû."</span>
-                  </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-green-400 mt-0.5">✓</span>
-                  <p className="text-xs text-neutral-400">
-                    Le texte sera converti automatiquement en HTML (paragraphes, sauts de ligne, etc.)
-                  </p>
-                </div>
-              </div>
-              
-              <p className="text-xs text-neutral-500 mt-2 font-mono text-right">{emailHtml.length} caractères</p>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-neutral-700"></div>
-            {/* Send Button */}
-            <button
-              type="submit"
-              disabled={isSending || !recipientEmail || !subject || !emailHtml}
-              className="w-full bg-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
-            >
-              {isSending ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                  <span>Sending Email...</span>
-                </>
-              ) : (
-                <>
-                  <FaPaperPlane className="text-lg" />
-                  <span>Send Email</span>
-                </>
-              )}
-            </button>
-
-            {/* Send Result */}
-            {sendResult && (
-              <div
-                className={`p-4 rounded border-2 ${
-                  sendResult.success
-                    ? 'bg-green-900/20 border-green-500'
-                    : 'bg-red-900/20 border-red-500'
-                }`}
-              >
-                {sendResult.success ? (
-                  <div className="space-y-2">
-                    <p className="text-green-400 font-bold text-lg flex items-center gap-2">
-                      <span className="text-2xl">✓</span>
-                      Email sent successfully!
-                    </p>
-                    <p className="text-sm text-neutral-300">
-                      <span className="text-neutral-400">Message ID:</span>{' '}
-                      <span className="font-mono text-green-300">{sendResult.data?.messageId}</span>
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <p className="text-red-400 font-bold text-lg flex items-center gap-2">
-                      <FaExclamationTriangle className="text-xl" />
-                      Failed to send email
-                    </p>
-                    <p className="text-sm text-neutral-300">{sendResult.error}</p>
-                  </div>
+                <p className="text-white text-xs font-semibold">{sendResult.success ? 'Email sent successfully' : 'Failed to send email'}</p>
+                {sendResult.success && sendResult.data?.messageId && (
+                  <p className="text-neutral-600 text-[10px] mt-0.5 font-mono">{sendResult.data.messageId}</p>
+                )}
+                {!sendResult.success && sendResult.error && (
+                  <p className="text-neutral-500 text-[10px] mt-0.5">{sendResult.error}</p>
                 )}
               </div>
-            )}
-          </form>
-        </div>
+            </div>
+          )}
+        </form>
       </div>
     </div>
   );

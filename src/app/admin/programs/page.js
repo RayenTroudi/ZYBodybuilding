@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Plus, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+
+const FL = (text) => (
+  <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>{text}</p>
+);
 
 export default function ProgramsManagement() {
   const router = useRouter();
@@ -11,9 +16,7 @@ export default function ProgramsManagement() {
   const [programToDelete, setProgramToDelete] = useState(null);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => {
-    fetchPrograms();
-  }, []);
+  useEffect(() => { fetchPrograms(); }, []);
 
   const fetchPrograms = async () => {
     try {
@@ -21,12 +24,7 @@ export default function ProgramsManagement() {
       const response = await fetch('/api/admin/programs');
       const data = await response.json();
       setPrograms(data.programs || []);
-    } catch (error) {
-      console.error('Error fetching programs:', error);
-      setPrograms([]);
-    } finally {
-      setLoading(false);
-    }
+    } catch { setPrograms([]); } finally { setLoading(false); }
   };
 
   const showToast = (message, type = 'success') => {
@@ -39,243 +37,157 @@ export default function ProgramsManagement() {
       const response = await fetch(`/api/admin/programs/${program.$id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !program.isActive })
+        body: JSON.stringify({ isActive: !program.isActive }),
       });
-
-      if (response.ok) {
-        fetchPrograms();
-      }
-    } catch (error) {
-      console.error('Error updating program status:', error);
-    }
+      if (response.ok) fetchPrograms();
+    } catch {}
   };
 
   const handleDelete = async () => {
     if (!programToDelete) return;
-
     try {
-      const response = await fetch(`/api/admin/programs/${programToDelete.$id}`, {
-        method: 'DELETE'
-      });
-
+      const response = await fetch(`/api/admin/programs/${programToDelete.$id}`, { method: 'DELETE' });
       if (response.ok) {
         setShowDeleteModal(false);
         setProgramToDelete(null);
         fetchPrograms();
-        showToast('Program deleted successfully!', 'success');
-      } else {
-        showToast('Failed to delete program', 'error');
-      }
-    } catch (error) {
-      console.error('Error deleting program:', error);
-      showToast('Failed to delete program', 'error');
-    }
+        showToast('Program deleted', 'success');
+      } else { showToast('Failed to delete program', 'error'); }
+    } catch { showToast('Failed to delete program', 'error'); }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 max-w-7xl">
+
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Workout Programs</h1>
-          <p className="text-neutral-400">Manage training programs and offerings</p>
+          {FL('Training')}
+          <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
+            Programs
+          </h1>
         </div>
         <button
           onClick={() => router.push('/admin/programs/new')}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
-        >
-          ➕ Add Program
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 transition-colors"
+          style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+          <Plus size={12} /> Add Program
         </button>
       </div>
 
-      {/* Programs Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {loading ? (
-          <div className="col-span-3 p-12 flex flex-col items-center justify-center">
-            <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500/30 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
-            </div>
-            <p className="text-neutral-400 mt-4">Loading programs...</p>
+      {/* KPI */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { label: 'Total Programs', value: programs.length, color: 'text-white' },
+          { label: 'Active', value: programs.filter(p => p.isActive).length, color: 'text-green-400' },
+          { label: 'Inactive', value: programs.filter(p => !p.isActive).length, color: 'text-neutral-600' },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="bg-[#0c0c0c] border border-[#161616] p-5">
+            {FL(label)}
+            <p className={`font-black leading-none mt-2 ${color}`} style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem' }}>{value}</p>
           </div>
-        ) : programs.length === 0 ? (
-          <div className="col-span-3 p-12 text-center text-neutral-400">No workout programs yet. Create your first program!</div>
-        ) : (
-          programs.map((program) => (
-            <div
-              key={program.$id}
-              className={`bg-neutral-800 rounded p-6 border-2 transition-all ${
-                program.isActive ? 'border-red-600' : 'border-neutral-700 opacity-60'
-              }`}
-            >
-              {/* Program Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{program.icon || '🏋️'}</span>
-                  <h3 className="text-xl font-bold text-white">{program.title}</h3>
-                </div>
-                <div className="flex gap-2">
+        ))}
+      </div>
+
+      {/* Programs Grid */}
+      {loading ? (
+        <div className="bg-[#0c0c0c] border border-[#161616] flex items-center justify-center gap-3 py-16">
+          <div className="w-4 h-4 border-t-2 border-primary animate-spin rounded-full" />
+          <span className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>Loading...</span>
+        </div>
+      ) : programs.length === 0 ? (
+        <div className="bg-[#0c0c0c] border border-[#161616] py-16 text-center">
+          <p className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>No programs yet</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {programs.map((program) => (
+            <div key={program.$id} className={`bg-[#0c0c0c] border flex flex-col overflow-hidden transition-colors ${program.isActive ? 'border-[#1e1e1e] hover:border-[#2a2a2a]' : 'border-[#111] opacity-50'}`}>
+              <div className={`h-[2px] ${program.isActive ? 'bg-primary' : 'bg-[#1a1a1a]'}`} />
+
+              <div className="p-5 flex-1 flex flex-col">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.2rem', letterSpacing: '0.04em' }}>
+                    {program.title}
+                  </h3>
                   <button
                     onClick={() => handleToggleStatus(program)}
-                    className={`px-2 py-1 rounded text-xs font-semibold ${
-                      program.isActive
-                        ? 'bg-green-500/20 text-green-500'
-                        : 'bg-neutral-500/20 text-neutral-500'
-                    }`}
-                  >
+                    className={`px-2 py-0.5 text-[9px] font-bold uppercase border transition-colors ${program.isActive ? 'admin-badge badge-active' : 'border-[#222] text-neutral-700 bg-[#0a0a0a]'}`}
+                    style={{ letterSpacing: '0.12em' }}>
                     {program.isActive ? 'Active' : 'Inactive'}
                   </button>
                 </div>
+
+                {program.description && (
+                  <p className="text-neutral-600 text-xs mb-4 leading-relaxed line-clamp-3">{program.description}</p>
+                )}
+
+                <div className="mt-auto space-y-1 pt-3 border-t border-[#161616]">
+                  {program.targetAudience && (
+                    <p className="text-neutral-700 text-[10px]">{program.targetAudience}</p>
+                  )}
+                  {program.duration && (
+                    <p className="text-neutral-700 text-[10px]">{program.duration}</p>
+                  )}
+                </div>
               </div>
 
-              {/* Description */}
-              <p className="text-neutral-400 text-sm mb-4 min-h-[60px]">
-                {program.description || 'No description provided'}
-              </p>
-
-              {/* Meta Info */}
-              {(program.targetAudience || program.duration) && (
-                <div className="text-xs text-neutral-500 mb-4 space-y-1">
-                  {program.targetAudience && <p>👥 {program.targetAudience}</p>}
-                  {program.duration && <p>⏱️ {program.duration}</p>}
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-2">
+              <div className="flex border-t border-[#161616]">
                 <button
                   onClick={() => router.push(`/admin/programs/${program.$id}`)}
-                  className="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors text-sm"
-                >
-                  ✏️ Edit
+                  className="flex-1 py-3 text-neutral-600 text-[10px] font-bold uppercase hover:text-white hover:bg-[#111] transition-colors border-r border-[#161616]"
+                  style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+                  Edit
                 </button>
                 <button
-                  onClick={() => {
-                    setProgramToDelete(program);
-                    setShowDeleteModal(true);
-                  }}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm"
-                >
-                  🗑️
+                  onClick={() => { setProgramToDelete(program); setShowDeleteModal(true); }}
+                  className="flex-1 py-3 text-red-600/50 text-[10px] font-bold uppercase hover:text-red-500 hover:bg-[#111] transition-colors"
+                  style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>
+                  Delete
                 </button>
               </div>
             </div>
-          ))
-        )}
-      </div>
-
-      {/* Stats */}
-      <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-        <h2 className="text-xl font-bold text-white mb-4">Program Statistics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-neutral-700 rounded">
-            <p className="text-neutral-400 text-sm">Total Programs</p>
-            <p className="text-2xl font-bold text-white mt-1">{programs.length}</p>
-          </div>
-          <div className="p-4 bg-neutral-700 rounded">
-            <p className="text-neutral-400 text-sm">Active Programs</p>
-            <p className="text-2xl font-bold text-green-500 mt-1">
-              {programs.filter(p => p.isActive).length}
-            </p>
-          </div>
-          <div className="p-4 bg-neutral-700 rounded">
-            <p className="text-neutral-400 text-sm">Inactive Programs</p>
-            <p className="text-2xl font-bold text-neutral-500 mt-1">
-              {programs.filter(p => !p.isActive).length}
-            </p>
-          </div>
+          ))}
         </div>
-      </div>
+      )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       {showDeleteModal && programToDelete && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-neutral-800 rounded max-w-md w-full border border-neutral-700 shadow-2xl">
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <span className="text-2xl">⚠️</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white">Delete Program</h3>
-                  <p className="text-neutral-400 text-sm mt-1">This action cannot be undone</p>
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <p className="text-neutral-300">
-                  Are you sure you want to delete the <span className="font-semibold text-white">{programToDelete.title}</span> program? 
-                  This will permanently remove it from your workout offerings.
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowDeleteModal(false);
-                    setProgramToDelete(null);
-                  }}
-                  className="flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded transition-colors"
-                >
-                  Delete Program
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0c0c0c] border border-[#1e1e1e] max-w-sm w-full">
+            <div className="px-5 py-4 border-b border-[#161616] flex items-center gap-3">
+              <AlertTriangle size={14} className="text-red-500 flex-shrink-0" />
+              <h3 className="text-white font-black uppercase text-sm" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}>Delete Program</h3>
+            </div>
+            <div className="px-5 py-4">
+              <p className="text-neutral-500 text-xs leading-relaxed">
+                Delete <span className="text-white font-semibold">{programToDelete.title}</span>? This cannot be undone.
+              </p>
+            </div>
+            <div className="flex border-t border-[#161616]">
+              <button
+                onClick={() => { setShowDeleteModal(false); setProgramToDelete(null); }}
+                className="flex-1 py-3 text-neutral-600 text-xs font-bold uppercase hover:text-white hover:bg-[#111] transition-colors border-r border-[#161616]"
+                style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>Cancel</button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 py-3 text-red-500 text-xs font-bold uppercase hover:text-white hover:bg-red-600 transition-colors"
+                style={{ letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', sans-serif" }}>Delete</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Toast Notification */}
+      {/* Toast */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
-          <div
-            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
-              toast.type === 'success'
-                ? 'bg-neutral-800 border-green-500 text-white'
-                : 'bg-neutral-800 border-red-500 text-white'
-            }`}
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 text-2xl">
-                {toast.type === 'success' ? '✅' : '❌'}
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-white">{toast.message}</p>
-              </div>
-              <button
-                onClick={() => setToast(null)}
-                className="flex-shrink-0 text-neutral-400 hover:text-white transition-colors"
-              >
-                ✕
-              </button>
-            </div>
+          <div className={`flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[260px] bg-[#0c0c0c] border border-[#1e1e1e] ${toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'}`}>
+            {toast.type === 'success' ? <CheckCircle size={14} className="text-green-500 flex-shrink-0" /> : <XCircle size={14} className="text-red-500 flex-shrink-0" />}
+            <p className="text-white text-xs flex-1">{toast.message}</p>
+            <button onClick={() => setToast(null)} className="text-neutral-600 hover:text-white transition-colors text-xs">✕</button>
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes slide-in-right {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }

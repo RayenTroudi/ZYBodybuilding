@@ -178,7 +178,7 @@ export default function PaymentsPage() {
       accessorKey: 'paymentMethod',
       header: 'Method',
       cell: ({ row }) => (
-        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-500">
+        <span className="admin-badge border border-[#2a2a2a] text-neutral-500 bg-[#111]">
           {row.original.paymentMethod || 'N/A'}
         </span>
       ),
@@ -187,12 +187,10 @@ export default function PaymentsPage() {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-          row.original.status === 'Completed'
-            ? 'bg-green-500/20 text-green-500'
-            : row.original.status === 'Pending'
-            ? 'bg-yellow-500/20 text-yellow-500'
-            : 'bg-red-500/20 text-red-500'
+        <span className={`admin-badge ${
+          row.original.status === 'Completed' ? 'badge-active'
+          : row.original.status === 'Pending'  ? 'badge-pending'
+          : 'badge-expired'
         }`}>
           {row.original.status}
         </span>
@@ -203,102 +201,76 @@ export default function PaymentsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Payments</h1>
-          <p className="text-neutral-400">Track all payment transactions</p>
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>Finance</p>
+          <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
+            Payments
+          </h1>
         </div>
         <button
           onClick={exportToCSV}
-          className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors"
+          className="flex items-center gap-2 px-4 py-2 border border-[#1e1e1e] text-neutral-600 text-xs font-semibold uppercase hover:border-[#2a2a2a] hover:text-white transition-colors"
+          style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
         >
-          📥 Export CSV
+          Export CSV
         </button>
       </div>
 
+      {/* Revenue Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Total Revenue</p>
+          <p className="text-white font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem' }}>
+            {totalRevenue.toFixed(0)}<span className="text-neutral-600 text-lg ml-1">TND</span>
+          </p>
+        </div>
+        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>This Month</p>
+          <p className="font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', color: '#10B981' }}>
+            {monthlyRevenue.toFixed(0)}<span className="text-neutral-600 text-lg ml-1">TND</span>
+          </p>
+        </div>
+        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Transactions</p>
+          <p className="text-white font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem' }}>
+            {payments.length}
+          </p>
+        </div>
+      </div>
+
       {/* Date Filters */}
-      <div className="bg-neutral-800 rounded p-4 sm:p-6 border border-neutral-700">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="bg-[#0c0c0c] border border-[#161616] p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">From Date</label>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
+            <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>From Date</label>
+            <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
+              className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs focus:outline-none focus:border-primary transition-colors"
+              style={{ borderRadius: 0, colorScheme: 'dark' }} />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">To Date</label>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
+            <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>To Date</label>
+            <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
+              className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs focus:outline-none focus:border-primary transition-colors"
+              style={{ borderRadius: 0, colorScheme: 'dark' }} />
           </div>
         </div>
-        
         {(dateFrom || dateTo) && (
           <div className="mt-3 flex items-center justify-between">
-            <p className="text-sm text-neutral-400">
-              Filtering by payment date
-            </p>
-            <button
-              onClick={() => {
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="text-sm text-red-500 hover:text-red-400 transition-colors"
-            >
-              Clear dates
+            <p className="text-neutral-700 text-xs">Filtering by payment date</p>
+            <button onClick={() => { setDateFrom(''); setDateTo(''); }}
+              className="text-xs text-primary hover:text-red-400 transition-colors uppercase font-semibold" style={{ letterSpacing: '0.08em' }}>
+              Clear
             </button>
           </div>
         )}
       </div>
 
-      {/* Revenue Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-neutral-400 text-sm">Total Revenue</p>
-              <p className="text-3xl font-bold text-white mt-2">{totalRevenue.toFixed(2)} TND</p>
-            </div>
-            <DollarSign className="w-10 h-10 text-green-500" />
-          </div>
-        </div>
-
-        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-neutral-400 text-sm">This Month</p>
-              <p className="text-3xl font-bold text-green-500 mt-2">{monthlyRevenue.toFixed(2)} TND</p>
-            </div>
-            <TrendingUp className="w-10 h-10 text-blue-500" />
-          </div>
-        </div>
-
-        <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-neutral-400 text-sm">Total Transactions</p>
-              <p className="text-3xl font-bold text-white mt-2">{payments.length}</p>
-            </div>
-            <BarChart3 className="w-10 h-10 text-purple-500" />
-          </div>
-        </div>
-      </div>
-
       {/* Data Table */}
       {loading ? (
-        <div className="bg-neutral-800 rounded border border-neutral-700 p-12 flex flex-col items-center justify-center">
-          <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-green-500/30 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-green-500 rounded-full animate-spin"></div>
-          </div>
-          <p className="text-neutral-400 mt-4">Loading payments...</p>
+        <div className="bg-[#0c0c0c] border border-[#161616] flex items-center justify-center gap-3 py-16">
+          <div className="w-4 h-4 border-t-2 border-primary animate-spin rounded-full" />
+          <span className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>Loading payments...</span>
         </div>
       ) : (
         <DataTable
@@ -309,70 +281,42 @@ export default function PaymentsPage() {
         />
       )}
 
-      {/* Payment Methods Breakdown */}
-      <div className="bg-neutral-800 rounded p-6 border border-neutral-700">
-        <h2 className="text-xl font-bold text-white mb-4">Payment Methods</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Payment Methods */}
+      <div className="bg-[#0c0c0c] border border-[#161616]">
+        <div className="px-5 py-4 border-b border-[#161616]">
+          <p className="text-neutral-700 text-[9px] font-semibold uppercase" style={{ letterSpacing: '0.2em' }}>Breakdown</p>
+          <h2 className="text-white font-black uppercase leading-none mt-0.5" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.15rem', letterSpacing: '0.04em' }}>
+            Payment Methods
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#111]">
           {['Cash', 'Card', 'Online'].map((method) => {
             const count = payments.filter(p => p.paymentMethod === method).length;
-            const total = payments
-              .filter(p => p.paymentMethod === method)
-              .reduce((sum, p) => sum + p.amount, 0);
-
+            const total = payments.filter(p => p.paymentMethod === method).reduce((s, p) => s + p.amount, 0);
             return (
-              <div key={method} className="p-4 bg-neutral-700 rounded">
-                <p className="text-neutral-400 text-sm mb-2">{method}</p>
-                <p className="text-2xl font-bold text-white">{total.toFixed(2)} TND</p>
-                <p className="text-xs text-neutral-400 mt-1">{count} transactions</p>
+              <div key={method} className="px-5 py-4">
+                <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.18em' }}>{method}</p>
+                <p className="text-white font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.6rem' }}>
+                  {total.toFixed(0)}<span className="text-neutral-600 text-sm ml-1">TND</span>
+                </p>
+                <p className="text-neutral-700 text-[10px] mt-1">{count} transactions</p>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Toast Notification */}
+      {/* Toast */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
-          <div
-            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
-              toast.type === 'success'
-                ? 'bg-neutral-800 border-green-500 text-white'
-                : 'bg-neutral-800 border-red-500 text-white'
-            }`}
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 text-2xl">
-                {toast.type === 'success' ? '✅' : '❌'}
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-white">{toast.message}</p>
-              </div>
-              <button
-                onClick={() => setToast(null)}
-                className="flex-shrink-0 text-neutral-400 hover:text-white transition-colors"
-              >
-                ✕
-              </button>
-            </div>
+          <div className={`flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[280px] bg-[#0c0c0c] border border-[#1e1e1e] ${
+            toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'
+          }`}>
+            <p className="text-white text-xs flex-1">{toast.message}</p>
+            <button onClick={() => setToast(null)} className="text-neutral-600 hover:text-white transition-colors text-xs">✕</button>
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes slide-in-right {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
