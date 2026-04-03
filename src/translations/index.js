@@ -118,7 +118,7 @@ const translations = {
     },
     cta: {
       title: 'Prêt à Commencer ?',
-      description: 'Rejoignez ZY Bodybuilding aujourd'hui et commencez votre transformation',
+      description: "Rejoignez ZY Bodybuilding aujourd'hui et commencez votre transformation",
       button: 'Devenir Membre',
     },
     footer: {
