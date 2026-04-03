@@ -3,9 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { FileText, Star } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 export default function WorkoutsPage() {
+  const { lang } = useLanguage();
+  const t = translations[lang].workouts;
+  const tCommon = translations[lang];
+
   const [workoutPlans, setWorkoutPlans] = useState([]);
   const [workoutLogs, setWorkoutLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,10 +28,10 @@ export default function WorkoutsPage() {
         fetch('/api/user/workout-plans'),
         fetch('/api/user/workout-logs'),
       ]);
-      
+
       const plansData = await plansRes.json();
       const logsData = await logsRes.json();
-      
+
       if (plansData.success) setWorkoutPlans(plansData.plans || []);
       if (logsData.success) setWorkoutLogs(logsData.logs || []);
     } catch (error) {
@@ -44,7 +49,7 @@ export default function WorkoutsPage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading workouts...</p>
+          <p className="text-neutral-400">{tCommon.loading}</p>
         </div>
       </div>
     );
@@ -55,15 +60,15 @@ export default function WorkoutsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Workouts</h1>
-          <p className="text-neutral-400">Manage your workout plans and history</p>
+          <h1 className="text-2xl font-bold text-white">{t.title}</h1>
+          <p className="text-neutral-400">{t.subtitle}</p>
         </div>
         <div className="flex gap-3">
           <Link
             href="/dashboard/workouts/log"
             className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors"
           >
-            + Log Workout
+            {t.logBtn}
           </Link>
         </div>
       </div>
@@ -78,7 +83,7 @@ export default function WorkoutsPage() {
               : 'text-neutral-400 hover:text-white'
           }`}
         >
-          History
+          {t.history}
         </button>
         <button
           onClick={() => setActiveTab('plans')}
@@ -88,16 +93,17 @@ export default function WorkoutsPage() {
               : 'text-neutral-400 hover:text-white'
           }`}
         >
-          My Plans
+          {t.plans}
         </button>
       </div>
 
       {/* Content */}
       {activeTab === 'history' ? (
-        <WorkoutHistory logs={workoutLogs} />
+        <WorkoutHistory logs={workoutLogs} t={t} />
       ) : (
-        <WorkoutPlans 
-          plans={workoutPlans} 
+        <WorkoutPlans
+          plans={workoutPlans}
+          t={t}
           onNewPlan={() => setShowNewPlanModal(true)}
           onRefresh={fetchWorkoutData}
         />
@@ -106,6 +112,7 @@ export default function WorkoutsPage() {
       {/* New Plan Modal */}
       {showNewPlanModal && (
         <NewPlanModal
+          t={t}
           onClose={() => setShowNewPlanModal(false)}
           onSuccess={() => {
             setShowNewPlanModal(false);
@@ -117,23 +124,22 @@ export default function WorkoutsPage() {
   );
 }
 
-function WorkoutHistory({ logs }) {
+function WorkoutHistory({ logs, t }) {
   if (logs.length === 0) {
     return (
       <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">📝</p>
-        <p className="text-neutral-400 mb-4">No workouts logged yet</p>
+        <p className="text-neutral-400 mb-4">{t.noHistory}</p>
         <Link
           href="/dashboard/workouts/log"
           className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
-          Log Your First Workout
+          {t.logFirst}
         </Link>
       </div>
     );
   }
 
-  // Group logs by month
   const groupedLogs = logs.reduce((acc, log) => {
     const monthKey = format(new Date(log.workoutDate), 'MMMM yyyy');
     if (!acc[monthKey]) acc[monthKey] = [];
@@ -162,7 +168,7 @@ function WorkoutHistory({ logs }) {
                     {log.planName || 'Quick Workout'}
                   </p>
                   <p className="text-sm text-neutral-400">
-                    {log.exerciseCount || 0} exercises • {log.durationMinutes || 0} minutes
+                    {log.exerciseCount || 0} {t.exercises} • {log.durationMinutes || 0} {t.minutes}
                   </p>
                 </div>
                 <div className="text-right">
@@ -184,15 +190,15 @@ function WorkoutHistory({ logs }) {
   );
 }
 
-function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
+function WorkoutPlans({ plans, t, onNewPlan, onRefresh }) {
   const handleDeletePlan = async (planId) => {
-    if (!confirm('Are you sure you want to delete this plan?')) return;
-    
+    if (!confirm(t.confirmDelete)) return;
+
     try {
       const response = await fetch(`/api/user/workout-plans/${planId}`, {
         method: 'DELETE',
       });
-      
+
       if (response.ok) {
         onRefresh();
       }
@@ -205,12 +211,12 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
     return (
       <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">📋</p>
-        <p className="text-neutral-400 mb-4">No workout plans yet</p>
+        <p className="text-neutral-400 mb-4">{t.noPlans}</p>
         <button
           onClick={onNewPlan}
           className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
-          Create Your First Plan
+          {t.createFirst}
         </button>
       </div>
     );
@@ -223,10 +229,10 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
           onClick={onNewPlan}
           className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
         >
-          + New Plan
+          {t.newPlan}
         </button>
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-4">
         {plans.map((plan) => (
           <div
@@ -236,14 +242,16 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-bold text-white text-lg">{plan.name}</h3>
-                <p className="text-sm text-neutral-400">{plan.type.replace('_', ' ')}</p>
+                <p className="text-sm text-neutral-400">
+                  {t.types[plan.type] || plan.type.replace('_', ' ')}
+                </p>
               </div>
               <div className="flex gap-2">
                 <Link
                   href={`/dashboard/workouts/log?plan=${plan.$id}`}
                   className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
                 >
-                  Start
+                  {t.start}
                 </Link>
                 <button
                   onClick={() => handleDeletePlan(plan.$id)}
@@ -253,17 +261,17 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
                 </button>
               </div>
             </div>
-            
+
             {plan.description && (
               <p className="text-neutral-400 text-sm mb-3 line-clamp-2">{plan.description}</p>
             )}
-            
+
             <div className="flex flex-wrap gap-3 text-sm">
               <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded">
-                {plan.daysPerWeek} days/week
+                {plan.daysPerWeek} {t.perWeek}
               </span>
               <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded">
-                {plan.difficulty}
+                {t.difficulties[plan.difficulty] || plan.difficulty}
               </span>
               {plan.estimatedDuration && (
                 <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded">
@@ -278,7 +286,7 @@ function WorkoutPlans({ plans, onNewPlan, onRefresh }) {
   );
 }
 
-function NewPlanModal({ onClose, onSuccess }) {
+function NewPlanModal({ t, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -317,57 +325,55 @@ function NewPlanModal({ onClose, onSuccess }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Create Workout Plan</h2>
-          
+          <h2 className="text-xl font-bold text-white mb-4">{t.modalTitle}</h2>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1">Plan Name</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">{t.planName}</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
                 className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="e.g., Push Day, Leg Day"
+                placeholder={t.planNamePlaceholder}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">{t.description}</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={2}
                 className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="Optional description..."
+                placeholder={t.descPlaceholder}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Type</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">{t.type}</label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  <option value="push_pull_legs">Push/Pull/Legs</option>
-                  <option value="upper_lower">Upper/Lower</option>
-                  <option value="full_body">Full Body</option>
-                  <option value="bro_split">Bro Split</option>
-                  <option value="custom">Custom</option>
+                  {Object.entries(t.types).map(([val, label]) => (
+                    <option key={val} value={val}>{label}</option>
+                  ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Days/Week</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">{t.daysPerWeek}</label>
                 <select
                   value={formData.daysPerWeek}
                   onChange={(e) => setFormData({ ...formData, daysPerWeek: parseInt(e.target.value) })}
                   className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   {[1, 2, 3, 4, 5, 6, 7].map(n => (
-                    <option key={n} value={n}>{n} day{n > 1 ? 's' : ''}</option>
+                    <option key={n} value={n}>{n} {n > 1 ? t.days_plural : t.day}</option>
                   ))}
                 </select>
               </div>
@@ -375,20 +381,20 @@ function NewPlanModal({ onClose, onSuccess }) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Difficulty</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">{t.level}</label>
                 <select
                   value={formData.difficulty}
                   onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
                   className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
+                  {Object.entries(t.difficulties).map(([val, label]) => (
+                    <option key={val} value={val}>{label}</option>
+                  ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Duration (min)</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">{t.duration}</label>
                 <input
                   type="number"
                   value={formData.estimatedDuration}
@@ -406,14 +412,14 @@ function NewPlanModal({ onClose, onSuccess }) {
                 onClick={onClose}
                 className="flex-1 px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 type="submit"
                 disabled={saving}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
               >
-                {saving ? 'Creating...' : 'Create Plan'}
+                {saving ? t.creating : t.createPlan}
               </button>
             </div>
           </form>

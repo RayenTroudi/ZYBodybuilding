@@ -5,14 +5,14 @@ import Link from 'next/link';
 import { format, differenceInDays } from 'date-fns';
 
 const goalTypes = [
-  { id: 'weight_loss', name: 'Weight Loss', icon: '⚖️', unit: 'kg' },
-  { id: 'weight_gain', name: 'Weight Gain', icon: '📈', unit: 'kg' },
-  { id: 'strength', name: 'Strength', icon: '💪', unit: 'kg' },
-  { id: 'muscle_gain', name: 'Muscle Gain', icon: '🏋️', unit: 'kg' },
+  { id: 'weight_loss', name: 'Perte de poids', icon: '⚖️', unit: 'kg' },
+  { id: 'weight_gain', name: 'Prise de poids', icon: '📈', unit: 'kg' },
+  { id: 'strength', name: 'Force', icon: '💪', unit: 'kg' },
+  { id: 'muscle_gain', name: 'Prise de masse', icon: '🏋️', unit: 'kg' },
   { id: 'endurance', name: 'Endurance', icon: '🏃', unit: 'min' },
-  { id: 'body_recomposition', name: 'Body Recomp', icon: '🔄', unit: '%' },
-  { id: 'habit', name: 'Habit', icon: '✅', unit: 'days' },
-  { id: 'custom', name: 'Custom', icon: '🎯', unit: '' },
+  { id: 'body_recomposition', name: 'Recomposition', icon: '🔄', unit: '%' },
+  { id: 'habit', name: 'Habitude', icon: '✅', unit: 'jours' },
+  { id: 'custom', name: 'Personnalisé', icon: '🎯', unit: '' },
 ];
 
 export default function GoalsPage() {
@@ -58,7 +58,7 @@ export default function GoalsPage() {
   };
 
   const handleDeleteGoal = async (goalId) => {
-    if (!confirm('Are you sure you want to delete this goal?')) return;
+    if (!confirm('Supprimer cet objectif ?')) return;
     
     try {
       const response = await fetch(`/api/user/goals/${goalId}`, {
@@ -81,7 +81,7 @@ export default function GoalsPage() {
             <div className="absolute inset-0 border-4 border-neutral-800 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading goals...</p>
+          <p className="text-neutral-400">Chargement...</p>
         </div>
       </div>
     );
@@ -95,14 +95,14 @@ export default function GoalsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Fitness Goals</h1>
-          <p className="text-neutral-400">Track your progress towards your goals</p>
+          <h1 className="text-2xl font-bold text-white">Objectifs fitness</h1>
+          <p className="text-neutral-400">Suivez vos progrès vers vos objectifs</p>
         </div>
         <button
           onClick={() => setShowNewGoalModal(true)}
           className="px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:opacity-90 transition-colors"
         >
-          + New Goal
+          + Nouvel objectif
         </button>
       </div>
 
@@ -110,17 +110,17 @@ export default function GoalsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4">
           <p className="text-3xl font-bold text-white">{activeGoals.length}</p>
-          <p className="text-sm text-neutral-400">Active Goals</p>
+          <p className="text-sm text-neutral-400">Objectifs actifs</p>
         </div>
         <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4">
           <p className="text-3xl font-bold text-green-500">{completedGoals.length}</p>
-          <p className="text-sm text-neutral-400">Completed</p>
+          <p className="text-sm text-neutral-400">Complétés</p>
         </div>
         <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4">
           <p className="text-3xl font-bold text-yellow-500">
             {activeGoals.filter(g => g.priority === 'high').length}
           </p>
-          <p className="text-sm text-neutral-400">High Priority</p>
+          <p className="text-sm text-neutral-400">Haute priorité</p>
         </div>
         <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4">
           <p className="text-3xl font-bold text-purple-500">
@@ -130,23 +130,27 @@ export default function GoalsPage() {
               return daysLeft <= 7 && daysLeft >= 0;
             }).length}
           </p>
-          <p className="text-sm text-neutral-400">Due This Week</p>
+          <p className="text-sm text-neutral-400">Cette semaine</p>
         </div>
       </div>
 
       {/* Filter Tabs */}
       <div className="flex gap-2">
-        {['active', 'completed', 'all'].map((status) => (
+        {[
+          { id: 'active', label: 'Actifs' },
+          { id: 'completed', label: 'Complétés' },
+          { id: 'all', label: 'Tous' },
+        ].map(({ id, label }) => (
           <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-lg font-medium capitalize transition-colors ${
-              filter === status
+            key={id}
+            onClick={() => setFilter(id)}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              filter === id
                 ? 'bg-primary text-white'
                 : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
             }`}
           >
-            {status}
+            {label}
           </button>
         ))}
       </div>
@@ -155,13 +159,13 @@ export default function GoalsPage() {
       {goals.length === 0 ? (
         <div className="text-center py-12 bg-neutral-900 rounded-xl border border-neutral-800">
           <p className="text-6xl mb-4">🎯</p>
-          <p className="text-neutral-400 mb-4">No {filter} goals yet</p>
+          <p className="text-neutral-400 mb-4">Aucun objectif</p>
           {filter === 'active' && (
             <button
               onClick={() => setShowNewGoalModal(true)}
               className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-colors"
             >
-              Create Your First Goal
+              Créer mon premier objectif
             </button>
           )}
         </div>
@@ -229,7 +233,7 @@ function GoalCard({ goal, onUpdate, onDelete }) {
           </span>
           {goal.status === 'completed' && (
             <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded text-xs font-medium">
-              ✓ Completed
+              ✓ Complété
             </span>
           )}
         </div>
@@ -243,7 +247,7 @@ function GoalCard({ goal, onUpdate, onDelete }) {
       {goal.targetValue && (
         <div className="mb-4">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-neutral-400">Progress</span>
+            <span className="text-neutral-400">Progression</span>
             <span className="text-white font-medium">
               {goal.currentValue || 0} / {goal.targetValue} {goal.unit}
             </span>
@@ -265,16 +269,16 @@ function GoalCard({ goal, onUpdate, onDelete }) {
       {/* Dates */}
       <div className="flex flex-wrap gap-4 text-sm mb-4">
         <div>
-          <span className="text-neutral-400">Started: </span>
-          <span className="text-white">{format(new Date(goal.startDate), 'MMM dd, yyyy')}</span>
+          <span className="text-neutral-400">Début : </span>
+          <span className="text-white">{format(new Date(goal.startDate), 'dd MMM yyyy')}</span>
         </div>
         {goal.targetDate && (
           <div>
-            <span className="text-neutral-400">Target: </span>
+            <span className="text-neutral-400">Objectif : </span>
             <span className={`${daysLeft !== null && daysLeft < 0 ? 'text-red-500' : 'text-white'}`}>
-              {format(new Date(goal.targetDate), 'MMM dd, yyyy')}
+              {format(new Date(goal.targetDate), 'dd MMM yyyy')}
               {daysLeft !== null && daysLeft >= 0 && (
-                <span className="text-neutral-400 ml-1">({daysLeft} days left)</span>
+                <span className="text-neutral-400 ml-1">({daysLeft} jours restants)</span>
               )}
             </span>
           </div>
@@ -288,13 +292,13 @@ function GoalCard({ goal, onUpdate, onDelete }) {
             onClick={() => setShowUpdateModal(true)}
             className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
           >
-            Update Progress
+            Mettre à jour
           </button>
           <button
             onClick={() => onUpdate({ status: 'completed', completedDate: new Date().toISOString() })}
             className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
           >
-            Mark Complete
+            Marquer complété
           </button>
           <button
             onClick={onDelete}
@@ -330,12 +334,12 @@ function UpdateProgressModal({ goal, onClose, onUpdate }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <h3 className="text-lg font-bold text-white mb-4">Update Progress</h3>
+          <h3 className="text-lg font-bold text-white mb-4">Mettre à jour la progression</h3>
           <p className="text-neutral-400 mb-4">{goal.title}</p>
-          
+
           <div className="mb-4">
             <label className="block text-sm text-neutral-300 mb-2">
-              Current Value ({goal.unit})
+              Valeur actuelle ({goal.unit})
             </label>
             <input
               type="number"
@@ -352,13 +356,13 @@ function UpdateProgressModal({ goal, onClose, onUpdate }) {
               onClick={onClose}
               className="flex-1 px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors"
             >
-              Cancel
+              Annuler
             </button>
             <button
               onClick={() => onUpdate(parseFloat(value))}
               className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-colors"
             >
-              Update
+              Mettre à jour
             </button>
           </div>
         </div>
@@ -423,12 +427,12 @@ function NewGoalModal({ onClose, onSuccess }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Create New Goal</h2>
-          
+          <h2 className="text-xl font-bold text-white mb-4">Créer un nouvel objectif</h2>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Goal Type */}
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Goal Type</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Type d&apos;objectif</label>
               <div className="grid grid-cols-4 gap-2">
                 {goalTypes.map((type) => (
                   <button
@@ -450,14 +454,14 @@ function NewGoalModal({ onClose, onSuccess }) {
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-1">Goal Title</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">Titre de l&apos;objectif</label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
                 className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="e.g., Bench Press 100kg"
+                placeholder="Ex : Développé couché 100 kg"
               />
             </div>
 
@@ -469,14 +473,14 @@ function NewGoalModal({ onClose, onSuccess }) {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={2}
                 className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Optional description..."
+                placeholder="Description facultative..."
               />
             </div>
 
             {/* Target & Current Value */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Target Value</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Valeur cible</label>
                 <input
                   type="number"
                   step="0.1"
@@ -487,7 +491,7 @@ function NewGoalModal({ onClose, onSuccess }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Unit</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Unité</label>
                 <input
                   type="text"
                   value={formData.unit}
@@ -501,7 +505,7 @@ function NewGoalModal({ onClose, onSuccess }) {
             {/* Target Date & Priority */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Target Date</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Date cible</label>
                 <input
                   type="date"
                   value={formData.targetDate}
@@ -510,15 +514,15 @@ function NewGoalModal({ onClose, onSuccess }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Priority</label>
+                <label className="block text-sm font-medium text-neutral-300 mb-1">Priorité</label>
                 <select
                   value={formData.priority}
                   onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
                   className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
+                  <option value="low">Faible</option>
+                  <option value="medium">Moyenne</option>
+                  <option value="high">Haute</option>
                 </select>
               </div>
             </div>
@@ -529,14 +533,14 @@ function NewGoalModal({ onClose, onSuccess }) {
                 onClick={onClose}
                 className="flex-1 px-4 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors"
               >
-                Cancel
+                Annuler
               </button>
               <button
                 type="submit"
                 disabled={saving}
                 className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50"
               >
-                {saving ? 'Creating...' : 'Create Goal'}
+                {saving ? 'Création...' : 'Créer l\'objectif'}
               </button>
             </div>
           </form>

@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from './ConditionalLayout';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 
 export const metadata = {
   metadataBase: new URL('https://www.zybodybuilding.space'),
@@ -102,9 +103,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="bg-black text-white antialiased" suppressHydrationWarning>
-        <ConditionalLayout>
-          {children}
-        </ConditionalLayout>
+        <LanguageProvider>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
+        </LanguageProvider>
       </body>
     </html>
   );

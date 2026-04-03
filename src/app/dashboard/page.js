@@ -2,9 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { format, startOfWeek, endOfWeek, isToday, parseISO } from 'date-fns';
+import { format, startOfWeek, isToday } from 'date-fns';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 export default function DashboardPage() {
+  const { lang } = useLanguage();
+  const t = translations[lang].home;
+  const tCommon = translations[lang];
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [recentWorkouts, setRecentWorkouts] = useState([]);
@@ -56,7 +61,7 @@ export default function DashboardPage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading your dashboard...</p>
+          <p className="text-neutral-400">{tCommon.loading}</p>
         </div>
       </div>
     );
@@ -66,20 +71,20 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-primary rounded-2xl p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">Welcome back! 💪</h1>
-        <p className="opacity-90">Ready to crush your workout today?</p>
+        <h1 className="text-2xl font-bold mb-2">{t.welcome}</h1>
+        <p className="opacity-90">Prêt à donner le meilleur de vous-même aujourd&apos;hui ?</p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href="/dashboard/workouts/log"
             className="px-4 py-2 bg-white text-primary font-semibold rounded-lg hover:bg-neutral-100 transition-colors"
           >
-            Start Workout
+            {t.startWorkout}
           </Link>
           <Link
             href="/dashboard/progress"
             className="px-4 py-2 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 transition-colors"
           >
-            View Progress
+            {t.viewProgress}
           </Link>
         </div>
       </div>
@@ -101,13 +106,13 @@ export default function DashboardPage() {
               📅
             </div>
             <div>
-              <p className="text-xs text-neutral-400 uppercase tracking-normal">Membership</p>
+              <p className="text-xs text-neutral-400 uppercase tracking-normal">{t.membership}</p>
               <p className={`text-lg font-bold ${
-                membership?.daysRemaining <= 7 
-                  ? 'text-orange-400' 
+                membership?.daysRemaining <= 7
+                  ? 'text-orange-400'
                   : 'text-green-400'
               }`}>
-                {membership?.daysRemaining || 0} days left
+                {membership?.daysRemaining || 0} {t.daysLeft}
               </p>
             </div>
           </div>
@@ -118,19 +123,19 @@ export default function DashboardPage() {
         
         <StatCard
           icon="🔥"
-          label="Current Streak"
-          value={`${streak?.currentStreak || 0} days`}
+          label={t.streak}
+          value={`${streak?.currentStreak || 0} ${t.daysLeft.split(' ')[1] || 'j'}`}
           color="orange"
         />
         <StatCard
           icon="🏋️"
-          label="This Week"
-          value={`${stats?.workoutsThisWeek || 0} workouts`}
+          label={t.thisWeek}
+          value={`${stats?.workoutsThisWeek || 0}`}
           color="blue"
         />
         <StatCard
           icon="💪"
-          label="Total Volume"
+          label={t.totalVolume}
           value={`${((stats?.totalVolume || 0) / 1000).toFixed(1)}k kg`}
           color="green"
         />
@@ -140,21 +145,21 @@ export default function DashboardPage() {
         {/* Recent Workouts */}
         <div className="lg:col-span-2 bg-neutral-800 rounded-xl border border-neutral-700 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-white">Recent Workouts</h2>
+            <h2 className="text-lg font-bold text-white">{t.recentWorkouts}</h2>
             <Link href="/dashboard/workouts" className="text-red-500 text-sm hover:text-red-400">
-              View all →
+              {t.viewAll} →
             </Link>
           </div>
-          
+
           {recentWorkouts.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-6xl mb-4">🏃</p>
-              <p className="text-neutral-400 mb-4">No workouts logged yet</p>
+              <p className="text-neutral-400 mb-4">{t.noWorkouts}</p>
               <Link
                 href="/dashboard/workouts/log"
                 className="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
-                Log Your First Workout
+                {t.startWorkout}
               </Link>
             </div>
           ) : (
@@ -173,7 +178,7 @@ export default function DashboardPage() {
                       {workout.planName || 'Quick Workout'}
                     </p>
                     <p className="text-sm text-neutral-400">
-                      {format(new Date(workout.workoutDate), 'MMM dd, yyyy')} • {workout.exerciseCount || 0} exercises
+                      {format(new Date(workout.workoutDate), 'dd MMM yyyy')} • {workout.exerciseCount || 0} exercices
                     </p>
                   </div>
                   <div className="text-right">
@@ -195,7 +200,7 @@ export default function DashboardPage() {
             <div className="bg-primary/10 rounded-xl border border-primary/30 p-6">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">💡</span>
-                <h3 className="font-bold text-white">Daily Tip</h3>
+                <h3 className="font-bold text-white">{t.dailyTip}</h3>
               </div>
               <p className="text-sm font-medium text-primary mb-2">{dailyTip.title}</p>
               <p className="text-neutral-300 text-sm">{dailyTip.content}</p>
@@ -205,20 +210,20 @@ export default function DashboardPage() {
           {/* Active Goals */}
           <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-white">Active Goals</h3>
+              <h3 className="font-bold text-white">{t.activeGoals}</h3>
               <Link href="/dashboard/goals" className="text-primary text-sm hover:opacity-80">
-                Manage →
+                {t.manage}
               </Link>
             </div>
-            
+
             {goals.length === 0 ? (
               <div className="text-center py-4">
-                <p className="text-neutral-400 text-sm mb-3">No goals set yet</p>
+                <p className="text-neutral-400 text-sm mb-3">{t.noGoals}</p>
                 <Link
                   href="/dashboard/goals/new"
                   className="text-primary text-sm hover:opacity-80"
                 >
-                  + Add Goal
+                  + Ajouter un objectif
                 </Link>
               </div>
             ) : (
@@ -236,16 +241,16 @@ export default function DashboardPage() {
               <span className="text-3xl">🔥</span>
               <div>
                 <p className="text-2xl font-bold text-white">{streak?.currentStreak || 0}</p>
-                <p className="text-sm text-neutral-400">Day Streak</p>
+                <p className="text-sm text-neutral-400">{t.dayStreak}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-neutral-800">
               <div>
-                <p className="text-neutral-400 text-xs">Longest Streak</p>
-                <p className="text-white font-semibold">{streak?.longestStreak || 0} days</p>
+                <p className="text-neutral-400 text-xs">{t.longestStreak}</p>
+                <p className="text-white font-semibold">{streak?.longestStreak || 0}</p>
               </div>
               <div>
-                <p className="text-neutral-400 text-xs">Total Workouts</p>
+                <p className="text-neutral-400 text-xs">{t.totalWorkouts}</p>
                 <p className="text-white font-semibold">{streak?.totalWorkouts || 0}</p>
               </div>
             </div>
@@ -255,8 +260,8 @@ export default function DashboardPage() {
 
       {/* Week Overview */}
       <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
-        <h2 className="text-lg font-bold text-white mb-4">This Week</h2>
-        <WeekCalendar workouts={recentWorkouts} />
+        <h2 className="text-lg font-bold text-white mb-4">{t.thisWeek}</h2>
+        <WeekCalendar workouts={recentWorkouts} days={t.days} />
       </div>
     </div>
   );
@@ -304,10 +309,9 @@ function GoalProgress({ goal }) {
   );
 }
 
-function WeekCalendar({ workouts }) {
+function WeekCalendar({ workouts, days }) {
   const today = new Date();
   const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const workoutDates = workouts.map(w => 
     format(new Date(w.workoutDate), 'yyyy-MM-dd')

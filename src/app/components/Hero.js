@@ -3,10 +3,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   const images = [
     { src: '/images/stronger.jpg', alt: 'Hero Image 1' },
@@ -90,7 +94,7 @@ const Hero = () => {
               className="text-primary text-[10px] sm:text-xs font-semibold uppercase"
               style={{ letterSpacing: '0.25em', fontFamily: "'DM Sans', sans-serif" }}
             >
-              ZY Bodybuilding Studio — Tunisia
+              {t.hero.label}
             </span>
           </motion.div>
 
@@ -107,9 +111,9 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
           >
-            Forgez<br />
-            <span className="text-primary">Votre</span><br />
-            Corps
+            {t.hero.title.line1}<br />
+            <span className="text-primary">{t.hero.title.line2}</span><br />
+            {t.hero.title.line3}
           </motion.h1>
 
           {/* Animated red line */}
@@ -129,7 +133,7 @@ const Hero = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.85 }}
           >
-            Transformez votre corps, votre esprit et votre vie avec l&apos;accompagnement de nos experts.
+            {t.hero.subtitle}
           </motion.p>
 
           {/* CTAs */}
@@ -140,14 +144,14 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 1.0 }}
           >
             <a href="#join" className="btn-primary px-10 py-4 text-sm inline-block">
-              Rejoignez-nous
+              {t.hero.joinUs}
             </a>
             <a
               href="#about"
               className="inline-flex items-center gap-2 text-white/60 text-sm font-semibold uppercase hover:text-white transition-colors duration-200"
               style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.12em' }}
             >
-              En savoir plus
+              {t.hero.learnMore}
               <svg width="18" height="8" viewBox="0 0 18 8" fill="none">
                 <path d="M0 4H16M13 1L16 4L13 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>

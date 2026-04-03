@@ -2,20 +2,24 @@
 
 import Image from 'next/image';
 import { motion, useTransform, useScroll } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 const CTA = () => {
   const { scrollYProgress } = useScroll();
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   const textScale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
 
   return (
     <section id="cta" className="relative bg-black text-white py-16 px-6 sm:px-8 md:px-12 lg:px-16">
       <div className="container mx-auto space-y-16">
-        
+
         <motion.div
           className="relative flex items-center justify-center w-full h-[500px] sm:h-[600px] lg:h-[500px] bg-black"
         >
-     
+
           <Image
             src="/images/zy.jpg"
             alt="Image CTA"
@@ -23,7 +27,7 @@ const CTA = () => {
             style={{ objectFit: 'cover' }}
             className="w-full h-full opacity-50"
           />
-   
+
           <div className="absolute flex flex-col items-center justify-center text-center space-y-6 px-4 sm:px-12 w-full max-w-4xl">
             <motion.h2
               className="section-header w-full"
@@ -32,9 +36,9 @@ const CTA = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Prêt à commencer votre transformation ?
+              {t.cta.title}
             </motion.h2>
-            
+
             <motion.p
               className="text-base sm:text-lg md:text-xl leading-relaxed pt-4 sm:pt-6 md:pt-8"
               style={{ scale: textScale }}
@@ -42,25 +46,16 @@ const CTA = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Rejoignez-nous dès aujourd'hui pour bénéficier de l'accompagnement personnalisé d'experts du fitness.
+              {t.cta.description}
             </motion.p>
-            <motion.p
-              className="text-base sm:text-lg md:text-xl leading-relaxed mt-4 sm:mt-6 md:mt-8"
-              style={{ scale: textScale }}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              Dépassez vos limites et atteignez vos objectifs avec notre programme.
-            </motion.p>
-            
+
             <motion.div
               className="mt-8"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
-            
+
             </motion.div>
           </div>
         </motion.div>
