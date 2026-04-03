@@ -4,17 +4,23 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext(null);
 
-export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState('fr');
+function getInitialLanguage() {
+  // During SSR, localStorage is not available
+  if (typeof window === 'undefined') return 'fr';
 
-  useEffect(() => {
-    const saved = localStorage.getItem('lang');
-    if (saved === 'en' || saved === 'fr') setLangState(saved);
-  }, []);
+  // On client, read from localStorage
+  const saved = localStorage.getItem('lang');
+  return (saved === 'en' || saved === 'fr') ? saved : 'fr';
+}
+
+export function LanguageProvider({ children }) {
+  const [lang, setLangState] = useState(getInitialLanguage);
 
   const setLang = (l) => {
     setLangState(l);
-    localStorage.setItem('lang', l);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lang', l);
+    }
   };
 
   return (
