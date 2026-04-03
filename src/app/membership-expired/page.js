@@ -61,7 +61,7 @@ export default function MembershipExpiredPage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Checking membership...</p>
+          <p className="text-neutral-400">Vérification de l&apos;abonnement...</p>
         </div>
       </div>
     );
@@ -102,19 +102,19 @@ export default function MembershipExpiredPage() {
               )}
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              {isPaused 
-                ? 'Membership Paused' 
-                : isCancelled 
-                  ? 'Membership Cancelled'
-                  : 'Membership Expired'}
+              {isPaused
+                ? 'Abonnement suspendu'
+                : isCancelled
+                  ? 'Abonnement annulé'
+                  : 'Abonnement expiré'}
             </h1>
             <p className="text-white/90">
-              {memberData?.user?.name && `Hey ${memberData.user.name.split(' ')[0]}, `}
-              {isPaused 
-                ? 'your membership is currently on hold.'
-                : isCancelled 
-                  ? 'your membership has been cancelled.'
-                  : 'your membership has expired.'}
+              {memberData?.user?.name && `${memberData.user.name.split(' ')[0]}, `}
+              {isPaused
+                ? 'votre abonnement est actuellement suspendu.'
+                : isCancelled
+                  ? 'votre abonnement a été annulé.'
+                  : 'votre abonnement a expiré.'}
             </p>
           </div>
 
@@ -123,47 +123,47 @@ export default function MembershipExpiredPage() {
             {/* Motivational Message */}
             <div className="text-center mb-8">
               <h2 className="text-xl font-semibold text-white mb-4">
-                {isPaused || isCancelled 
-                  ? "We're here when you're ready to return! 💪"
-                  : "We miss seeing you at the gym! 💪"}
+                {isPaused || isCancelled
+                  ? 'Nous serons là quand vous serez prêt à revenir ! 💪'
+                  : 'Vous nous manquez à la salle ! 💪'}
               </h2>
               <p className="text-neutral-400 leading-relaxed">
-                {isPaused 
-                  ? "Take the time you need. When you're ready to resume your fitness journey, we'll be here to support you every step of the way."
+                {isPaused
+                  ? "Prenez le temps qu'il vous faut. Quand vous serez prêt à reprendre, nous serons là pour vous accompagner à chaque étape."
                   : isCancelled
-                    ? "Your fitness journey doesn't have to end here. Come back and let's achieve your goals together."
-                    : "Every champion takes breaks, but what defines you is getting back in the ring. Your fitness goals are waiting – let's crush them together!"}
+                    ? "Votre parcours fitness ne s'arrête pas ici. Revenez et atteignons vos objectifs ensemble."
+                    : "Chaque champion fait des pauses, mais ce qui vous définit c'est de revenir. Vos objectifs vous attendent — atteignons-les ensemble !"}
               </p>
             </div>
 
             {/* Membership Details */}
             {memberData?.membership?.member && (
               <div className="bg-neutral-800 rounded-xl p-4 mb-8">
-                <h3 className="text-sm font-medium text-neutral-400 mb-3">Membership Details</h3>
+                <h3 className="text-sm font-medium text-neutral-400 mb-3">Détails de l&apos;abonnement</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-neutral-500">Member ID:</span>
+                    <span className="text-neutral-500">N° de membre :</span>
                     <p className="text-white font-mono">{memberData.membership.member.memberId}</p>
                   </div>
                   <div>
-                    <span className="text-neutral-500">Plan:</span>
+                    <span className="text-neutral-500">Forfait :</span>
                     <p className="text-white">{memberData.membership.member.planName || 'N/A'}</p>
                   </div>
                   <div>
-                    <span className="text-neutral-500">Status:</span>
+                    <span className="text-neutral-500">Statut :</span>
                     <p className={`font-medium ${
-                      isPaused ? 'text-yellow-400' : 
+                      isPaused ? 'text-yellow-400' :
                       isCancelled ? 'text-red-400' : 'text-orange-400'
                     }`}>
-                      {isPaused ? 'Paused' : isCancelled ? 'Cancelled' : 'Expired'}
+                      {isPaused ? 'Suspendu' : isCancelled ? 'Annulé' : 'Expiré'}
                     </p>
                   </div>
                   <div>
                     <span className="text-neutral-500">
-                      {isPaused || isCancelled ? 'Last Active:' : 'Expired On:'}
+                      {isPaused || isCancelled ? 'Dernière activité :' : 'Expiré le :'}
                     </span>
                     <p className="text-white">
-                      {new Date(memberData.membership.member.subscriptionEndDate).toLocaleDateString('en-US', {
+                      {new Date(memberData.membership.member.subscriptionEndDate).toLocaleDateString('fr-FR', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
@@ -177,16 +177,16 @@ export default function MembershipExpiredPage() {
             {/* Benefits Reminder */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold text-white mb-4 text-center">
-                What you're missing out on:
+                Ce que vous manquez :
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { Icon: Dumbbell, text: 'Full Gym Access' },
-                  { Icon: GraduationCap, text: 'Expert Trainers' },
-                  { Icon: TrendingUp, text: 'Progress Tracking' },
-                  { Icon: Target, text: 'Personalized Workouts' },
-                  { Icon: Users, text: 'Fitness Classes' },
-                  { Icon: Trophy, text: 'Community Support' },
+                  { Icon: Dumbbell, text: 'Accès complet à la salle' },
+                  { Icon: GraduationCap, text: 'Coachs experts' },
+                  { Icon: TrendingUp, text: 'Suivi des progrès' },
+                  { Icon: Target, text: 'Entraînements personnalisés' },
+                  { Icon: Users, text: 'Cours collectifs' },
+                  { Icon: Trophy, text: 'Soutien communautaire' },
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-2 text-neutral-300">
                     <item.Icon className="w-5 h-5 text-primary" />
@@ -198,9 +198,9 @@ export default function MembershipExpiredPage() {
 
             {/* Special Offer */}
             <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 mb-8 text-center">
-              <p className="text-sm text-primary font-medium mb-1">🎁 Welcome Back Offer</p>
-              <p className="text-white font-semibold">Renew now and get 10% off your next month!</p>
-              <p className="text-neutral-400 text-xs mt-1">Contact the front desk for details</p>
+              <p className="text-sm text-primary font-medium mb-1">🎁 Offre de retour</p>
+              <p className="text-white font-semibold">Renouvelez maintenant et obtenez 10% de réduction !</p>
+              <p className="text-neutral-400 text-xs mt-1">Contactez l&apos;accueil pour plus d&apos;informations</p>
             </div>
 
             {/* Action Buttons */}
@@ -209,15 +209,15 @@ export default function MembershipExpiredPage() {
                 href="/#pricing"
                 className="block w-full bg-primary hover:bg-opacity-90 text-white font-semibold py-4 px-6 rounded-xl text-center transition-all transform hover:scale-[1.02] shadow-lg"
               >
-                View Membership Plans
+                Voir les forfaits
               </Link>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   href="/#contact"
                   className="flex items-center justify-center gap-2 bg-neutral-700 hover:bg-neutral-600 text-white font-medium py-3 px-4 rounded-xl text-center transition-colors"
                 >
-                  <Phone className="w-4 h-4" /> Contact Us
+                  <Phone className="w-4 h-4" /> Nous contacter
                 </Link>
                 <a
                   href="https://maps.google.com/?q=ZY+Bodybuilding+Gym"
@@ -225,7 +225,7 @@ export default function MembershipExpiredPage() {
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-neutral-700 hover:bg-neutral-600 text-white font-medium py-3 px-4 rounded-xl text-center transition-colors"
                 >
-                  <MapPin className="w-4 h-4" /> Visit Gym
+                  <MapPin className="w-4 h-4" /> Visiter la salle
                 </a>
               </div>
 
@@ -233,7 +233,7 @@ export default function MembershipExpiredPage() {
                 onClick={handleSignOut}
                 className="block w-full text-neutral-400 hover:text-white py-3 text-sm transition-colors"
               >
-                Sign out and return home
+                Se déconnecter et retourner à l&apos;accueil
               </button>
             </div>
           </div>
@@ -241,7 +241,7 @@ export default function MembershipExpiredPage() {
 
         {/* Footer */}
         <p className="text-center text-neutral-500 text-sm mt-6">
-          Questions? Call us at <a href="tel:+21612345678" className="text-red-400 hover:underline">+216 12 345 678</a>
+          Des questions ? Appelez-nous au <a href="tel:+21658800554" className="text-red-400 hover:underline">+216 58 800 554</a>
         </p>
       </div>
     </div>

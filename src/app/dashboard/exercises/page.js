@@ -2,33 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
-const muscleGroups = [
-  { id: 'all', name: 'All Muscles', icon: '💪' },
-  { id: 'chest', name: 'Chest', icon: '🫁' },
-  { id: 'back', name: 'Back', icon: '🔙' },
-  { id: 'shoulders', name: 'Shoulders', icon: '🤷' },
-  { id: 'biceps', name: 'Biceps', icon: '💪' },
-  { id: 'triceps', name: 'Triceps', icon: '💪' },
-  { id: 'quadriceps', name: 'Quads', icon: '🦵' },
-  { id: 'hamstrings', name: 'Hamstrings', icon: '🦵' },
-  { id: 'glutes', name: 'Glutes', icon: '🍑' },
-  { id: 'calves', name: 'Calves', icon: '🦵' },
-  { id: 'core', name: 'Core', icon: '🎯' },
-  { id: 'cardio', name: 'Cardio', icon: '❤️' },
-];
-
-const equipmentTypes = [
-  { id: 'all', name: 'All Equipment' },
-  { id: 'barbell', name: 'Barbell' },
-  { id: 'dumbbell', name: 'Dumbbell' },
-  { id: 'cable', name: 'Cable' },
-  { id: 'machine', name: 'Machine' },
-  { id: 'bodyweight', name: 'Bodyweight' },
-  { id: 'kettlebell', name: 'Kettlebell' },
-];
+const muscleGroupIds = ['all', 'chest', 'back', 'shoulders', 'biceps', 'triceps', 'quadriceps', 'hamstrings', 'glutes', 'calves', 'core', 'cardio'];
+const muscleGroupIcons = { all: '💪', chest: '🫁', back: '🔙', shoulders: '🤷', biceps: '💪', triceps: '💪', quadriceps: '🦵', hamstrings: '🦵', glutes: '🍑', calves: '🦵', core: '🎯', cardio: '❤️' };
+const equipmentIds = ['all', 'barbell', 'dumbbell', 'cable', 'machine', 'bodyweight', 'kettlebell'];
 
 export default function ExercisesPage() {
+  const { lang } = useLanguage();
+  const t = translations[lang].exercises;
+  const tCommon = translations[lang];
+
+  const muscleGroups = muscleGroupIds.map(id => ({ id, name: t.muscles[id], icon: muscleGroupIcons[id] }));
+  const equipmentTypes = equipmentIds.map(id => ({ id, name: t.equipment[id] }));
+
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -46,10 +34,10 @@ export default function ExercisesPage() {
       const params = new URLSearchParams();
       if (selectedMuscle !== 'all') params.append('muscleGroup', selectedMuscle);
       if (selectedEquipment !== 'all') params.append('equipment', selectedEquipment);
-      
+
       const response = await fetch(`/api/user/exercises?${params}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setExercises(data.exercises || []);
       }
@@ -78,26 +66,24 @@ export default function ExercisesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Exercise Library</h1>
-          <p className="text-neutral-400">Browse and learn {exercises.length} exercises</p>
+          <h1 className="text-2xl font-bold text-white">{t.title}</h1>
+          <p className="text-neutral-400">{t.subtitle.replace('{n}', exercises.length)}</p>
         </div>
       </div>
 
       {/* Filters */}
       <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-4">
         <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
           <div className="flex-1">
             <input
               type="text"
-              placeholder="Search exercises..."
+              placeholder={t.searchPlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
-          
-          {/* Equipment Filter */}
+
           <select
             value={selectedEquipment}
             onChange={(e) => setSelectedEquipment(e.target.value)}
@@ -109,7 +95,6 @@ export default function ExercisesPage() {
           </select>
         </div>
 
-        {/* Muscle Group Pills */}
         <div className="flex flex-wrap gap-2 mt-4">
           {muscleGroups.map(muscle => (
             <button
@@ -135,13 +120,13 @@ export default function ExercisesPage() {
               <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
               <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
             </div>
-            <p className="text-neutral-400">Loading exercises...</p>
+            <p className="text-neutral-400">{t.loading}</p>
           </div>
         </div>
       ) : filteredExercises.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-6xl mb-4">🔍</p>
-          <p className="text-neutral-400">No exercises found matching your filters</p>
+          <p className="text-neutral-400">{t.noResults}</p>
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -157,11 +142,11 @@ export default function ExercisesPage() {
                   {exercise.difficulty}
                 </span>
               </div>
-              
+
               <p className="text-sm text-neutral-400 mb-3 line-clamp-2">
-                {exercise.description || 'No description available'}
+                {exercise.description || t.noDesc}
               </p>
-              
+
               <div className="flex flex-wrap gap-2">
                 <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
                   {exercise.muscleGroup}
@@ -211,28 +196,28 @@ export default function ExercisesPage() {
 
               {selectedExercise.description && (
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">Description</h3>
+                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">{t.sectionDesc}</h3>
                   <p className="text-neutral-300">{selectedExercise.description}</p>
                 </div>
               )}
 
               {selectedExercise.instructions && (
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">Instructions</h3>
+                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">{t.sectionInstructions}</h3>
                   <p className="text-neutral-300 whitespace-pre-line">{selectedExercise.instructions}</p>
                 </div>
               )}
 
               {selectedExercise.tips && (
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">💡 Pro Tips</h3>
+                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">{t.sectionTips}</h3>
                   <p className="text-neutral-300">{selectedExercise.tips}</p>
                 </div>
               )}
 
               {selectedExercise.secondaryMuscles?.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">Secondary Muscles</h3>
+                  <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-2">{t.sectionSecondary}</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedExercise.secondaryMuscles.map((muscle, i) => (
                       <span key={i} className="px-2 py-1 bg-neutral-700 text-neutral-300 rounded text-sm">
@@ -248,13 +233,13 @@ export default function ExercisesPage() {
                   href={`/dashboard/workouts/log?exercise=${selectedExercise.$id}`}
                   className="flex-1 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg text-center hover:bg-red-700 transition-colors"
                 >
-                  Add to Workout
+                  {t.addToWorkout}
                 </Link>
                 <button
                   onClick={() => setSelectedExercise(null)}
                   className="px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
                 >
-                  Close
+                  {t.close}
                 </button>
               </div>
             </div>

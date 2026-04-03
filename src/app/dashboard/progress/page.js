@@ -43,9 +43,9 @@ export default function ProgressPage() {
   };
 
   const tabs = [
-    { id: 'weight', name: 'Weight', icon: '⚖️', unit: 'kg' },
-    { id: 'measurements', name: 'Measurements', icon: '📏', unit: 'cm' },
-    { id: 'strength', name: 'Strength', icon: '💪', unit: '' },
+    { id: 'weight', name: 'Poids', icon: '⚖️', unit: 'kg' },
+    { id: 'measurements', name: 'Mensurations', icon: '📏', unit: 'cm' },
+    { id: 'strength', name: 'Force', icon: '💪', unit: '' },
   ];
 
   if (loading) {
@@ -56,7 +56,7 @@ export default function ProgressPage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading progress...</p>
+          <p className="text-neutral-400">Chargement...</p>
         </div>
       </div>
     );
@@ -67,14 +67,14 @@ export default function ProgressPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Progress Tracking</h1>
-          <p className="text-neutral-400">Track your body transformation</p>
+          <h1 className="text-2xl font-bold text-white">Suivi des progrès</h1>
+          <p className="text-neutral-400">Suivez votre transformation physique</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
           className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors"
         >
-          + Add Measurement
+          + Ajouter une mesure
         </button>
       </div>
 
@@ -82,36 +82,36 @@ export default function ProgressPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           icon="⚖️"
-          label="Current Weight"
+          label="Poids actuel"
           value={getLatestMetric('weight')}
           unit="kg"
           change={getChange('weight')}
-          changeLabel="vs start"
+          changeLabel="vs départ"
         />
         <MetricCard
           icon="📊"
-          label="Body Fat"
+          label="Masse grasse"
           value={getLatestMetric('bodyFat')}
           unit="%"
           change={getChange('bodyFat')}
-          changeLabel="vs start"
+          changeLabel="vs départ"
           inverse
         />
         <MetricCard
           icon="💪"
-          label="Muscle Mass"
+          label="Masse musculaire"
           value={getLatestMetric('muscleMass')}
           unit="kg"
           change={getChange('muscleMass')}
-          changeLabel="vs start"
+          changeLabel="vs départ"
         />
         <MetricCard
           icon="📏"
-          label="Waist"
+          label="Tour de taille"
           value={getLatestMetric('waist')}
           unit="cm"
           change={getChange('waist')}
-          changeLabel="vs start"
+          changeLabel="vs départ"
           inverse
         />
       </div>
@@ -119,11 +119,11 @@ export default function ProgressPage() {
       {/* Time Range Selector */}
       <div className="flex gap-2">
         {[
-          { id: '1month', label: '1 Month' },
-          { id: '3months', label: '3 Months' },
-          { id: '6months', label: '6 Months' },
-          { id: '1year', label: '1 Year' },
-          { id: 'all', label: 'All Time' },
+          { id: '1month', label: '1 mois' },
+          { id: '3months', label: '3 mois' },
+          { id: '6months', label: '6 mois' },
+          { id: '1year', label: '1 an' },
+          { id: 'all', label: 'Tout' },
         ].map((range) => (
           <button
             key={range.id}
@@ -209,7 +209,7 @@ function WeightProgress({ metrics }) {
     return (
       <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">⚖️</p>
-        <p className="text-neutral-400">No weight data recorded yet</p>
+        <p className="text-neutral-400">Aucune donnée de poids enregistrée</p>
       </div>
     );
   }
@@ -218,7 +218,7 @@ function WeightProgress({ metrics }) {
     <div className="space-y-6">
       {/* Simple Chart Visualization */}
       <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-        <h3 className="text-lg font-bold text-white mb-4">Weight History</h3>
+        <h3 className="text-lg font-bold text-white mb-4">Historique du poids</h3>
         <div className="h-48 flex items-end gap-1">
           {weightData.slice(0, 30).reverse().map((m, i) => {
             const min = Math.min(...weightData.map(d => d.weight));
@@ -245,7 +245,7 @@ function WeightProgress({ metrics }) {
 
       {/* Weight Log */}
       <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-        <h3 className="text-lg font-bold text-white mb-4">Recent Entries</h3>
+        <h3 className="text-lg font-bold text-white mb-4">Dernières entrées</h3>
         <div className="space-y-2">
           {weightData.slice(0, 10).map((m, i) => (
             <div key={m.$id} className="flex items-center justify-between py-2 border-b border-neutral-700 last:border-0">
@@ -269,14 +269,14 @@ function WeightProgress({ metrics }) {
 
 function MeasurementsProgress({ metrics }) {
   const measurements = [
-    { key: 'chest', label: 'Chest', icon: '🫁' },
-    { key: 'waist', label: 'Waist', icon: '📏' },
-    { key: 'hips', label: 'Hips', icon: '🍑' },
-    { key: 'bicepsLeft', label: 'Left Bicep', icon: '💪' },
-    { key: 'bicepsRight', label: 'Right Bicep', icon: '💪' },
-    { key: 'thighLeft', label: 'Left Thigh', icon: '🦵' },
-    { key: 'thighRight', label: 'Right Thigh', icon: '🦵' },
-    { key: 'shoulders', label: 'Shoulders', icon: '🤷' },
+    { key: 'chest', label: 'Poitrine', icon: '🫁' },
+    { key: 'waist', label: 'Taille', icon: '📏' },
+    { key: 'hips', label: 'Hanches', icon: '🍑' },
+    { key: 'bicepsLeft', label: 'Bicep gauche', icon: '💪' },
+    { key: 'bicepsRight', label: 'Bicep droit', icon: '💪' },
+    { key: 'thighLeft', label: 'Cuisse gauche', icon: '🦵' },
+    { key: 'thighRight', label: 'Cuisse droite', icon: '🦵' },
+    { key: 'shoulders', label: 'Épaules', icon: '🤷' },
   ];
 
   const getLatestValue = (key) => {
@@ -291,7 +291,7 @@ function MeasurementsProgress({ metrics }) {
 
   return (
     <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-      <h3 className="text-lg font-bold text-white mb-4">Body Measurements</h3>
+      <h3 className="text-lg font-bold text-white mb-4">Mensurations corporelles</h3>
       <div className="grid md:grid-cols-2 gap-4">
         {measurements.map((m) => {
           const latest = getLatestValue(m.key);
@@ -347,7 +347,7 @@ function StrengthProgress() {
   if (loading) {
     return (
       <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
-        <p className="text-neutral-400">Loading strength data...</p>
+        <p className="text-neutral-400">Chargement...</p>
       </div>
     );
   }
@@ -356,21 +356,21 @@ function StrengthProgress() {
     return (
       <div className="text-center py-12 bg-neutral-800 rounded-xl border border-neutral-700">
         <p className="text-6xl mb-4">💪</p>
-        <p className="text-neutral-400">Log workouts to track your strength progress</p>
+        <p className="text-neutral-400">Enregistrez des séances pour suivre votre progression en force</p>
       </div>
     );
   }
 
   return (
     <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-      <h3 className="text-lg font-bold text-white mb-4">Personal Records</h3>
+      <h3 className="text-lg font-bold text-white mb-4">Records personnels</h3>
       <div className="space-y-3">
         {personalRecords.map((pr, i) => (
           <div key={i} className="flex items-center justify-between p-4 bg-neutral-700/50 rounded-lg">
             <div>
               <p className="font-semibold text-white">{pr.exerciseName}</p>
               <p className="text-sm text-neutral-400">
-                {pr.date ? format(new Date(pr.date), 'MMM dd, yyyy') : 'Unknown date'}
+                {pr.date ? format(new Date(pr.date), 'dd MMM yyyy') : 'Date inconnue'}
               </p>
             </div>
             <div className="text-right">
@@ -458,42 +458,39 @@ function AddMeasurementModal({ onClose, onSuccess }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Add Measurement</h2>
-          
+          <h2 className="text-xl font-bold text-white mb-4">Ajouter une mesure</h2>
+
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Primary Metrics */}
             <div>
-              <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">Primary Metrics</h3>
+              <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">Métriques principales</h3>
               <div className="grid grid-cols-3 gap-3">
-                <InputField name="weight" label="Weight" unit="kg" placeholder="75" />
-                <InputField name="bodyFat" label="Body Fat" unit="%" placeholder="15" />
+                <InputField name="weight" label="Poids" unit="kg" placeholder="75" />
+                <InputField name="bodyFat" label="Masse grasse" unit="%" placeholder="15" />
                 <InputField name="muscleMass" label="Muscle" unit="kg" placeholder="35" />
               </div>
             </div>
 
-            {/* Body Measurements */}
             <div>
-              <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">Body Measurements</h3>
+              <h3 className="text-sm font-semibold text-neutral-400 uppercase mb-3">Mensurations</h3>
               <div className="grid grid-cols-2 gap-3">
-                <InputField name="chest" label="Chest" unit="cm" placeholder="100" />
-                <InputField name="shoulders" label="Shoulders" unit="cm" placeholder="120" />
-                <InputField name="waist" label="Waist" unit="cm" placeholder="80" />
-                <InputField name="hips" label="Hips" unit="cm" placeholder="95" />
-                <InputField name="bicepsLeft" label="Left Bicep" unit="cm" placeholder="35" />
-                <InputField name="bicepsRight" label="Right Bicep" unit="cm" placeholder="35" />
-                <InputField name="thighLeft" label="Left Thigh" unit="cm" placeholder="55" />
-                <InputField name="thighRight" label="Right Thigh" unit="cm" placeholder="55" />
+                <InputField name="chest" label="Poitrine" unit="cm" placeholder="100" />
+                <InputField name="shoulders" label="Épaules" unit="cm" placeholder="120" />
+                <InputField name="waist" label="Taille" unit="cm" placeholder="80" />
+                <InputField name="hips" label="Hanches" unit="cm" placeholder="95" />
+                <InputField name="bicepsLeft" label="Bicep gauche" unit="cm" placeholder="35" />
+                <InputField name="bicepsRight" label="Bicep droit" unit="cm" placeholder="35" />
+                <InputField name="thighLeft" label="Cuisse gauche" unit="cm" placeholder="55" />
+                <InputField name="thighRight" label="Cuisse droite" unit="cm" placeholder="55" />
               </div>
             </div>
 
-            {/* Notes */}
             <div>
               <label className="block text-xs text-neutral-400 mb-1">Notes</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 rows={2}
-                placeholder="Any notes about this measurement..."
+                placeholder="Notes sur cette mesure..."
                 className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-red-500"
               />
             </div>
@@ -504,14 +501,14 @@ function AddMeasurementModal({ onClose, onSuccess }) {
                 onClick={onClose}
                 className="flex-1 px-4 py-2 bg-neutral-700 text-white rounded-lg hover:bg-neutral-600 transition-colors"
               >
-                Cancel
+                Annuler
               </button>
               <button
                 type="submit"
                 disabled={saving}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
               >
-                {saving ? 'Saving...' : 'Save'}
+                {saving ? 'Enregistrement...' : 'Enregistrer'}
               </button>
             </div>
           </form>
