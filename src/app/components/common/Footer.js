@@ -4,9 +4,13 @@ import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, Phone } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear(); 
+  const currentYear = new Date().getFullYear();
+  const { lang } = useLanguage();
+  const t = translations[lang]; 
 
   return (
     <div>
@@ -29,18 +33,17 @@ const Footer = () => {
               </div>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
-                Transformez votre corps et votre esprit. 
-                Notre salle de sport est équipée pour vous aider à atteindre vos objectifs de fitness.
+                {t.footer.tagline}
               </p>
             </div>
 
             {/* Contact Info */}
             <div className="space-y-4 text-center sm:text-left animate__animated animate__fadeIn animate__delay-1s">
-              <h3 className="text-xl sm:text-2xl font-bold text-primary">Contact</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-primary">{t.footer.contact}</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <ul className="space-y-3 text-neutral-300">
                 <li className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                  <Mail className="text-primary w-5 h-5 flex-shrink-0" /> 
+                  <Mail className="text-primary w-5 h-5 flex-shrink-0" />
                   <a href="mailto:zybodybuildingstudio@gmail.com" className="hover:text-primary transition-colors break-all">
                     zybodybuildingstudio@gmail.com
                   </a>
@@ -53,14 +56,14 @@ const Footer = () => {
                 </li>
                 <li className="flex items-start justify-center sm:justify-start gap-2">
                   <span className="text-primary text-lg mt-1 flex-shrink-0">📍</span>
-                  <a 
+                  <a
                     href="https://www.google.com/maps/place/ZY.bodybuilding/@36.4272886,10.6763909,17z/data=!3m1!4b1!4m6!3m5!1s0x13029ffe9be4d185:0x7217af0826d0b35c!8m2!3d36.4272843!4d10.673816!16s%2Fg%2F11ygwn70fw?entry=ttu&g_ep=EgoyMDI1MTEwNS4wIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors text-center sm:text-left"
                   >
                     ZY Bodybuilding, Tunisia<br />
-                    <span className="text-sm text-neutral-400">Voir sur Google Maps</span>
+                    <span className="text-sm text-neutral-400">{t.footer.viewOnMap}</span>
                   </a>
                 </li>
                 <li className="flex items-center justify-center sm:justify-start gap-2">
@@ -74,30 +77,30 @@ const Footer = () => {
 
             {/* Quick Links */}
             <div className="space-y-4 text-center sm:text-left animate__animated animate__fadeIn animate__delay-1.25s">
-              <h3 className="text-xl sm:text-2xl font-bold text-primary">Liens Rapides</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-primary">{t.footer.quickLinks}</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <ul className="space-y-3 text-neutral-300">
                 <li>
-                  <Link href="/" className="hover:text-primary transition-colors inline-block py-1">Accueil</Link>
+                  <Link href="/" className="hover:text-primary transition-colors inline-block py-1">{t.publicNav.home}</Link>
                 </li>
                 <li>
-                  <Link href="#about" className="hover:text-primary transition-colors inline-block py-1">À propos</Link>
+                  <Link href="#about" className="hover:text-primary transition-colors inline-block py-1">{t.publicNav.about}</Link>
                 </li>
                 <li>
-                  <Link href="#schedule" className="hover:text-primary transition-colors inline-block py-1">Programme</Link>
+                  <Link href="#schedule" className="hover:text-primary transition-colors inline-block py-1">{t.publicNav.schedule}</Link>
                 </li>
                 <li>
-                  <Link href="#pricing" className="hover:text-primary transition-colors inline-block py-1">Tarifs</Link>
+                  <Link href="#pricing" className="hover:text-primary transition-colors inline-block py-1">{t.publicNav.pricing}</Link>
                 </li>
                 <li>
-                  <Link href="#contact" className="hover:text-primary transition-colors inline-block py-1">Contact</Link>
+                  <Link href="#contact" className="hover:text-primary transition-colors inline-block py-1">{t.publicNav.contact}</Link>
                 </li>
               </ul>
             </div>
 
             {/* Social Media */}
             <div className="space-y-4 text-center sm:text-left animate__animated animate__fadeIn animate__delay-1.5s">
-              <h3 className="text-xl sm:text-2xl font-bold text-primary">Suivez-nous</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-primary">{t.footer.followUs}</h3>
               <div className="divider-primary w-16 mb-4 mx-auto sm:mx-0"></div>
               <div className="flex space-x-4 sm:space-x-6 justify-center sm:justify-start">
                 <a href="https://www.facebook.com/p/ZY-Bodybuilding-61577705828873/" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-primary transition duration-300 transform hover:scale-110" aria-label="Facebook">
@@ -116,7 +119,7 @@ const Footer = () => {
       <div className="bg-dark py-4 sm:py-5 border-t border-primary/30">
         <div className="container mx-auto text-center px-4">
           <p className="text-neutral-400 text-xs sm:text-sm md:text-base">
-            &copy; {currentYear} <span className="text-primary font-semibold">ZY BODYBUILDING</span>. Tous droits réservés. Crée par <a href="https://rayentroudi.work" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">Rayen Troudi</a>.
+            &copy; {currentYear} <span className="text-primary font-semibold">ZY BODYBUILDING</span>. {t.footer.rights}. {t.footer.createdBy} <a href="https://rayentroudi.work" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">Rayen Troudi</a>.
           </p>
         </div>
       </div>
