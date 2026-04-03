@@ -30,13 +30,13 @@ export default function RegisterPage() {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError('Les mots de passe ne correspondent pas');
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError('Le mot de passe doit contenir au moins 8 caractères');
       setLoading(false);
       return;
     }
@@ -62,10 +62,10 @@ export default function RegisterPage() {
           router.push('/admin/ironcore/login');
         }, 2000);
       } else {
-        setError(data.error || 'Registration failed. Please try again.');
+        setError(data.error || 'Inscription échouée. Veuillez réessayer.');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
@@ -76,13 +76,13 @@ export default function RegisterPage() {
       <div className="max-w-md w-full">
         <div className="bg-neutral-900 rounded-lg shadow-lg p-8 border border-neutral-800">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">Créer un compte</h1>
             <p className="text-neutral-400">ZY Bodybuilding Gym</p>
           </div>
 
           {success && (
             <div className="mb-6 bg-green-500/10 border border-green-500 text-green-500 px-4 py-3 rounded-lg text-sm">
-              Account created successfully! Redirecting to login...
+              Compte créé avec succès ! Redirection en cours...
             </div>
           )}
 
@@ -95,7 +95,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-neutral-300 mb-2">
-                Full Name
+                Nom complet
               </label>
               <input
                 id="name"
@@ -105,13 +105,13 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="John Doe"
+                placeholder="Prénom Nom"
               />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-neutral-300 mb-2">
-                Email Address
+                Adresse e-mail
               </label>
               <input
                 id="email"
@@ -121,13 +121,13 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="john@example.com"
+                placeholder="votre@email.com"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-neutral-300 mb-2">
-                Password
+                Mot de passe
               </label>
               <input
                 id="password"
@@ -143,7 +143,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-neutral-300 mb-2">
-                Confirm Password
+                Confirmer le mot de passe
               </label>
               <input
                 id="confirmPassword"
@@ -162,15 +162,15 @@ export default function RegisterPage() {
               disabled={loading || success}
               className="w-full bg-primary hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? 'Création du compte...' : 'Créer un compte'}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-neutral-400">
             <p>
-              Already have an account?{' '}
+              Déjà un compte ?{' '}
               <Link href="/admin/ironcore/login" className="text-primary hover:opacity-80 font-medium">
-                Sign in
+                Se connecter
               </Link>
             </p>
           </div>

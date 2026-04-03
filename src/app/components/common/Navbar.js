@@ -3,14 +3,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
-const navLinks = [
-  { href: '/', label: 'Accueil' },
-  { href: '#about', label: 'À propos' },
-  { href: '#schedule', label: 'Programme' },
-  { href: '#pricing', label: 'Tarifs' },
-  { href: '#contact', label: 'Contact' },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +13,16 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const router = useRouter();
+  const { lang, setLang } = useLanguage();
+  const t = translations[lang];
+
+  const navLinks = [
+    { href: '/', label: t.publicNav.home },
+    { href: '#about', label: t.publicNav.about },
+    { href: '#schedule', label: t.publicNav.schedule },
+    { href: '#pricing', label: t.publicNav.pricing },
+    { href: '#contact', label: t.publicNav.contact },
+  ];
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -123,11 +127,35 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Mobile language switcher */}
+          <div className="flex items-center gap-1 bg-neutral-800 border border-neutral-700 rounded-lg p-1 mb-4">
+            <button
+              onClick={() => setLang('fr')}
+              className={`px-4 py-2 rounded text-sm font-semibold transition-colors ${
+                lang === 'fr'
+                  ? 'bg-primary text-white'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              FR
+            </button>
+            <button
+              onClick={() => setLang('en')}
+              className={`px-4 py-2 rounded text-sm font-semibold transition-colors ${
+                lang === 'en'
+                  ? 'bg-primary text-white'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              EN
+            </button>
+          </div>
+
           <div className="flex flex-col gap-3 w-52">
             {user ? (
               <>
                 <Link href="/dashboard" className="btn-secondary py-3 text-center" onClick={closeMenu}>
-                  Mon Espace
+                  {t.publicNav.mySpace}
                 </Link>
                 <button
                   onClick={async () => {
@@ -140,16 +168,16 @@ export default function Navbar() {
                   className="py-3 text-sm text-neutral-600 hover:text-white uppercase tracking-widest transition-colors"
                   style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
-                  Déconnexion
+                  {t.publicNav.logout}
                 </button>
               </>
             ) : (
               <>
                 <Link href="/login" className="btn-outline py-3 text-center" onClick={closeMenu}>
-                  Connexion
+                  {t.publicNav.login}
                 </Link>
                 <Link href="/register" className="btn-primary py-3 text-center" onClick={closeMenu}>
-                  S&apos;inscrire
+                  {t.publicNav.register}
                 </Link>
               </>
             )}
@@ -173,13 +201,37 @@ export default function Navbar() {
 
         {/* Desktop auth */}
         <div className="hidden lg:flex items-center gap-2">
+          {/* Language switcher */}
+          <div className="flex items-center gap-1 bg-neutral-800 border border-neutral-700 rounded-lg p-1 mr-2">
+            <button
+              onClick={() => setLang('fr')}
+              className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                lang === 'fr'
+                  ? 'bg-primary text-white'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              FR
+            </button>
+            <button
+              onClick={() => setLang('en')}
+              className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                lang === 'en'
+                  ? 'bg-primary text-white'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              EN
+            </button>
+          </div>
+
           {user ? (
             <>
               <Link
                 href="/dashboard"
                 className="btn-secondary py-2 text-xs"
               >
-                Mon Espace
+                {t.publicNav.mySpace}
               </Link>
               <button
                 onClick={async () => {
@@ -191,7 +243,7 @@ export default function Navbar() {
                 className="px-4 py-2 text-neutral-600 hover:text-white text-xs uppercase tracking-widest transition-colors"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
-                Déconnexion
+                {t.publicNav.logout}
               </button>
             </>
           ) : (
@@ -201,10 +253,10 @@ export default function Navbar() {
                 className="px-5 py-2 text-neutral-400 hover:text-white text-xs font-semibold uppercase tracking-widest transition-colors"
                 style={{ fontFamily: "'DM Sans', sans-serif" }}
               >
-                Connexion
+                {t.publicNav.login}
               </Link>
               <Link href="/register" className="btn-primary py-2 text-xs">
-                S&apos;inscrire
+                {t.publicNav.register}
               </Link>
             </>
           )}

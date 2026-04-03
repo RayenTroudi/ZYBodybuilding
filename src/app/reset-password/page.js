@@ -48,16 +48,16 @@ export default function ResetPasswordPage() {
 
   const validatePassword = (password) => {
     if (password.length < 8) {
-      return 'Password must be at least 8 characters long';
+      return 'Le mot de passe doit contenir au moins 8 caractères';
     }
     if (!/[A-Z]/.test(password)) {
-      return 'Password must contain at least one uppercase letter';
+      return 'Le mot de passe doit contenir au moins une lettre majuscule';
     }
     if (!/[a-z]/.test(password)) {
-      return 'Password must contain at least one lowercase letter';
+      return 'Le mot de passe doit contenir au moins une lettre minuscule';
     }
     if (!/[0-9]/.test(password)) {
-      return 'Password must contain at least one number';
+      return 'Le mot de passe doit contenir au moins un chiffre';
     }
     return null;
   };
@@ -77,14 +77,13 @@ export default function ResetPasswordPage() {
 
     // Check passwords match
     if (newPassword !== confirmPassword) {
-      setError('New passwords do not match');
+      setError('Les nouveaux mots de passe ne correspondent pas');
       setLoading(false);
       return;
     }
 
-    // Make sure new password is different from current
     if (currentPassword === newPassword) {
-      setError('New password must be different from your current password');
+      setError('Le nouveau mot de passe doit être différent de l\'actuel');
       setLoading(false);
       return;
     }
@@ -102,7 +101,7 @@ export default function ResetPasswordPage() {
       const data = await res.json();
 
       if (!data.success) {
-        setError(data.error || 'Failed to reset password');
+        setError(data.error || 'Échec de la réinitialisation du mot de passe');
         setLoading(false);
         return;
       }
@@ -114,7 +113,7 @@ export default function ResetPasswordPage() {
         router.push('/dashboard');
       }, 2000);
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('Une erreur est survenue. Veuillez réessayer.');
       setLoading(false);
     }
   };
@@ -127,7 +126,7 @@ export default function ResetPasswordPage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading...</p>
+          <p className="text-neutral-400">Chargement...</p>
         </div>
       </div>
     );
@@ -138,9 +137,9 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-neutral-900 rounded-xl p-8 text-center border border-neutral-800">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold text-white mb-2">Password Updated!</h1>
-          <p className="text-neutral-400 mb-4">Your password has been successfully changed.</p>
-          <p className="text-neutral-500 text-sm">Redirecting to dashboard...</p>
+          <h1 className="text-2xl font-bold text-white mb-2">Mot de passe mis à jour !</h1>
+          <p className="text-neutral-400 mb-4">Votre mot de passe a été modifié avec succès.</p>
+          <p className="text-neutral-500 text-sm">Redirection vers le tableau de bord...</p>
         </div>
       </div>
     );
@@ -168,9 +167,9 @@ export default function ResetPasswordPage() {
           {/* Header */}
           <div className="bg-primary p-6 text-center">
             <div className="text-4xl mb-2">🔐</div>
-            <h1 className="text-2xl font-bold text-white">Create New Password</h1>
+            <h1 className="text-2xl font-bold text-white">Créer un nouveau mot de passe</h1>
             <p className="text-white/80 text-sm mt-1">
-              Welcome! Please set a secure password for your account.
+              Bienvenue ! Veuillez définir un mot de passe sécurisé pour votre compte.
             </p>
           </div>
 
@@ -184,9 +183,9 @@ export default function ResetPasswordPage() {
 
             {/* Info Box */}
             <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 text-sm">
-              <p className="text-primary font-medium mb-2">ℹ️ First Time Login</p>
+              <p className="text-primary font-medium mb-2">ℹ️ Première connexion</p>
               <p className="text-neutral-400">
-                Your current password is your <strong className="text-white">Member ID</strong>
+                Votre mot de passe actuel est votre <strong className="text-white">numéro de membre</strong>
                 {userData?.membership?.member?.memberId && (
                   <span className="font-mono text-primary ml-1">
                     ({userData.membership.member.memberId})
@@ -197,7 +196,7 @@ export default function ResetPasswordPage() {
 
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Current Password (Member ID)
+                Mot de passe actuel (N° de membre)
               </label>
               <input
                 type="password"
@@ -205,13 +204,13 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Enter your Member ID"
+                placeholder="Entrez votre numéro de membre"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
-                New Password
+                Nouveau mot de passe
               </label>
               <input
                 type="password"
@@ -219,13 +218,13 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Create a strong password"
+                placeholder="Créez un mot de passe sécurisé"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Confirm New Password
+                Confirmer le nouveau mot de passe
               </label>
               <input
                 type="password"
@@ -233,25 +232,24 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Confirm your new password"
+                placeholder="Confirmez votre nouveau mot de passe"
               />
             </div>
 
-            {/* Password Requirements */}
             <div className="text-xs text-neutral-500 space-y-1">
-              <p className="font-medium text-neutral-400">Password must contain:</p>
+              <p className="font-medium text-neutral-400">Le mot de passe doit contenir :</p>
               <ul className="list-disc list-inside space-y-0.5">
                 <li className={newPassword.length >= 8 ? 'text-green-400' : ''}>
-                  At least 8 characters
+                  Au moins 8 caractères
                 </li>
                 <li className={/[A-Z]/.test(newPassword) ? 'text-green-400' : ''}>
-                  One uppercase letter
+                  Une lettre majuscule
                 </li>
                 <li className={/[a-z]/.test(newPassword) ? 'text-green-400' : ''}>
-                  One lowercase letter
+                  Une lettre minuscule
                 </li>
                 <li className={/[0-9]/.test(newPassword) ? 'text-green-400' : ''}>
-                  One number
+                  Un chiffre
                 </li>
               </ul>
             </div>
@@ -261,7 +259,7 @@ export default function ResetPasswordPage() {
               disabled={loading}
               className="w-full bg-primary hover:opacity-90 text-white font-semibold py-3 px-4 rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Updating Password...' : 'Set New Password'}
+              {loading ? 'Mise à jour...' : 'Définir le nouveau mot de passe'}
             </button>
           </form>
         </div>

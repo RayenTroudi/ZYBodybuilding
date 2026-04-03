@@ -4,19 +4,24 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
-  { name: 'Workouts', href: '/dashboard/workouts', icon: '💪' },
-  { name: 'Exercises', href: '/dashboard/exercises', icon: '🏋️' },
-  { name: 'Progress', href: '/dashboard/progress', icon: '📈' },
-  { name: 'Goals', href: '/dashboard/goals', icon: '🎯' },
-  { name: 'Profile', href: '/dashboard/profile', icon: '👤' },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { lang, setLang } = useLanguage();
+  const t = translations[lang];
+
+  const navigation = [
+    { name: t.nav.dashboard, href: '/dashboard', icon: '🏠' },
+    { name: t.nav.workouts, href: '/dashboard/workouts', icon: '💪' },
+    { name: t.nav.exercises, href: '/dashboard/exercises', icon: '🏋️' },
+    { name: t.nav.progress, href: '/dashboard/progress', icon: '📈' },
+    { name: t.nav.goals, href: '/dashboard/goals', icon: '🎯' },
+    { name: t.nav.profile, href: '/dashboard/profile', icon: '👤' },
+  ];
+
   const [user, setUser] = useState(null);
   const [membership, setMembership] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,35 +35,28 @@ export default function DashboardLayout({ children }) {
     try {
       const res = await fetch('/api/auth/check');
       const data = await res.json();
-      
+
       if (!data.success || !data.user) {
         router.push('/login');
-        // Keep loading true to prevent flash of content
         return;
       }
 
-      // Check if user requires password reset (first login)
       if (data.membership?.requiresPasswordReset) {
         router.push('/reset-password');
-        // Keep loading true to prevent flash of content
         return;
       }
 
-      // Check if membership is valid
       if (data.membership && !data.membership.isValid) {
         router.push('/membership-expired');
-        // Keep loading true to prevent flash of content
         return;
       }
 
-      // Only set loading to false if we're not redirecting
       setUser(data.user);
       setMembership(data.membership);
       setLoading(false);
     } catch (error) {
       console.error('Auth check failed:', error);
       router.push('/login');
-      // Keep loading true to prevent flash of content
     }
   };
 
@@ -80,7 +78,7 @@ export default function DashboardLayout({ children }) {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading...</p>
+          <p className="text-neutral-400">{t.loading}</p>
         </div>
       </div>
     );
@@ -106,10 +104,10 @@ export default function DashboardLayout({ children }) {
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-4 border-b border-neutral-700">
             <Link href="/dashboard" className="flex items-center gap-2">
-              <Image 
-                src="/images/logoNobg.png" 
-                alt="ZY Bodybuilding Logo" 
-                width={40} 
+              <Image
+                src="/images/logoNobg.png"
+                alt="ZY Bodybuilding Logo"
+                width={40}
                 height={40}
                 className="object-contain"
               />
@@ -126,12 +124,12 @@ export default function DashboardLayout({ children }) {
           {/* Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
-              const isActive = pathname === item.href || 
+              const isActive = pathname === item.href ||
                 (item.href !== '/dashboard' && pathname.startsWith(item.href));
-              
+
               return (
                 <Link
-                  key={item.name}
+                  key={item.href}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
@@ -167,13 +165,13 @@ export default function DashboardLayout({ children }) {
                 href="/"
                 className="flex-1 px-3 py-2 text-sm text-center text-neutral-300 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition-colors"
               >
-                Home
+                {t.nav.home}
               </Link>
               <button
                 onClick={handleSignOut}
                 className="flex-1 px-3 py-2 text-sm text-white bg-primary rounded-lg hover:opacity-90 transition-opacity"
               >
-                Logout
+                {t.nav.logout}
               </button>
             </div>
           </div>
@@ -193,11 +191,35 @@ export default function DashboardLayout({ children }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            
+
             <div className="flex-1 lg:flex-none">
               <h1 className="text-lg font-semibold text-white lg:hidden">
                 {navigation.find(n => pathname === n.href || (n.href !== '/dashboard' && pathname.startsWith(n.href)))?.name || 'Dashboard'}
               </h1>
+            </div>
+
+            {/* Language switcher */}
+            <div className="flex items-center gap-1 bg-neutral-800 border border-neutral-700 rounded-lg p-1">
+              <button
+                onClick={() => setLang('fr')}
+                className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                  lang === 'fr'
+                    ? 'bg-primary text-white'
+                    : 'text-neutral-400 hover:text-white'
+                }`}
+              >
+                FR
+              </button>
+              <button
+                onClick={() => setLang('en')}
+                className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                  lang === 'en'
+                    ? 'bg-primary text-white'
+                    : 'text-neutral-400 hover:text-white'
+                }`}
+              >
+                EN
+              </button>
             </div>
           </div>
 
@@ -205,22 +227,22 @@ export default function DashboardLayout({ children }) {
           {membership?.isInGracePeriod && (
             <div className="bg-primary/90 px-4 py-3 text-center">
               <p className="text-white text-sm">
-                <span className="font-semibold">⚠️ Grace Period Active:</span>{' '}
-                Your membership expired. You have {membership.graceDaysLeft} day(s) to renew.{' '}
+                <span className="font-semibold">⚠️ {t.gracePeriod} :</span>{' '}
+                {t.gracePeriodMsg.replace('{n}', membership.graceDaysLeft)}{' '}
                 <Link href="/#pricing" className="underline font-semibold hover:opacity-80">
-                  Renew Now
+                  {t.renewNow}
                 </Link>
               </p>
             </div>
           )}
-          
+
           {membership?.daysRemaining > 0 && membership?.daysRemaining <= 7 && !membership?.isInGracePeriod && (
             <div className="bg-yellow-600/90 px-4 py-3 text-center">
               <p className="text-white text-sm">
-                <span className="font-semibold">⏰ Expiring Soon:</span>{' '}
-                Your membership expires in {membership.daysRemaining} day(s).{' '}
+                <span className="font-semibold">⏰ {t.expiringTitle} :</span>{' '}
+                {t.expiringMsg.replace('{n}', membership.daysRemaining)}{' '}
                 <Link href="/#pricing" className="underline font-semibold hover:opacity-80">
-                  Renew Now
+                  {t.renewNow}
                 </Link>
               </p>
             </div>

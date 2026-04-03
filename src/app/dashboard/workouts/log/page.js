@@ -1,18 +1,23 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 function WorkoutLogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const planId = searchParams.get('plan');
+  const { lang } = useLanguage();
+  const t = translations[lang].log;
   
   const [exercises, setExercises] = useState([]);
   const [allExercises, setAllExercises] = useState([]);
   const [showExerciseModal, setShowExerciseModal] = useState(false);
-  const [workoutStartTime] = useState(new Date());
+  const workoutStartTime = useRef(null);
+  if (!workoutStartTime.current) workoutStartTime.current = new Date();
   const [saving, setSaving] = useState(false);
   const [workoutNotes, setWorkoutNotes] = useState('');
   const [workoutRating, setWorkoutRating] = useState(0);
@@ -130,12 +135,12 @@ function WorkoutLogContent() {
   };
 
   const calculateDuration = () => {
-    return Math.round((new Date() - workoutStartTime) / 60000);
+    return Math.round((new Date() - workoutStartTime.current) / 60000);
   };
 
   const handleSaveWorkout = async () => {
     if (exercises.length === 0) {
-      alert('Please add at least one exercise');
+      alert(t.alertMin);
       return;
     }
 
@@ -145,7 +150,7 @@ function WorkoutLogContent() {
       const workoutData = {
         planId: planId || null,
         workoutDate: new Date().toISOString(),
-        startTime: workoutStartTime.toISOString(),
+        startTime: workoutStartTime.current.toISOString(),
         endTime: new Date().toISOString(),
         durationMinutes: calculateDuration(),
         totalVolume: calculateTotalVolume(),
@@ -174,11 +179,11 @@ function WorkoutLogContent() {
         router.push('/dashboard/workouts');
       } else {
         const error = await response.json();
-        alert(error.message || 'Failed to save workout');
+        alert(error.message || t.alertFail);
       }
     } catch (error) {
       console.error('Error saving workout:', error);
-      alert('Failed to save workout');
+      alert(t.alertFail);
     } finally {
       setSaving(false);
     }
@@ -194,16 +199,16 @@ function WorkoutLogContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Log Workout</h1>
+          <h1 className="text-2xl font-bold text-white">{t.title}</h1>
           <p className="text-neutral-400">
-            Duration: {calculateDuration()} min • Volume: {(calculateTotalVolume() / 1000).toFixed(1)}k kg
+            {t.durationVol.replace('{d}', calculateDuration()).replace('{v}', (calculateTotalVolume() / 1000).toFixed(1))}
           </p>
         </div>
         <Link
           href="/dashboard/workouts"
           className="text-neutral-400 hover:text-white"
         >
-          Cancel
+          {t.cancel}
         </Link>
       </div>
 
@@ -214,7 +219,7 @@ function WorkoutLogContent() {
             <div className="flex items-center justify-between p-4 bg-neutral-700/50">
               <div>
                 <h3 className="font-semibold text-white">{exercise.exerciseName}</h3>
-                <p className="text-sm text-neutral-400">Target: {exercise.targetSets} sets × {exercise.targetReps}</p>
+                <p className="text-sm text-neutral-400">{t.target.replace('{s}', exercise.targetSets).replace('{r}', exercise.targetReps)}</p>
               </div>
               <button
                 onClick={() => removeExercise(exIndex)}
@@ -227,11 +232,11 @@ function WorkoutLogContent() {
             <div className="p-4">
               {/* Set Headers */}
               <div className="grid grid-cols-12 gap-2 mb-2 text-xs text-neutral-400 uppercase">
-                <div className="col-span-2">Set</div>
-                <div className="col-span-3">Weight (kg)</div>
-                <div className="col-span-3">Reps</div>
-                <div className="col-span-2">Type</div>
-                <div className="col-span-2">Done</div>
+                <div className="col-span-2">{t.colSet}</div>
+                <div className="col-span-3">{t.colWeight}</div>
+                <div className="col-span-3">{t.colReps}</div>
+                <div className="col-span-2">{t.colType}</div>
+                <div className="col-span-2">{t.colDone}</div>
               </div>
               
               {/* Sets */}
@@ -269,10 +274,10 @@ function WorkoutLogContent() {
                       onChange={(e) => updateSet(exIndex, setIndex, 'setType', e.target.value)}
                       className="w-full px-1 py-1.5 bg-neutral-700 border border-neutral-600 rounded text-white text-xs focus:outline-none focus:ring-1 focus:ring-red-500"
                     >
-                      <option value="normal">Normal</option>
-                      <option value="warmup">Warmup</option>
-                      <option value="dropset">Drop</option>
-                      <option value="failure">Failure</option>
+                      <option value="normal">{t.typeNormal}</option>
+                      <option value="warmup">{t.typeWarmup}</option>
+                      <option value="dropset">{t.typeDropset}</option>
+                      <option value="failure">{t.typeFailure}</option>
                     </select>
                   </div>
                   <div className="col-span-2 flex items-center gap-1">
@@ -302,7 +307,7 @@ function WorkoutLogContent() {
                 onClick={() => addSet(exIndex)}
                 className="mt-2 w-full py-2 text-sm text-neutral-400 hover:text-white border border-dashed border-neutral-600 rounded-lg hover:border-neutral-500 transition-colors"
               >
-                + Add Set
+                {t.addSet}
               </button>
             </div>
           </div>
@@ -313,25 +318,25 @@ function WorkoutLogContent() {
           onClick={() => setShowExerciseModal(true)}
           className="w-full py-4 bg-neutral-800 border-2 border-dashed border-neutral-600 rounded-xl text-neutral-400 hover:text-white hover:border-red-500 transition-colors"
         >
-          + Add Exercise
+          {t.addExercise}
         </button>
       </div>
 
       {/* Workout Notes & Rating */}
       <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-4 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-neutral-300 mb-2">Workout Notes</label>
+          <label className="block text-sm font-medium text-neutral-300 mb-2">{t.notesLabel}</label>
           <textarea
             value={workoutNotes}
             onChange={(e) => setWorkoutNotes(e.target.value)}
             rows={2}
-            placeholder="How was your workout?"
+            placeholder={t.notesPlaceholder}
             className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-neutral-300 mb-2">Rate Your Workout</label>
+          <label className="block text-sm font-medium text-neutral-300 mb-2">{t.rateLabel}</label>
           <div className="flex gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
@@ -355,7 +360,7 @@ function WorkoutLogContent() {
           disabled={saving || exercises.length === 0}
           className="w-full py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {saving ? 'Saving...' : 'Finish & Save Workout'}
+          {saving ? t.saving : t.finish}
         </button>
       </div>
 
@@ -371,7 +376,7 @@ function WorkoutLogContent() {
           >
             <div className="p-4 border-b border-neutral-700">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white">Add Exercise</h3>
+                <h3 className="text-lg font-bold text-white">{t.modalTitle}</h3>
                 <button
                   onClick={() => setShowExerciseModal(false)}
                   className="text-neutral-400 hover:text-white text-xl"
@@ -383,7 +388,7 @@ function WorkoutLogContent() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search exercises..."
+                placeholder={t.searchPlaceholder}
                 autoFocus
                 className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
@@ -392,7 +397,7 @@ function WorkoutLogContent() {
             <div className="overflow-y-auto max-h-[60vh]">
               {filteredExercises.length === 0 ? (
                 <div className="text-center py-8 text-neutral-400">
-                  No exercises found
+                  {t.noExercises}
                 </div>
               ) : (
                 filteredExercises.map((exercise) => (
@@ -431,7 +436,7 @@ export default function LogWorkoutPage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading...</p>
+          <p className="text-neutral-400">{translations['fr'].loading}</p>
         </div>
       </div>
     }>

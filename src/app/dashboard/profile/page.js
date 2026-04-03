@@ -1,51 +1,50 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 const fitnessLevels = [
-  { id: 'beginner', name: 'Beginner', description: 'New to fitness or returning after a long break' },
-  { id: 'intermediate', name: 'Intermediate', description: '1-3 years of consistent training' },
-  { id: 'advanced', name: 'Advanced', description: '3+ years, familiar with periodization' },
-  { id: 'elite', name: 'Elite', description: 'Competitive athlete or professional' },
+  { id: 'beginner', name: 'Débutant', description: 'Nouveau dans le fitness ou de retour après une longue pause' },
+  { id: 'intermediate', name: 'Intermédiaire', description: '1 à 3 ans d\'entraînement régulier' },
+  { id: 'advanced', name: 'Avancé', description: '3+ ans, familier avec la périodisation' },
+  { id: 'elite', name: 'Élite', description: 'Athlète compétitif ou professionnel' },
 ];
 
 const workoutDays = [
-  { id: 'monday', name: 'Mon' },
-  { id: 'tuesday', name: 'Tue' },
-  { id: 'wednesday', name: 'Wed' },
-  { id: 'thursday', name: 'Thu' },
-  { id: 'friday', name: 'Fri' },
-  { id: 'saturday', name: 'Sat' },
-  { id: 'sunday', name: 'Sun' },
+  { id: 'monday', name: 'Lun' },
+  { id: 'tuesday', name: 'Mar' },
+  { id: 'wednesday', name: 'Mer' },
+  { id: 'thursday', name: 'Jeu' },
+  { id: 'friday', name: 'Ven' },
+  { id: 'saturday', name: 'Sam' },
+  { id: 'sunday', name: 'Dim' },
 ];
 
 const fitnessGoalOptions = [
-  'Build Muscle',
-  'Lose Fat',
-  'Increase Strength',
-  'Improve Endurance',
-  'Get Toned',
-  'Athletic Performance',
-  'General Fitness',
-  'Flexibility',
+  'Prise de masse',
+  'Perte de graisse',
+  'Gagner en force',
+  'Améliorer l\'endurance',
+  'Se tonifier',
+  'Performance sportive',
+  'Forme générale',
+  'Flexibilité',
 ];
 
 const equipmentOptions = [
-  'Full Gym',
-  'Barbells',
-  'Dumbbells',
-  'Cables',
+  'Salle complète',
+  'Barres',
+  'Haltères',
+  'Câbles',
   'Machines',
-  'Pull-up Bar',
-  'Resistance Bands',
-  'Bodyweight Only',
+  'Barre de traction',
+  'Élastiques',
+  'Poids du corps',
   'Kettlebells',
   'Home Gym',
 ];
 
 export default function ProfilePage() {
-  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
@@ -110,13 +109,13 @@ export default function ProfilePage() {
       });
 
       if (response.ok) {
-        showToast('Profile updated successfully!', 'success');
+        showToast('Profil mis à jour !', 'success');
       } else {
-        showToast('Failed to update profile', 'error');
+        showToast('Échec de la mise à jour du profil', 'error');
       }
     } catch (error) {
       console.error('Error saving profile:', error);
-      showToast('Failed to update profile', 'error');
+      showToast('Échec de la mise à jour du profil', 'error');
     } finally {
       setSaving(false);
     }
@@ -144,7 +143,7 @@ export default function ProfilePage() {
             <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
           </div>
-          <p className="text-neutral-400">Loading profile...</p>
+          <p className="text-neutral-400">Chargement...</p>
         </div>
       </div>
     );
@@ -164,24 +163,24 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Profile Settings</h1>
-          <p className="text-neutral-400">Customize your fitness profile</p>
+          <h1 className="text-2xl font-bold text-white">Paramètres du profil</h1>
+          <p className="text-neutral-400">Personnalisez votre profil fitness</p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
           className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
         >
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? 'Enregistrement...' : 'Enregistrer'}
         </button>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 border-b border-neutral-700">
         {[
-          { id: 'profile', name: 'Profile', icon: '👤' },
+          { id: 'profile', name: 'Profil', icon: '👤' },
           { id: 'fitness', name: 'Fitness', icon: '💪' },
-          { id: 'preferences', name: 'Preferences', icon: '⚙️' },
+          { id: 'preferences', name: 'Préférences', icon: '⚙️' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -200,22 +199,22 @@ export default function ProfilePage() {
       {/* Profile Tab */}
       {activeTab === 'profile' && (
         <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6 space-y-6">
-          <h2 className="text-lg font-bold text-white">Personal Information</h2>
-          
+          <h2 className="text-lg font-bold text-white">Informations personnelles</h2>
+
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Display Name</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Nom d&apos;affichage</label>
               <input
                 type="text"
                 value={profile.displayName}
                 onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
                 className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="Your name"
+                placeholder="Votre nom"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Date of Birth</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Date de naissance</label>
               <input
                 type="date"
                 value={profile.dateOfBirth}
@@ -225,22 +224,22 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Gender</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Genre</label>
               <select
                 value={profile.gender}
                 onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
                 className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="">Select...</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer_not_to_say">Prefer not to say</option>
+                <option value="">Sélectionner...</option>
+                <option value="male">Homme</option>
+                <option value="female">Femme</option>
+                <option value="other">Autre</option>
+                <option value="prefer_not_to_say">Préférer ne pas répondre</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Height (cm)</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Taille (cm)</label>
               <input
                 type="number"
                 value={profile.height}
@@ -258,7 +257,7 @@ export default function ProfilePage() {
         <div className="space-y-6">
           {/* Fitness Level */}
           <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Fitness Level</h2>
+            <h2 className="text-lg font-bold text-white mb-4">Niveau de fitness</h2>
             <div className="grid md:grid-cols-2 gap-3">
               {fitnessLevels.map((level) => (
                 <button
@@ -279,8 +278,8 @@ export default function ProfilePage() {
 
           {/* Fitness Goals */}
           <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Fitness Goals</h2>
-            <p className="text-neutral-400 text-sm mb-4">Select all that apply</p>
+            <h2 className="text-lg font-bold text-white mb-4">Objectifs de fitness</h2>
+            <p className="text-neutral-400 text-sm mb-4">Sélectionnez tout ce qui s&apos;applique</p>
             <div className="flex flex-wrap gap-2">
               {fitnessGoalOptions.map((goal) => (
                 <button
@@ -300,14 +299,14 @@ export default function ProfilePage() {
 
           {/* Injuries */}
           <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Injuries or Limitations</h2>
-            <p className="text-neutral-400 text-sm mb-4">Let us know about any injuries or physical limitations</p>
+            <h2 className="text-lg font-bold text-white mb-4">Blessures ou limitations</h2>
+            <p className="text-neutral-400 text-sm mb-4">Informez-nous de vos blessures ou limitations physiques</p>
             <textarea
               value={profile.injuries}
               onChange={(e) => setProfile({ ...profile, injuries: e.target.value })}
               rows={3}
               className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="e.g., Lower back pain, knee injury, shoulder mobility issues..."
+              placeholder="Ex : douleur lombaire, blessure au genou, mobilité épaule..."
             />
           </div>
         </div>
@@ -318,7 +317,7 @@ export default function ProfilePage() {
         <div className="space-y-6">
           {/* Workout Days */}
           <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Preferred Workout Days</h2>
+            <h2 className="text-lg font-bold text-white mb-4">Jours d&apos;entraînement préférés</h2>
             <div className="flex flex-wrap gap-2">
               {workoutDays.map((day) => (
                 <button
@@ -338,13 +337,13 @@ export default function ProfilePage() {
 
           {/* Workout Time */}
           <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Preferred Workout Time</h2>
+            <h2 className="text-lg font-bold text-white mb-4">Heure d&apos;entraînement préférée</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { id: 'morning', name: 'Morning', icon: '🌅', time: '6AM - 12PM' },
-                { id: 'afternoon', name: 'Afternoon', icon: '☀️', time: '12PM - 5PM' },
-                { id: 'evening', name: 'Evening', icon: '🌆', time: '5PM - 9PM' },
-                { id: 'night', name: 'Night', icon: '🌙', time: '9PM - 12AM' },
+                { id: 'morning', name: 'Matin', icon: '🌅', time: '6h - 12h' },
+                { id: 'afternoon', name: 'Après-midi', icon: '☀️', time: '12h - 17h' },
+                { id: 'evening', name: 'Soir', icon: '🌆', time: '17h - 21h' },
+                { id: 'night', name: 'Nuit', icon: '🌙', time: '21h - 0h' },
               ].map((time) => (
                 <button
                   key={time.id}
@@ -365,8 +364,8 @@ export default function ProfilePage() {
 
           {/* Equipment Access */}
           <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Equipment Access</h2>
-            <p className="text-neutral-400 text-sm mb-4">What equipment do you have access to?</p>
+            <h2 className="text-lg font-bold text-white mb-4">Équipement disponible</h2>
+            <p className="text-neutral-400 text-sm mb-4">Quel équipement avez-vous à disposition ?</p>
             <div className="flex flex-wrap gap-2">
               {equipmentOptions.map((equipment) => (
                 <button

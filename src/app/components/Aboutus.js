@@ -2,14 +2,8 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-
-const features = [
-  'Équipements dernière génération',
-  'Coachs certifiés & expérimentés',
-  'Programmes 100% personnalisés',
-  'Ambiance motivante & inclusive',
-];
-
+import { useLanguage } from '@/contexts/LanguageContext';
+import translations from '@/translations';
 
 const featureVariants = {
   hidden: { opacity: 0, x: -16 },
@@ -21,6 +15,9 @@ const featureVariants = {
 };
 
 const AboutUs = () => {
+  const { lang } = useLanguage();
+  const t = translations[lang];
+  const features = t.about.features;
   return (
     <section id="about" className="bg-[#080808] text-white py-20 lg:py-32 px-6 lg:px-20">
       <div className="container mx-auto">
@@ -52,21 +49,23 @@ const AboutUs = () => {
           {/* Text */}
           <div className="space-y-6">
             <div>
-              <p className="section-label">Notre histoire</p>
+              <p className="section-label">{t.about.block1Label}</p>
               <h2
                 className="text-white font-black uppercase leading-none mb-4"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', letterSpacing: '-0.02em' }}
               >
-                À propos de<br />notre salle
+                {t.about.block1Title.split('\n').map((line, i) => (
+                  <span key={i}>{line}{i === 0 && <br />}</span>
+                ))}
               </h2>
               <div className="divider-primary mb-6" />
             </div>
 
             <p className="text-neutral-400 text-base leading-relaxed">
-              Nous offrons une expérience de fitness moderne et motivante. Que vous soyez débutant ou confirmé, notre salle de sport est équipée pour répondre à tous vos besoins d&apos;entraînement.
+              {t.about.block1Desc1}
             </p>
             <p className="text-neutral-400 text-base leading-relaxed">
-              Rejoignez notre communauté et bénéficiez de l&apos;accompagnement de nos entraîneurs qualifiés pour atteindre vos objectifs.
+              {t.about.block1Desc2}
             </p>
 
           </div>
@@ -83,21 +82,23 @@ const AboutUs = () => {
           {/* Text */}
           <div className="space-y-6 order-2 lg:order-1">
             <div>
-              <p className="section-label">Ce qui nous distingue</p>
+              <p className="section-label">{t.about.block2Label}</p>
               <h2
                 className="text-white font-black uppercase leading-none mb-4"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', letterSpacing: '-0.02em' }}
               >
-                Nos valeurs &<br />notre approche
+                {t.about.block2Title.split('\n').map((line, i) => (
+                  <span key={i}>{line}{i === 0 && <br />}</span>
+                ))}
               </h2>
               <div className="divider-primary mb-6" />
             </div>
 
             <p className="text-neutral-400 text-base leading-relaxed">
-              Chez nous, chaque membre est une priorité. Nous offrons des programmes d&apos;entraînement personnalisés et une ambiance conviviale pour vous permettre de vous surpasser.
+              {t.about.block2Desc1}
             </p>
             <p className="text-neutral-400 text-base leading-relaxed">
-              Notre équipe est là pour vous guider et vous motiver, dans un espace équipé avec des machines de haute qualité.
+              {t.about.block2Desc2}
             </p>
 
             {/* Feature list */}
