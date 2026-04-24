@@ -31,220 +31,179 @@ const Schedule = () => {
   };
 
   const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+  const containerVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+
+  const cardVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+  };
+
   const filteredClasses = classes.filter(cls => cls.dayOfWeek === activeTab);
 
   return (
-    <section id="schedule" className="bg-[#080808] text-white py-20 lg:py-32 px-6 lg:px-20">
-      <div className="container mx-auto">
+    <section id="schedule" className="bg-black text-white py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-12 xl:px-48">
+      <div className="container mx-auto space-y-8 sm:space-y-12">
 
-        {/* Header */}
-        <motion.div
-          className="mb-12 lg:mb-16"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <p className="section-label">Planning hebdomadaire</p>
-          <h2
-            className="text-white font-black uppercase leading-none mb-4"
-            style={{
-              fontFamily: "'Barlow Condensed', sans-serif",
-              fontSize: 'clamp(2.8rem, 7vw, 5rem)',
-              letterSpacing: '-0.02em',
-            }}
+        {/* Section Header */}
+        <div className="text-center">
+          <motion.h2
+            className="section-header text-3xl sm:text-4xl md:text-5xl mb-4 text-white"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
           >
-            Programme des<br />Cours Collectifs
-          </h2>
-          <div className="divider-primary mb-4" />
-          <p className="text-neutral-500 text-sm max-w-lg" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+            Programme des Cours Collectifs
+          </motion.h2>
+          <div className="divider-primary mx-auto mb-6 sm:mb-8"></div>
+          <motion.p
+            className="text-neutral-300 text-base sm:text-lg max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
             Rejoignez nos cours animés par des coachs professionnels certifiés
-          </p>
-        </motion.div>
+          </motion.p>
+        </div>
 
         {/* Day Tabs */}
-        <div className="flex overflow-x-auto gap-0 pb-0 mb-10 border-b border-[#1a1a1a]"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
+        <div className="flex overflow-x-auto gap-2 sm:gap-3 pb-4 scrollbar-hide snap-x snap-mandatory md:justify-center md:flex-wrap md:overflow-visible">
           {days.map((day, index) => (
             <motion.button
               key={day}
               onClick={() => setActiveTab(day)}
-              className="relative flex-shrink-0 py-3 px-5 sm:px-7 text-xs font-bold uppercase transition-colors duration-200 whitespace-nowrap"
-              style={{
-                fontFamily: "'Barlow Condensed', sans-serif",
-                letterSpacing: '0.12em',
-                color: activeTab === day ? '#fff' : '#4A4A4A',
-                borderRadius: 0,
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: index * 0.05 }}
+              className={`flex-shrink-0 snap-center py-3 px-6 sm:px-8 text-sm sm:text-base font-bold transition-all duration-300 whitespace-nowrap rounded-xl min-w-[110px] sm:min-w-[130px] ${
+                activeTab === day
+                  ? 'bg-primary text-white shadow-lg scale-105'
+                  : 'bg-neutral-800/50 backdrop-blur-sm text-neutral-300 hover:bg-neutral-700/50 hover:text-white border border-neutral-700'
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
             >
               {day}
-              {activeTab === day && (
-                <motion.div
-                  layoutId="tab-underline"
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
-                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-                />
-              )}
             </motion.button>
           ))}
         </div>
 
-        {/* Loading */}
+        {/* Loading State */}
         {loading && (
-          <div className="py-20 flex items-center justify-center gap-3">
-            <div className="w-5 h-5 border-t-2 border-primary animate-spin rounded-full" />
-            <span className="text-neutral-600 text-xs uppercase tracking-widest" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              Chargement...
-            </span>
+          <div className="text-center py-16">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+            <p className="mt-4 text-neutral-300 text-lg">Chargement des cours...</p>
           </div>
         )}
 
-        {/* Classes */}
+        {/* Classes Grid */}
         {!loading && (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              className="grid gap-px bg-[#111111]"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
-            >
-              {filteredClasses.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="bg-[#080808] py-20 text-center"
-                >
-                  <p
-                    className="text-neutral-700 text-xs uppercase tracking-widest"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+          <motion.div
+            className="grid gap-4 sm:gap-5 md:gap-6 max-w-6xl mx-auto"
+            variants={containerVariants}
+            initial="initial"
+            animate="animate"
+          >
+            <AnimatePresence mode="wait">
+              {filteredClasses.map((classItem) => {
+                const imageUrl = classItem.imageFileId
+                  ? `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID}/files/${classItem.imageFileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
+                  : null;
+
+                return (
+                  <motion.div
+                    key={classItem.$id}
+                    variants={cardVariants}
+                    layout
+                    className="bg-neutral-900 backdrop-blur-md rounded-2xl overflow-hidden border border-neutral-800 hover:border-primary/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-primary/20"
                   >
-                    Aucun cours prévu pour ce jour
-                  </p>
-                </motion.div>
-              ) : (
-                filteredClasses.map((classItem, index) => {
-                  const imageUrl = classItem.imageFileId
-                    ? `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID}/files/${classItem.imageFileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`
-                    : null;
+                    <div className="p-5 sm:p-6">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
 
-                  return (
-                    <motion.div
-                      key={classItem.$id}
-                      className="group relative bg-[#0e0e0e] border-b border-[#161616] hover:bg-[#111] transition-colors duration-200"
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.07, duration: 0.35 }}
-                    >
-                      {/* Red left accent on hover */}
-                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center" />
-
-                      <div className="flex items-center gap-6 px-6 py-5 pl-8">
-
-                        {/* Time column */}
-                        <div className="flex-shrink-0 w-24 sm:w-28">
-                          <div
-                            className="text-white font-black leading-none"
-                            style={{
-                              fontFamily: "'Barlow Condensed', sans-serif",
-                              fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
-                            }}
-                          >
-                            {classItem.startTime}
-                          </div>
-                          <div className="flex items-center gap-1.5 mt-1">
-                            <div className="w-3 h-px bg-neutral-700" />
-                            <span
-                              className="text-neutral-600 text-[10px]"
-                              style={{ fontFamily: "'DM Sans', sans-serif" }}
-                            >
-                              {classItem.endTime}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Vertical divider */}
-                        <div className="hidden sm:block w-px self-stretch bg-[#1a1a1a] flex-shrink-0" />
-
-                        {/* Class image */}
+                        {/* Class Image */}
                         {imageUrl && (
-                          <div className="hidden sm:block flex-shrink-0 w-14 h-14 overflow-hidden">
+                          <div className="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden">
                             <Image
                               src={imageUrl}
                               alt={classItem.title}
-                              width={56}
-                              height={56}
-                              className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500"
+                              width={96}
+                              height={96}
+                              className="object-cover w-full h-full"
                             />
                           </div>
                         )}
 
-                        {/* Class info */}
-                        <div className="flex-1 min-w-0">
-                          <h3
-                            className="text-white font-black uppercase leading-none truncate"
-                            style={{
-                              fontFamily: "'Barlow Condensed', sans-serif",
-                              fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
-                              letterSpacing: '0.02em',
-                            }}
-                          >
-                            {classItem.title}
-                          </h3>
-                        </div>
-
-                        {/* Trainer */}
-                        {classItem.trainer && (
-                          <div className="flex-shrink-0 flex items-center gap-3">
-                            {classItem.trainer.imageUrl ? (
-                              <div className="relative w-14 h-14 overflow-hidden flex-shrink-0 ring-1 ring-[#2a2a2a] group-hover:ring-primary/40 transition-all duration-300">
-                                <Image
-                                  src={classItem.trainer.imageUrl}
-                                  alt={classItem.trainer.name}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div
-                                className="w-14 h-14 bg-primary flex items-center justify-center text-white text-lg font-black flex-shrink-0"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                              >
-                                {classItem.trainer.name.charAt(0)}
-                              </div>
-                            )}
-                            <div className="hidden md:block text-right">
-                              <p
-                                className="text-neutral-300 text-xs font-semibold uppercase"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
-                              >
-                                {classItem.trainer.name}
-                              </p>
-                              {classItem.trainer.specialty && (
-                                <p
-                                  className="text-primary text-[10px] uppercase mt-0.5"
-                                  style={{ fontFamily: "'DM Sans', sans-serif", letterSpacing: '0.06em' }}
-                                >
-                                  {classItem.trainer.specialty}
-                                </p>
-                              )}
-                            </div>
+                        {/* Class Info */}
+                        <div className="flex-1">
+                          <div className="mb-2">
+                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                              {classItem.title}
+                            </h3>
+                            <p className="text-neutral-400 text-sm">
+                              {classItem.startTime} - {classItem.endTime}
+                            </p>
                           </div>
-                        )}
+
+                          {/* Trainer Info */}
+                          {classItem.trainer && (
+                            <div className="flex items-center gap-3 p-3 bg-neutral-800/50 rounded-lg border border-neutral-700/30">
+                              {classItem.trainer.imageUrl ? (
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary/50 flex-shrink-0">
+                                  <Image
+                                    src={classItem.trainer.imageUrl}
+                                    alt={classItem.trainer.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+                                  {classItem.trainer.name.charAt(0)}
+                                </div>
+                              )}
+                              <div>
+                                <p className="text-white font-bold text-sm">{classItem.trainer.name}</p>
+                                {classItem.trainer.specialty && (
+                                  <p className="text-primary text-xs">{classItem.trainer.specialty}</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </motion.div>
-                  );
-                })
-              )}
-            </motion.div>
-          </AnimatePresence>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+
+            {/* Empty State */}
+            {filteredClasses.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-16"
+              >
+                <p className="text-neutral-400 text-lg">Aucun cours prévu pour ce jour.</p>
+              </motion.div>
+            )}
+          </motion.div>
         )}
       </div>
+
+      {/* Custom Scrollbar Hide */}
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 };

@@ -60,6 +60,25 @@ export default function UsersManagementPage() {
     }
   };
 
+  const handleToggleStatus = async (userId, currentStatus) => {
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: !currentStatus }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUsers(users.map(u => u.id === userId ? { ...u, status: !currentStatus } : u));
+        showToast(`User ${!currentStatus ? 'activated' : 'disabled'}`, 'success');
+      } else {
+        showToast(data.error || 'Failed to update status', 'error');
+      }
+    } catch {
+      showToast('Failed to update status', 'error');
+    }
+  };
+
   const handleDeleteUser = async (userId, name) => {
     if (!confirm(`Delete ${name}? This cannot be undone.`)) return;
     try {
@@ -250,6 +269,17 @@ export default function UsersManagementPage() {
                         >
                           View
                         </Link>
+                        <button
+                          onClick={() => handleToggleStatus(user.id, user.status)}
+                          className={`px-2.5 py-1 border text-[10px] font-semibold uppercase transition-colors ${
+                            user.status
+                              ? 'border-yellow-600/30 text-yellow-600/70 hover:border-yellow-600/60 hover:text-yellow-500'
+                              : 'border-green-600/30 text-green-600/70 hover:border-green-600/60 hover:text-green-500'
+                          }`}
+                          style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
+                        >
+                          {user.status ? 'Disable' : 'Activate'}
+                        </button>
                         <button
                           onClick={() => handleDeleteUser(user.id, user.name)}
                           className="px-2.5 py-1 border border-red-600/20 text-red-600/60 text-[10px] font-semibold uppercase hover:border-red-600/50 hover:text-red-500 transition-colors"

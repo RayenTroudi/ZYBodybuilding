@@ -118,7 +118,8 @@ const translations = {
     },
     cta: {
       title: 'Prêt à Commencer ?',
-      description: "Rejoignez ZY Bodybuilding aujourd'hui et commencez votre transformation",
+      description: "Rejoignez-nous dès aujourd'hui pour bénéficier de l'accompagnement personnalisé d'experts du fitness.",
+      description2: 'Dépassez vos limites et atteignez vos objectifs avec notre programme.',
       button: 'Devenir Membre',
     },
     footer: {
@@ -623,7 +624,8 @@ const translations = {
     },
     cta: {
       title: 'Ready to Get Started?',
-      description: 'Join ZY Bodybuilding today and begin your transformation',
+      description: 'Join us today and benefit from the personalized support of fitness experts.',
+      description2: 'Push your limits and reach your goals with our program.',
       button: 'Become a Member',
     },
     footer: {

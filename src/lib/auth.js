@@ -132,11 +132,15 @@ export async function signIn(email, password) {
 export async function register(email, password, name) {
   try {
     console.log('📝 Creating new user account...');
-    const { account, databases } = createAdminClient();
-    
+    const { account, databases, users } = createAdminClient();
+
     // Create user account in Appwrite Auth
     const user = await account.create('unique()', email, password, name);
     console.log('✅ User account created:', user.$id);
+
+    // Disable the account until an admin activates it
+    await users.updateStatus(user.$id, false);
+    console.log('🔒 User account disabled pending admin approval');
 
     // Store user metadata in users collection
     await databases.createDocument(

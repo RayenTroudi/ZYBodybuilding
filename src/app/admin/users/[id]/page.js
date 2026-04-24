@@ -9,6 +9,7 @@ export default function UserDetailsPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [togglingStatus, setTogglingStatus] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [notification, setNotification] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -84,6 +85,28 @@ export default function UserDetailsPage({ params }) {
       showNotification('Failed to update user role', 'error');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const handleToggleStatus = async () => {
+    setTogglingStatus(true);
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: !user.status }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setUser({ ...user, status: !user.status });
+        showNotification(`User ${!user.status ? 'activated' : 'disabled'} successfully`, 'success');
+      } else {
+        showNotification(data.error || 'Failed to update status', 'error');
+      }
+    } catch {
+      showNotification('Failed to update status', 'error');
+    } finally {
+      setTogglingStatus(false);
     }
   };
 
@@ -320,6 +343,54 @@ export default function UserDetailsPage({ params }) {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* Status Toggle Section */}
+          <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <label className="text-base font-semibold text-gray-200">Account Status</label>
+            </div>
+            <p className="text-sm text-gray-400 mb-4">
+              {user.status
+                ? 'This account is active. The user can log in and access the platform.'
+                : 'This account is disabled. The user cannot log in until activated by an admin.'}
+            </p>
+            <button
+              onClick={handleToggleStatus}
+              disabled={togglingStatus}
+              className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 ${
+                user.status
+                  ? 'bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-400 border border-yellow-600'
+                  : 'bg-green-600/20 hover:bg-green-600/30 text-green-400 border border-green-600'
+              }`}
+            >
+              {togglingStatus ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <span>Updating...</span>
+                </>
+              ) : user.status ? (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  Disable Account
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Activate Account
+                </>
+              )}
+            </button>
           </div>
 
           {/* Quick Actions */}

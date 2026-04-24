@@ -1,6 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  User, Dumbbell, Settings, CheckCircle2, XCircle,
+  Sun, Sunset, Moon, Clock,
+} from 'lucide-react';
+import GlassCard from '../components/GlassCard';
+import PageTransition from '../components/PageTransition';
 
 const fitnessLevels = [
   { id: 'beginner', name: 'Débutant', description: 'Nouveau dans le fitness ou de retour après une longue pause' },
@@ -20,47 +27,40 @@ const workoutDays = [
 ];
 
 const fitnessGoalOptions = [
-  'Prise de masse',
-  'Perte de graisse',
-  'Gagner en force',
-  'Améliorer l\'endurance',
-  'Se tonifier',
-  'Performance sportive',
-  'Forme générale',
-  'Flexibilité',
+  'Prise de masse', 'Perte de graisse', 'Gagner en force',
+  'Améliorer l\'endurance', 'Se tonifier', 'Performance sportive',
+  'Forme générale', 'Flexibilité',
 ];
 
 const equipmentOptions = [
-  'Salle complète',
-  'Barres',
-  'Haltères',
-  'Câbles',
-  'Machines',
-  'Barre de traction',
-  'Élastiques',
-  'Poids du corps',
-  'Kettlebells',
-  'Home Gym',
+  'Salle complète', 'Barres', 'Haltères', 'Câbles',
+  'Machines', 'Barre de traction', 'Élastiques',
+  'Poids du corps', 'Kettlebells', 'Home Gym',
+];
+
+const workoutTimes = [
+  { id: 'morning', name: 'Matin', sub: '6h – 12h', icon: Sun },
+  { id: 'afternoon', name: 'Après-midi', sub: '12h – 17h', icon: Sunset },
+  { id: 'evening', name: 'Soir', sub: '17h – 21h', icon: Clock },
+  { id: 'night', name: 'Nuit', sub: '21h – 0h', icon: Moon },
+];
+
+const tabs = [
+  { id: 'profile', label: 'Profil', icon: User },
+  { id: 'fitness', label: 'Fitness', icon: Dumbbell },
+  { id: 'preferences', label: 'Préférences', icon: Settings },
 ];
 
 export default function ProfilePage() {
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
-  
+
   const [profile, setProfile] = useState({
-    displayName: '',
-    dateOfBirth: '',
-    gender: '',
-    height: '',
-    fitnessLevel: '',
-    fitnessGoals: [],
-    preferredWorkoutDays: [],
-    preferredWorkoutTime: '',
-    injuries: '',
-    equipmentAccess: [],
+    displayName: '', dateOfBirth: '', gender: '', height: '',
+    fitnessLevel: '', fitnessGoals: [], preferredWorkoutDays: [],
+    preferredWorkoutTime: '', injuries: '', equipmentAccess: [],
   });
 
   useEffect(() => {
@@ -72,7 +72,6 @@ export default function ProfilePage() {
       setLoading(true);
       const response = await fetch('/api/user/profile');
       const data = await response.json();
-      
       if (data.success && data.profile) {
         setProfile({
           displayName: data.profile.displayName || '',
@@ -96,7 +95,6 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setSaving(true);
-    
     try {
       const response = await fetch('/api/user/profile', {
         method: 'PATCH',
@@ -107,14 +105,8 @@ export default function ProfilePage() {
           dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth).toISOString() : null,
         }),
       });
-
-      if (response.ok) {
-        showToast('Profil mis à jour !', 'success');
-      } else {
-        showToast('Échec de la mise à jour du profil', 'error');
-      }
-    } catch (error) {
-      console.error('Error saving profile:', error);
+      showToast(response.ok ? 'Profil mis à jour !' : 'Échec de la mise à jour', response.ok ? 'success' : 'error');
+    } catch {
       showToast('Échec de la mise à jour du profil', 'error');
     } finally {
       setSaving(false);
@@ -127,263 +119,261 @@ export default function ProfilePage() {
   };
 
   const toggleArrayItem = (field, item) => {
-    const current = profile[field] || [];
-    if (current.includes(item)) {
-      setProfile({ ...profile, [field]: current.filter(i => i !== item) });
-    } else {
-      setProfile({ ...profile, [field]: [...current, item] });
-    }
+    const curr = profile[field] || [];
+    setProfile({
+      ...profile,
+      [field]: curr.includes(item) ? curr.filter((i) => i !== item) : [...curr, item],
+    });
   };
+
+  const inputCls = 'w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-neutral-600 focus:outline-none focus:ring-1 focus:ring-primary/60 focus:border-primary/40 transition-all';
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <div className="relative w-12 h-12 mx-auto mb-4">
-            <div className="absolute inset-0 border-4 border-neutral-700 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
-          </div>
-          <p className="text-neutral-400">Chargement...</p>
-        </div>
+      <div className="space-y-4 animate-pulse">
+        <div className="h-24 bg-white/5 rounded-2xl border border-white/5" />
+        <div className="h-64 bg-white/5 rounded-2xl border border-white/5" />
       </div>
     );
   }
 
+  const initials = (profile.displayName || 'U').slice(0, 2).toUpperCase();
+
   return (
-    <div className="space-y-6">
+    <PageTransition>
       {/* Toast */}
-      {toast && (
-        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg ${
-          toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-        } text-white`}>
-          {toast.message}
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Paramètres du profil</h1>
-          <p className="text-neutral-400">Personnalisez votre profil fitness</p>
-        </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-        >
-          {saving ? 'Enregistrement...' : 'Enregistrer'}
-        </button>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-2 border-b border-neutral-700">
-        {[
-          { id: 'profile', name: 'Profil', icon: '👤' },
-          { id: 'fitness', name: 'Fitness', icon: '💪' },
-          { id: 'preferences', name: 'Préférences', icon: '⚙️' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'text-red-500 border-b-2 border-red-500'
-                : 'text-neutral-400 hover:text-white'
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -12, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -8, x: '-50%' }}
+            className={`fixed top-20 left-1/2 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-2xl text-sm font-semibold ${
+              toast.type === 'success'
+                ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                : 'bg-red-500/20 text-red-300 border border-red-500/30'
             }`}
           >
-            {tab.icon} {tab.name}
+            {toast.type === 'success' ? <CheckCircle2 size={15} /> : <XCircle size={15} />}
+            {toast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="space-y-6">
+        {/* Header with avatar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white font-display font-black text-xl ring-4 ring-primary/20 shadow-[0_4px_20px_rgba(204,19,3,0.3)]">
+              {initials}
+            </div>
+            <div>
+              <h1 className="font-display text-2xl font-black text-white tracking-tight">
+                {profile.displayName || 'Mon Profil'}
+              </h1>
+              <p className="text-neutral-500 text-sm">Paramètres du profil fitness</p>
+            </div>
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-bold text-sm rounded-xl shadow-[0_4px_16px_rgba(204,19,3,0.3)] hover:bg-primary/90 transition-all disabled:opacity-50"
+          >
+            <CheckCircle2 size={15} />
+            {saving ? 'Enregistrement...' : 'Enregistrer'}
           </button>
-        ))}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 p-1 bg-white/5 rounded-xl w-fit border border-white/8">
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                activeTab === id ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'
+              }`}
+            >
+              {activeTab === id && (
+                <motion.span layoutId="profileTab" className="absolute inset-0 bg-primary rounded-lg shadow-[0_2px_12px_rgba(204,19,3,0.3)]" />
+              )}
+              <Icon size={14} className="relative z-10" />
+              <span className="relative z-10">{label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          {activeTab === 'profile' && (
+            <motion.div key="profile" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <GlassCard className="p-6 space-y-5">
+                <h2 className="font-display text-base font-bold text-white">Informations personnelles</h2>
+                <div className="grid md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">Nom d&apos;affichage</label>
+                    <input type="text" value={profile.displayName} onChange={(e) => setProfile({ ...profile, displayName: e.target.value })} className={inputCls} placeholder="Votre nom" />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">Date de naissance</label>
+                    <input type="date" value={profile.dateOfBirth} onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })} className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">Genre</label>
+                    <select value={profile.gender} onChange={(e) => setProfile({ ...profile, gender: e.target.value })} className={inputCls}>
+                      <option value="">Sélectionner...</option>
+                      <option value="male">Homme</option>
+                      <option value="female">Femme</option>
+                      <option value="other">Autre</option>
+                      <option value="prefer_not_to_say">Préférer ne pas répondre</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">Taille (cm)</label>
+                    <input type="number" value={profile.height} onChange={(e) => setProfile({ ...profile, height: e.target.value })} className={inputCls} placeholder="175" />
+                  </div>
+                </div>
+              </GlassCard>
+            </motion.div>
+          )}
+
+          {activeTab === 'fitness' && (
+            <motion.div key="fitness" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
+              <GlassCard className="p-6">
+                <h2 className="font-display text-base font-bold text-white mb-4">Niveau de fitness</h2>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {fitnessLevels.map((level) => {
+                    const active = profile.fitnessLevel === level.id;
+                    return (
+                      <button
+                        key={level.id}
+                        onClick={() => setProfile({ ...profile, fitnessLevel: level.id })}
+                        className={`p-4 rounded-xl text-left transition-all border ${
+                          active
+                            ? 'bg-primary/15 border-primary/40 shadow-[0_2px_12px_rgba(204,19,3,0.2)]'
+                            : 'bg-white/5 border-white/8 hover:bg-white/8 hover:border-white/15'
+                        }`}
+                      >
+                        <p className={`font-bold text-sm ${active ? 'text-white' : 'text-neutral-300'}`}>{level.name}</p>
+                        <p className="text-[11px] text-neutral-500 mt-0.5 leading-relaxed">{level.description}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              <GlassCard className="p-6">
+                <h2 className="font-display text-base font-bold text-white mb-1">Objectifs de fitness</h2>
+                <p className="text-[11px] text-neutral-500 mb-4">Sélectionnez tout ce qui s&apos;applique</p>
+                <div className="flex flex-wrap gap-2">
+                  {fitnessGoalOptions.map((goal) => {
+                    const active = profile.fitnessGoals?.includes(goal);
+                    return (
+                      <button
+                        key={goal}
+                        onClick={() => toggleArrayItem('fitnessGoals', goal)}
+                        className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all border ${
+                          active
+                            ? 'bg-primary/20 border-primary/40 text-white'
+                            : 'bg-white/5 border-white/8 text-neutral-400 hover:border-white/15 hover:text-white'
+                        }`}
+                      >
+                        {goal}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              <GlassCard className="p-6">
+                <h2 className="font-display text-base font-bold text-white mb-1">Blessures ou limitations</h2>
+                <p className="text-[11px] text-neutral-500 mb-4">Informez-nous de vos blessures ou limitations physiques</p>
+                <textarea
+                  value={profile.injuries}
+                  onChange={(e) => setProfile({ ...profile, injuries: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder-neutral-600 focus:outline-none focus:ring-1 focus:ring-primary/60 transition-all"
+                  placeholder="Ex : douleur lombaire, blessure au genou..."
+                />
+              </GlassCard>
+            </motion.div>
+          )}
+
+          {activeTab === 'preferences' && (
+            <motion.div key="preferences" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
+              <GlassCard className="p-6">
+                <h2 className="font-display text-base font-bold text-white mb-4">Jours d&apos;entraînement préférés</h2>
+                <div className="flex flex-wrap gap-2">
+                  {workoutDays.map((day) => {
+                    const active = profile.preferredWorkoutDays?.includes(day.id);
+                    return (
+                      <button
+                        key={day.id}
+                        onClick={() => toggleArrayItem('preferredWorkoutDays', day.id)}
+                        className={`w-12 h-12 rounded-xl font-bold text-sm transition-all border ${
+                          active
+                            ? 'bg-primary/20 border-primary/40 text-white shadow-[0_2px_8px_rgba(204,19,3,0.2)]'
+                            : 'bg-white/5 border-white/8 text-neutral-400 hover:border-white/15 hover:text-white'
+                        }`}
+                      >
+                        {day.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              <GlassCard className="p-6">
+                <h2 className="font-display text-base font-bold text-white mb-4">Heure d&apos;entraînement préférée</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {workoutTimes.map((time) => {
+                    const active = profile.preferredWorkoutTime === time.id;
+                    const Icon = time.icon;
+                    return (
+                      <button
+                        key={time.id}
+                        onClick={() => setProfile({ ...profile, preferredWorkoutTime: time.id })}
+                        className={`p-4 rounded-xl text-center transition-all border ${
+                          active
+                            ? 'bg-primary/15 border-primary/40 shadow-[0_2px_12px_rgba(204,19,3,0.2)]'
+                            : 'bg-white/5 border-white/8 hover:bg-white/8 hover:border-white/15'
+                        }`}
+                      >
+                        <Icon size={20} className={`mx-auto mb-2 ${active ? 'text-primary' : 'text-neutral-500'}`} />
+                        <p className={`font-bold text-sm ${active ? 'text-white' : 'text-neutral-300'}`}>{time.name}</p>
+                        <p className="text-[10px] text-neutral-500 mt-0.5">{time.sub}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              <GlassCard className="p-6">
+                <h2 className="font-display text-base font-bold text-white mb-1">Équipement disponible</h2>
+                <p className="text-[11px] text-neutral-500 mb-4">Quel équipement avez-vous à disposition ?</p>
+                <div className="flex flex-wrap gap-2">
+                  {equipmentOptions.map((equipment) => {
+                    const active = profile.equipmentAccess?.includes(equipment);
+                    return (
+                      <button
+                        key={equipment}
+                        onClick={() => toggleArrayItem('equipmentAccess', equipment)}
+                        className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all border ${
+                          active
+                            ? 'bg-primary/20 border-primary/40 text-white'
+                            : 'bg-white/5 border-white/8 text-neutral-400 hover:border-white/15 hover:text-white'
+                        }`}
+                      >
+                        {equipment}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Profile Tab */}
-      {activeTab === 'profile' && (
-        <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6 space-y-6">
-          <h2 className="text-lg font-bold text-white">Informations personnelles</h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Nom d&apos;affichage</label>
-              <input
-                type="text"
-                value={profile.displayName}
-                onChange={(e) => setProfile({ ...profile, displayName: e.target.value })}
-                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="Votre nom"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Date de naissance</label>
-              <input
-                type="date"
-                value={profile.dateOfBirth}
-                onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
-                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Genre</label>
-              <select
-                value={profile.gender}
-                onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
-                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                <option value="">Sélectionner...</option>
-                <option value="male">Homme</option>
-                <option value="female">Femme</option>
-                <option value="other">Autre</option>
-                <option value="prefer_not_to_say">Préférer ne pas répondre</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Taille (cm)</label>
-              <input
-                type="number"
-                value={profile.height}
-                onChange={(e) => setProfile({ ...profile, height: e.target.value })}
-                className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                placeholder="175"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Fitness Tab */}
-      {activeTab === 'fitness' && (
-        <div className="space-y-6">
-          {/* Fitness Level */}
-          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Niveau de fitness</h2>
-            <div className="grid md:grid-cols-2 gap-3">
-              {fitnessLevels.map((level) => (
-                <button
-                  key={level.id}
-                  onClick={() => setProfile({ ...profile, fitnessLevel: level.id })}
-                  className={`p-4 rounded-lg text-left transition-all ${
-                    profile.fitnessLevel === level.id
-                      ? 'bg-red-600 border-2 border-red-500'
-                      : 'bg-neutral-700 border-2 border-transparent hover:border-neutral-500'
-                  }`}
-                >
-                  <p className="font-semibold text-white">{level.name}</p>
-                  <p className="text-sm text-neutral-300 mt-1">{level.description}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Fitness Goals */}
-          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Objectifs de fitness</h2>
-            <p className="text-neutral-400 text-sm mb-4">Sélectionnez tout ce qui s&apos;applique</p>
-            <div className="flex flex-wrap gap-2">
-              {fitnessGoalOptions.map((goal) => (
-                <button
-                  key={goal}
-                  onClick={() => toggleArrayItem('fitnessGoals', goal)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    profile.fitnessGoals?.includes(goal)
-                      ? 'bg-red-600 text-white'
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  {goal}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Injuries */}
-          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Blessures ou limitations</h2>
-            <p className="text-neutral-400 text-sm mb-4">Informez-nous de vos blessures ou limitations physiques</p>
-            <textarea
-              value={profile.injuries}
-              onChange={(e) => setProfile({ ...profile, injuries: e.target.value })}
-              rows={3}
-              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Ex : douleur lombaire, blessure au genou, mobilité épaule..."
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Preferences Tab */}
-      {activeTab === 'preferences' && (
-        <div className="space-y-6">
-          {/* Workout Days */}
-          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Jours d&apos;entraînement préférés</h2>
-            <div className="flex flex-wrap gap-2">
-              {workoutDays.map((day) => (
-                <button
-                  key={day.id}
-                  onClick={() => toggleArrayItem('preferredWorkoutDays', day.id)}
-                  className={`w-14 h-14 rounded-lg font-medium transition-colors ${
-                    profile.preferredWorkoutDays?.includes(day.id)
-                      ? 'bg-red-600 text-white'
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  {day.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Workout Time */}
-          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Heure d&apos;entraînement préférée</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { id: 'morning', name: 'Matin', icon: '🌅', time: '6h - 12h' },
-                { id: 'afternoon', name: 'Après-midi', icon: '☀️', time: '12h - 17h' },
-                { id: 'evening', name: 'Soir', icon: '🌆', time: '17h - 21h' },
-                { id: 'night', name: 'Nuit', icon: '🌙', time: '21h - 0h' },
-              ].map((time) => (
-                <button
-                  key={time.id}
-                  onClick={() => setProfile({ ...profile, preferredWorkoutTime: time.id })}
-                  className={`p-4 rounded-lg text-center transition-all ${
-                    profile.preferredWorkoutTime === time.id
-                      ? 'bg-red-600 border-2 border-red-500'
-                      : 'bg-neutral-700 border-2 border-transparent hover:border-neutral-500'
-                  }`}
-                >
-                  <span className="text-2xl block mb-1">{time.icon}</span>
-                  <p className="font-medium text-white">{time.name}</p>
-                  <p className="text-xs text-neutral-400">{time.time}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Equipment Access */}
-          <div className="bg-neutral-800 rounded-xl border border-neutral-700 p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Équipement disponible</h2>
-            <p className="text-neutral-400 text-sm mb-4">Quel équipement avez-vous à disposition ?</p>
-            <div className="flex flex-wrap gap-2">
-              {equipmentOptions.map((equipment) => (
-                <button
-                  key={equipment}
-                  onClick={() => toggleArrayItem('equipmentAccess', equipment)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    profile.equipmentAccess?.includes(equipment)
-                      ? 'bg-red-600 text-white'
-                      : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-                  }`}
-                >
-                  {equipment}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </PageTransition>
   );
 }

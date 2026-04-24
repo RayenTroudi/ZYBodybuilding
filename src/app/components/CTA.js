@@ -48,6 +48,15 @@ const CTA = () => {
             >
               {t.cta.description}
             </motion.p>
+            <motion.p
+              className="text-base sm:text-lg md:text-xl leading-relaxed mt-4 sm:mt-6 md:mt-8"
+              style={{ scale: textScale }}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              {t.cta.description2}
+            </motion.p>
 
             <motion.div
               className="mt-8"
