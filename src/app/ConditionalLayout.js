@@ -20,7 +20,7 @@ export default function ConditionalLayout({ children }) {
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main suppressHydrationWarning>{children}</main>
       <Footer />
     </>
   );

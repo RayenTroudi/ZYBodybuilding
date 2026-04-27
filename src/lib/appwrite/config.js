@@ -15,6 +15,10 @@ export const appwriteConfig = {
   classesCollectionId: process.env.NEXT_PUBLIC_CLASSES_COLLECTION_ID,
   trainerImagesBucketId: process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID,
   usersCollectionId: process.env.NEXT_PUBLIC_USERS_COLLECTION_ID,
+  // Marketplace
+  productsCollectionId: process.env.NEXT_PUBLIC_PRODUCTS_COLLECTION_ID || 'marketplace_products',
+  // Reuses the trainer-images bucket (shared storage — files are isolated by their unique IDs)
+  productImagesBucketId: process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET_ID || process.env.NEXT_PUBLIC_TRAINER_IMAGES_BUCKET_ID || 'trainer-images',
   // User Panel Collections
   userProfilesCollectionId: process.env.NEXT_PUBLIC_USER_PROFILES_COLLECTION_ID || 'user_profiles',
   exercisesCollectionId: process.env.NEXT_PUBLIC_EXERCISES_COLLECTION_ID || 'exercises',

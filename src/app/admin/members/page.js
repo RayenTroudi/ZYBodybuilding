@@ -28,7 +28,7 @@ export default function MembersPage() {
   const getActualStatus = (member) => {
     const endDate = new Date(member.subscriptionEndDate);
     const now = new Date();
-    
+
     if (endDate < now) {
       return 'Expired';
     }
@@ -48,42 +48,35 @@ export default function MembersPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      // Don't send status filter to API - we'll filter client-side based on actual dates
-      params.append('limit', '5000'); // Fetch all members
+      params.append('limit', '5000');
 
       const response = await fetch(`/api/admin/members?${params}`, {
         cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
       });
       const data = await response.json();
-      
-      // Client-side filtering based on actual status and dates
+
       let filteredMembers = data.documents || [];
-      
-      // Filter by actual status (based on subscription end date)
+
       if (statusFilter !== 'all') {
         filteredMembers = filteredMembers.filter(member => {
           const actualStatus = getActualStatus(member);
           return actualStatus === statusFilter;
         });
       }
-      
-      // Filter by date range
+
       if (dateFrom || dateTo) {
         filteredMembers = filteredMembers.filter(member => {
           const memberDate = new Date(member.subscriptionStartDate);
           const fromDate = dateFrom ? new Date(dateFrom) : null;
           const toDate = dateTo ? new Date(dateTo) : null;
-          
+
           if (fromDate && memberDate < fromDate) return false;
           if (toDate && memberDate > toDate) return false;
           return true;
         });
       }
-      
+
       setMembers(filteredMembers);
     } catch (error) {
       console.error('Error fetching members:', error);
@@ -94,13 +87,14 @@ export default function MembersPage() {
   };
 
   const getStatusBadge = (status) => {
-    const cls = {
-      Active:  'badge-active',
-      Expired: 'badge-expired',
-      Pending: 'badge-pending',
+    const statusColors = {
+      Active: 'bg-green-500/20 text-green-500 border-green-500',
+      Expired: 'bg-red-500/20 text-red-500 border-red-500',
+      Pending: 'bg-yellow-500/20 text-yellow-500 border-yellow-500',
     };
+
     return (
-      <span className={`admin-badge ${cls[status] || 'border border-neutral-700 text-neutral-500'}`}>
+      <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[status] || 'bg-neutral-500/20 text-neutral-500'}`}>
         {status}
       </span>
     );
@@ -133,7 +127,6 @@ export default function MembersPage() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
       setResultMessage({
         title: 'Invalid File Type',
@@ -147,12 +140,9 @@ export default function MembersPage() {
       return;
     }
 
-    // Store file and show year dialog
     setPendingFile(file);
     setSelectedYear(new Date().getFullYear());
     setShowYearDialog(true);
-    
-    // Reset file input
     event.target.value = '';
   };
 
@@ -185,14 +175,9 @@ export default function MembersPage() {
       }
 
       setImportResult(data);
-      
-      // Refresh members list first
       await fetchMembers();
-      
-      // Then refresh all data including dashboard statistics
       router.refresh();
 
-      // Prepare result message
       if (data.results.errors && data.results.errors.length > 0) {
         const errorDetails = data.results.errors.slice(0, 5).map(e => `Row ${e.row}: ${e.error}`).join('\n');
         setResultMessage({
@@ -209,8 +194,7 @@ export default function MembersPage() {
           errors: null
         });
       }
-      
-      // Reset importing state before showing modal
+
       setImporting(false);
       setPendingFile(null);
       setShowResultModal(true);
@@ -231,15 +215,12 @@ export default function MembersPage() {
 
   const handleBulkDelete = async (ids) => {
     try {
-      // Filter out any undefined or null IDs
       const validIds = ids.filter(id => id != null && id !== undefined);
-      
+
       if (validIds.length === 0) {
         showToast('No valid members selected for deletion', 'error');
         return;
       }
-
-      console.log('Deleting members with IDs:', validIds);
 
       const response = await fetch('/api/admin/members/bulk-delete', {
         method: 'POST',
@@ -253,23 +234,14 @@ export default function MembersPage() {
         throw new Error(data.error || 'Failed to delete members');
       }
 
-      // Show success message
       const deletedCount = data.results.success.length;
       showToast(`Successfully deleted ${deletedCount} member(s)`, 'success');
-      
-      // Refresh the list immediately
       await fetchMembers();
-      
-      // Force router refresh for any server components
       router.refresh();
     } catch (error) {
       console.error('Error deleting members:', error);
       showToast(error.message, 'error');
     }
-  };
-
-  const handleViewMember = (member) => {
-    router.push(`/admin/members/${member.$id}`);
   };
 
   const handleDeleteMember = async (member) => {
@@ -278,9 +250,7 @@ export default function MembersPage() {
     }
 
     try {
-      const response = await fetch(`/api/admin/members/${member.$id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(`/api/admin/members/${member.$id}`, { method: 'DELETE' });
 
       if (!response.ok) {
         throw new Error('Failed to delete member');
@@ -295,7 +265,6 @@ export default function MembersPage() {
     }
   };
 
-  // Define columns for the data table
   const columns = [
     createSelectColumn(),
     {
@@ -378,10 +347,7 @@ export default function MembersPage() {
                 )}
                 <h3 className="text-xl font-bold text-white">{resultMessage.title}</h3>
               </div>
-              <button
-                onClick={() => setShowResultModal(false)}
-                className="text-neutral-400 hover:text-white"
-              >
+              <button onClick={() => setShowResultModal(false)} className="text-neutral-400 hover:text-white">
                 ✕
               </button>
             </div>
@@ -438,11 +404,9 @@ export default function MembersPage() {
             <p className="text-neutral-400 mb-6">
               What year does this Excel file data belong to?
             </p>
-            
+
             <div className="mb-6">
-              <label className="block text-sm font-medium text-neutral-300 mb-2">
-                Year
-              </label>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">Year</label>
               <input
                 type="number"
                 value={selectedYear}
@@ -452,7 +416,7 @@ export default function MembersPage() {
                 className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-sm text-neutral-500 mt-2">
-                Dates without a year (e.g., "04-août") will use this year
+                Dates without a year (e.g., &quot;04-août&quot;) will use this year
               </p>
             </div>
 
@@ -474,76 +438,87 @@ export default function MembersPage() {
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
+      {/* Header - Responsive */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>Memberships</p>
-          <h1 className="text-white font-black uppercase leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}>
-            Members
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Members</h1>
+          <p className="text-sm sm:text-base text-neutral-400">Manage gym memberships</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <label className="relative cursor-pointer">
-            <input type="file" accept=".xlsx,.xls" onChange={handleFileSelect} disabled={importing} className="hidden" />
-            <span className={`flex items-center gap-2 px-4 py-2 border text-xs font-bold uppercase transition-colors ${
-              importing
-                ? 'border-[#1e1e1e] text-neutral-700 cursor-not-allowed'
-                : 'border-[#1e1e1e] text-neutral-600 hover:border-[#2a2a2a] hover:text-white'
-            }`} style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
-              {importing ? <><Loader className="w-3 h-3 animate-spin" /> Importing</> : <><Upload className="w-3 h-3" /> Import</>}
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleFileSelect}
+              disabled={importing}
+              className="hidden"
+            />
+            <span className={`flex items-center justify-center gap-2 px-4 py-2 ${importing ? 'bg-neutral-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded transition-colors text-sm sm:text-base w-full sm:w-auto`}>
+              {importing ? (
+                <><Loader className="w-4 h-4 animate-spin" /> Importing...</>
+              ) : (
+                <><Upload className="w-4 h-4" /> Import Excel</>
+              )}
             </span>
           </label>
-          <button onClick={exportToCSV}
-            className="flex items-center gap-2 px-4 py-2 border border-[#1e1e1e] text-neutral-600 text-xs font-bold uppercase hover:border-[#2a2a2a] hover:text-white transition-colors"
-            style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
-            <Download className="w-3 h-3" /> Export
+          <button
+            onClick={exportToCSV}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition-colors text-sm sm:text-base w-full sm:w-auto"
+          >
+            <Download className="w-4 h-4" /> Export CSV
           </button>
-          <Link href="/admin/members/new"
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold uppercase hover:bg-primary-600 transition-colors"
-            style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}>
-            <Plus className="w-3 h-3" /> Add
+          <Link
+            href="/admin/members/new"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors text-sm sm:text-base w-full sm:w-auto"
+          >
+            <Plus className="w-4 h-4" /> Add Member
           </Link>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-[#0c0c0c] border border-[#161616] p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="bg-neutral-800 rounded p-4 sm:p-6 border border-neutral-700">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>Status</label>
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-neutral-400 text-xs focus:outline-none focus:border-primary transition-colors"
-              style={{ borderRadius: 0 }}>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">Status</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
               <option value="all">All Status</option>
               <option value="Active">Active</option>
               <option value="Expired">Expired</option>
               <option value="Pending">Pending</option>
             </select>
           </div>
+
           <div>
-            <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>From Date</label>
-            <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs focus:outline-none focus:border-primary transition-colors"
-              style={{ borderRadius: 0, colorScheme: 'dark' }} />
+            <label className="block text-sm font-medium text-neutral-300 mb-2">From Date</label>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
           </div>
+
           <div>
-            <label className="block text-[9px] font-semibold uppercase text-neutral-700 mb-1.5" style={{ letterSpacing: '0.18em' }}>To Date</label>
-            <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-              className="w-full px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs focus:outline-none focus:border-primary transition-colors"
-              style={{ borderRadius: 0, colorScheme: 'dark' }} />
+            <label className="block text-sm font-medium text-neutral-300 mb-2">To Date</label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="w-full px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
           </div>
         </div>
-        
+
         {(dateFrom || dateTo) && (
           <div className="mt-3 flex items-center justify-between">
-            <p className="text-sm text-neutral-400">
-              Filtering by subscription start date
-            </p>
+            <p className="text-sm text-neutral-400">Filtering by subscription start date</p>
             <button
-              onClick={() => {
-                setDateFrom('');
-                setDateTo('');
-              }}
+              onClick={() => { setDateFrom(''); setDateTo(''); }}
               className="text-sm text-red-500 hover:text-red-400 transition-colors"
             >
               Clear dates
@@ -554,9 +529,12 @@ export default function MembersPage() {
 
       {/* Data Table */}
       {loading ? (
-        <div className="bg-[#0c0c0c] border border-[#161616] flex items-center justify-center gap-3 py-16">
-          <div className="w-4 h-4 border-t-2 border-primary animate-spin rounded-full" />
-          <span className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>Loading members...</span>
+        <div className="bg-neutral-800 rounded border border-neutral-700 p-12 flex flex-col items-center justify-center">
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-red-500/30 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-red-500 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-neutral-400 mt-4">Loading members...</p>
         </div>
       ) : (
         <DataTable
@@ -569,39 +547,64 @@ export default function MembersPage() {
       )}
 
       {/* Stats Footer */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
-          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Total Members</p>
-          <p className="text-white font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem' }}>{members.length}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-neutral-800 rounded p-4 sm:p-5 border border-neutral-700">
+          <p className="text-neutral-400 text-xs sm:text-sm">Total Members</p>
+          <p className="text-xl sm:text-2xl font-bold text-white mt-1">{members.length}</p>
         </div>
-        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
-          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Active</p>
-          <p className="font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', color: '#10B981' }}>
+        <div className="bg-neutral-800 rounded p-4 sm:p-5 border border-neutral-700">
+          <p className="text-neutral-400 text-xs sm:text-sm">Active Members</p>
+          <p className="text-xl sm:text-2xl font-bold text-green-500 mt-1">
             {members.filter(m => getActualStatus(m) === 'Active').length}
           </p>
         </div>
-        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
-          <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-2" style={{ letterSpacing: '0.2em' }}>Total Revenue</p>
-          <p className="text-white font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem' }}>
-            {members.reduce((sum, m) => sum + m.totalPaid, 0).toFixed(0)}<span className="text-neutral-600 text-lg ml-1">TND</span>
+        <div className="bg-neutral-800 rounded p-4 sm:p-5 border border-neutral-700">
+          <p className="text-neutral-400 text-xs sm:text-sm">Total Revenue</p>
+          <p className="text-xl sm:text-2xl font-bold text-white mt-1">
+            {members.reduce((sum, m) => sum + m.totalPaid, 0).toFixed(2)} TND
           </p>
         </div>
       </div>
 
-      {/* Toast */}
+      {/* Toast Notification */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
-          <div className={`flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[280px] bg-[#0c0c0c] border border-[#1e1e1e] ${
-            toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'
-          }`}>
-            {toast.type === 'success'
-              ? <CheckCircle size={14} className="text-green-500 flex-shrink-0" />
-              : <XCircle size={14} className="text-red-500 flex-shrink-0" />}
-            <p className="text-white text-xs flex-1">{toast.message}</p>
-            <button onClick={() => setToast(null)} className="text-neutral-600 hover:text-white transition-colors text-xs">✕</button>
+          <div
+            className={`px-6 py-4 rounded shadow-2xl border-l-4 min-w-[320px] ${
+              toast.type === 'success'
+                ? 'bg-neutral-800 border-green-500 text-white'
+                : 'bg-neutral-800 border-red-500 text-white'
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0">
+                {toast.type === 'success' ? (
+                  <CheckCircle className="w-6 h-6" />
+                ) : (
+                  <XCircle className="w-6 h-6" />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-white">{toast.message}</p>
+              </div>
+              <button
+                onClick={() => setToast(null)}
+                className="flex-shrink-0 text-neutral-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in-right { animation: slide-in-right 0.3s ease-out; }
+      `}</style>
     </div>
   );
 }

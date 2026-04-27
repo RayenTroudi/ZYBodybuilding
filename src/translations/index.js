@@ -24,6 +24,7 @@ const translations = {
       register: "S'inscrire",
       mySpace: 'Mon Espace',
       logout: 'Déconnexion',
+      marketplace: 'Boutique',
     },
     hero: {
       label: 'ZY Bodybuilding Studio — Tunisia',
@@ -503,6 +504,29 @@ const translations = {
       viewPlans: 'Voir les forfaits',
       contact: 'Nous contacter',
     },
+
+    // --- Marketplace ---
+    marketplace: {
+      label: 'Notre Boutique',
+      title: 'Boutique ZY',
+      subtitle: 'Compléments, vêtements et équipements sélectionnés pour votre performance',
+      allCategories: 'Toutes les catégories',
+      categories: {
+        supplements: 'Compléments',
+        apparel: 'Vêtements',
+        equipment: 'Équipements',
+        accessories: 'Accessoires',
+      },
+      inStock: 'En stock',
+      outOfStock: 'Rupture de stock',
+      featured: 'Coup de cœur',
+      currency: 'TND',
+      noProducts: 'Aucun produit disponible pour le moment',
+      loading: 'Chargement des produits...',
+      contactToBuy: 'Contactez-nous pour acheter',
+      filterBy: 'Filtrer par',
+      searchPlaceholder: 'Rechercher un produit...',
+    },
   },
 
   en: {
@@ -530,6 +554,7 @@ const translations = {
       register: 'Sign Up',
       mySpace: 'My Space',
       logout: 'Logout',
+      marketplace: 'Shop',
     },
     hero: {
       label: 'ZY Bodybuilding Studio — Tunisia',
@@ -1005,6 +1030,29 @@ const translations = {
       expiredOn: 'Expired On',
       viewPlans: 'View Membership Plans',
       contact: 'Contact Us',
+    },
+
+    // --- Marketplace ---
+    marketplace: {
+      label: 'Our Shop',
+      title: 'ZY Shop',
+      subtitle: 'Supplements, apparel, and equipment curated for your performance',
+      allCategories: 'All Categories',
+      categories: {
+        supplements: 'Supplements',
+        apparel: 'Apparel',
+        equipment: 'Equipment',
+        accessories: 'Accessories',
+      },
+      inStock: 'In Stock',
+      outOfStock: 'Out of Stock',
+      featured: 'Featured',
+      currency: 'TND',
+      noProducts: 'No products available at the moment',
+      loading: 'Loading products...',
+      contactToBuy: 'Contact us to purchase',
+      filterBy: 'Filter by',
+      searchPlaceholder: 'Search products...',
     },
   },
 };

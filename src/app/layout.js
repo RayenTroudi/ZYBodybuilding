@@ -93,13 +93,15 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    // suppressHydrationWarning is added to prevent warnings from browser extensions
-    // like MetaMask, which inject attributes into the HTML before React hydrates
+    // suppressHydrationWarning on html, head, and body silences browser-extension
+    // attribute injection (e.g. BIS shopping ext adds bis_skin_checked="1" to divs,
+    // eppiocemhmnlbhjplcgkofciiegomcon rewrites the JSON-LD <script> in <head>).
     <html lang="fr" suppressHydrationWarning>
-      <head>
+      <head suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          suppressHydrationWarning
         />
       </head>
       <body className="bg-black text-white antialiased" suppressHydrationWarning>

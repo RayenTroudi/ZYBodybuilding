@@ -107,6 +107,9 @@ export default function Navbar() {
           <Link href="#contact" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
             {t.publicNav.contact}
           </Link>
+          <Link href="/marketplace" className="text-2xl py-3 px-6 hover:text-primary transition-colors transform hover:scale-110 duration-200" onClick={closeMenu}>
+            {t.publicNav.marketplace}
+          </Link>
 
           {/* Mobile language switcher */}
           <div className="flex items-center gap-1 bg-neutral-800 border border-neutral-700 rounded-lg p-1">
@@ -176,6 +179,7 @@ export default function Navbar() {
           <Link href="#schedule" className="block py-2 px-4 hover:text-primary transition-colors">{t.publicNav.schedule}</Link>
           <Link href="#pricing" className="block py-2 px-4 hover:text-primary transition-colors">{t.publicNav.pricing}</Link>
           <Link href="#contact" className="block py-2 px-4 hover:text-primary transition-colors">{t.publicNav.contact}</Link>
+          <Link href="/marketplace" className="block py-2 px-4 hover:text-primary transition-colors">{t.publicNav.marketplace}</Link>
 
           {/* Desktop language switcher */}
           <div className="flex items-center gap-1 bg-neutral-800 border border-neutral-700 rounded-lg p-1 ml-2">

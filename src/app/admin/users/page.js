@@ -1,14 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, XCircle, Shield, User } from 'lucide-react';
-
-const sectionLabel = (text) => (
-  <p className="text-neutral-700 text-[9px] font-semibold uppercase mb-1" style={{ letterSpacing: '0.2em' }}>
-    {text}
-  </p>
-);
 
 export default function UsersManagementPage() {
   const [users, setUsers] = useState([]);
@@ -16,25 +10,38 @@ export default function UsersManagementPage() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
-  const [toast, setToast] = useState(null);
-
-  useEffect(() => { fetchUsers(); }, []);
+  const [notification, setNotification] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 4000);
-    return () => clearTimeout(t);
-  }, [toast]);
+    fetchUsers();
+  }, []);
 
-  const showToast = (message, type = 'success') => setToast({ message, type });
+  // Auto-dismiss notification after 4 seconds
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+  };
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('/api/admin/users');
-      const data = await res.json();
-      if (data.success) setUsers(data.users);
-      else setError(data.error || 'Failed to fetch users');
-    } catch {
+      const response = await fetch('/api/admin/users');
+      const data = await response.json();
+
+      if (data.success) {
+        setUsers(data.users);
+      } else {
+        setError(data.error || 'Failed to fetch users');
+      }
+    } catch (err) {
       setError('Failed to fetch users');
     } finally {
       setLoading(false);
@@ -43,124 +50,139 @@ export default function UsersManagementPage() {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      const res = await fetch(`/api/admin/users/${userId}`, {
+      const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role: newRole }),
       });
-      const data = await res.json();
+
+      const data = await response.json();
+
       if (data.success) {
-        setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
-        showToast(`Role updated to ${newRole}`, 'success');
+        setUsers(users.map(user =>
+          user.id === userId ? { ...user, role: newRole } : user
+        ));
+        showNotification(`User role updated to ${newRole} successfully`, 'success');
       } else {
-        showToast(data.error || 'Failed to update role', 'error');
+        showNotification(data.error || 'Failed to update user role', 'error');
       }
-    } catch {
-      showToast('Failed to update role', 'error');
+    } catch (err) {
+      showNotification('Failed to update user role', 'error');
     }
   };
 
   const handleToggleStatus = async (userId, currentStatus) => {
     try {
-      const res = await fetch(`/api/admin/users/${userId}`, {
+      const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: !currentStatus }),
       });
-      const data = await res.json();
+      const data = await response.json();
       if (data.success) {
         setUsers(users.map(u => u.id === userId ? { ...u, status: !currentStatus } : u));
-        showToast(`User ${!currentStatus ? 'activated' : 'disabled'}`, 'success');
+        showNotification(`User ${!currentStatus ? 'activated' : 'disabled'} successfully`, 'success');
       } else {
-        showToast(data.error || 'Failed to update status', 'error');
+        showNotification(data.error || 'Failed to update status', 'error');
       }
     } catch {
-      showToast('Failed to update status', 'error');
+      showNotification('Failed to update status', 'error');
     }
   };
 
-  const handleDeleteUser = async (userId, name) => {
-    if (!confirm(`Delete ${name}? This cannot be undone.`)) return;
+  const handleDeleteUser = async (userId) => {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      return;
+    }
+
     try {
-      const res = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
-      const data = await res.json();
+      const response = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+      const data = await response.json();
+
       if (data.success) {
-        setUsers(users.filter(u => u.id !== userId));
-        showToast('User deleted', 'success');
+        setUsers(users.filter(user => user.id !== userId));
+        showNotification('User deleted successfully', 'success');
       } else {
-        showToast(data.error || 'Failed to delete', 'error');
+        showNotification(data.error || 'Failed to delete user', 'error');
       }
-    } catch {
-      showToast('Failed to delete user', 'error');
+    } catch (err) {
+      showNotification('Failed to delete user', 'error');
     }
   };
 
-  const filtered = users.filter(u => {
-    const matchSearch = u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        u.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchRole = selectedRole === 'all' || u.role === selectedRole;
-    return matchSearch && matchRole;
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = selectedRole === 'all' || user.role === selectedRole;
+    return matchesSearch && matchesRole;
   });
 
-  return (
-    <div className="space-y-5 max-w-7xl">
-
-      {/* Page title */}
-      <div className="flex items-end justify-between pb-4 border-b border-[#141414]">
-        <div>
-          {sectionLabel('Access Control')}
-          <h1
-            className="text-white font-black uppercase leading-none"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2rem', letterSpacing: '-0.01em' }}
-          >
-            User Management
-          </h1>
-        </div>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
       </div>
+    );
+  }
 
-      {/* KPI row */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
-          {sectionLabel('Total Users')}
-          <p className="text-white font-black leading-none mt-2" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem' }}>
-            {users.length}
-          </p>
+  return (
+    <div className="p-6">
+      {/* Notification Toast */}
+      {notification && (
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top duration-300">
+          <div className={`flex items-center gap-3 px-6 py-4 rounded shadow-2xl border backdrop-blur-sm ${
+            notification.type === 'success'
+              ? 'bg-green-500/10 border-green-500 text-green-400'
+              : 'bg-red-500/10 border-red-500 text-red-400'
+          }`}>
+            <div className="flex-shrink-0">
+              {notification.type === 'success' ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+            </div>
+            <p className="font-medium">{notification.message}</p>
+            <button
+              onClick={() => setNotification(null)}
+              className="flex-shrink-0 ml-2 hover:opacity-70 transition-opacity"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
-          {sectionLabel('Admins')}
-          <p className="font-black leading-none mt-2" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem', color: 'var(--primary-color)' }}>
-            {users.filter(u => u.role === 'admin').length}
-          </p>
-        </div>
-        <div className="bg-[#0c0c0c] border border-[#161616] p-5">
-          {sectionLabel('Regular Users')}
-          <p className="font-black leading-none mt-2" style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '2.2rem', color: '#919191' }}>
-            {users.filter(u => u.role === 'user').length}
-          </p>
-        </div>
+      )}
+
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2">User Management</h1>
+        <p className="text-neutral-400">Manage user accounts and permissions</p>
       </div>
 
       {error && (
-        <div className="border border-red-600/30 bg-red-600/10 px-4 py-3 text-red-400 text-xs">
+        <div className="mb-6 bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded">
           {error}
         </div>
       )}
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="mb-6 flex flex-col sm:flex-row gap-4">
         <input
           type="text"
           placeholder="Search by name or email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-white text-xs placeholder-neutral-700 focus:outline-none focus:border-primary transition-colors"
-          style={{ borderRadius: 0, fontFamily: "'DM Sans', sans-serif" }}
+          className="flex-1 px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
         <select
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
-          className="px-4 py-2 bg-[#0a0a0a] border border-[#1c1c1c] text-neutral-400 text-xs focus:outline-none focus:border-primary transition-colors"
-          style={{ borderRadius: 0, fontFamily: "'DM Sans', sans-serif" }}
+          className="px-4 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           <option value="all">All Roles</option>
           <option value="admin">Admin</option>
@@ -168,149 +190,111 @@ export default function UsersManagementPage() {
         </select>
       </div>
 
-      {/* Table */}
-      {loading ? (
-        <div className="bg-[#0c0c0c] border border-[#161616] flex items-center justify-center gap-3 py-16">
-          <div className="w-4 h-4 border-t-2 border-primary animate-spin rounded-full" />
-          <span className="text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>Loading...</span>
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-neutral-800 rounded p-4 border border-neutral-700">
+          <p className="text-neutral-400 text-sm">Total Users</p>
+          <p className="text-2xl font-bold text-white">{users.length}</p>
         </div>
-      ) : (
-        <div className="bg-[#0c0c0c] border border-[#161616] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-[#080808] border-b border-[#161616]">
-                <tr>
-                  {['Name', 'Email', 'Role', 'Status', 'Created', 'Actions'].map(h => (
-                    <th
-                      key={h}
-                      className="px-4 py-3 text-left text-[9px] font-semibold uppercase text-neutral-700"
-                      style={{ letterSpacing: '0.18em' }}
+        <div className="bg-neutral-800 rounded p-4 border border-neutral-700">
+          <p className="text-neutral-400 text-sm">Admin Users</p>
+          <p className="text-2xl font-bold text-red-500">
+            {users.filter(u => u.role === 'admin').length}
+          </p>
+        </div>
+        <div className="bg-neutral-800 rounded p-4 border border-neutral-700">
+          <p className="text-neutral-400 text-sm">Regular Users</p>
+          <p className="text-2xl font-bold text-blue-500">
+            {users.filter(u => u.role === 'user').length}
+          </p>
+        </div>
+      </div>
+
+      {/* Users Table */}
+      <div className="bg-neutral-800 rounded border border-neutral-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-neutral-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">Role</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">Created At</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-normal">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+              {filteredUsers.map((user) => (
+                <tr key={user.id} className="hover:bg-neutral-700/50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-white">{user.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-neutral-300">{user.email}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <select
+                      value={user.role}
+                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        user.role === 'admin'
+                          ? 'bg-red-500/20 text-red-400 border border-red-500'
+                          : 'bg-blue-500/20 text-blue-400 border border-blue-500'
+                      }`}
                     >
-                      {h}
-                    </th>
-                  ))}
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      user.status ? 'bg-green-500/20 text-green-400' : 'bg-neutral-500/20 text-neutral-400'
+                    }`}>
+                      {user.status ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-300">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/admin/users/${user.id}`}
+                        className="text-blue-400 hover:text-blue-300 font-medium"
+                      >
+                        View
+                      </Link>
+                      <button
+                        onClick={() => handleToggleStatus(user.id, user.status)}
+                        className={`font-medium ${
+                          user.status
+                            ? 'text-yellow-400 hover:text-yellow-300'
+                            : 'text-green-400 hover:text-green-300'
+                        }`}
+                      >
+                        {user.status ? 'Disable' : 'Activate'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="text-red-400 hover:text-red-300 font-medium"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-4 py-12 text-center text-neutral-700 text-xs uppercase" style={{ letterSpacing: '0.15em' }}>
-                      No users found
-                    </td>
-                  </tr>
-                ) : filtered.map((user, i) => (
-                  <tr
-                    key={user.id}
-                    className={`border-b border-[#111] hover:bg-[#0f0f0f] transition-colors ${i === filtered.length - 1 ? 'border-b-0' : ''}`}
-                  >
-                    {/* Name */}
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 bg-[#141414] border border-[#1e1e1e] flex items-center justify-center flex-shrink-0">
-                          <span
-                            className="text-neutral-500 text-xs font-bold"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                          >
-                            {user.name?.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <span className="text-white text-xs font-medium">{user.name}</span>
-                      </div>
-                    </td>
-
-                    {/* Email */}
-                    <td className="px-4 py-3">
-                      <span className="text-neutral-500 text-xs">{user.email}</span>
-                    </td>
-
-                    {/* Role */}
-                    <td className="px-4 py-3">
-                      <select
-                        value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        className={`px-2 py-1 text-[10px] font-bold uppercase border focus:outline-none focus:border-primary transition-colors cursor-pointer ${
-                          user.role === 'admin'
-                            ? 'bg-primary/10 border-primary/30 text-primary'
-                            : 'bg-[#0a0a0a] border-[#1e1e1e] text-neutral-500'
-                        }`}
-                        style={{ borderRadius: 0, letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
-                      >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[9px] font-bold uppercase border ${
-                          user.status ? 'admin-badge badge-active' : 'admin-badge badge-expired'
-                        }`}
-                        style={{ letterSpacing: '0.12em' }}
-                      >
-                        {user.status ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-
-                    {/* Created */}
-                    <td className="px-4 py-3">
-                      <span className="text-neutral-600 text-xs">
-                        {new Date(user.createdAt).toLocaleDateString('fr-TN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/admin/users/${user.id}`}
-                          className="px-2.5 py-1 border border-[#1e1e1e] text-neutral-600 text-[10px] font-semibold uppercase hover:border-[#2a2a2a] hover:text-white transition-colors"
-                          style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
-                          View
-                        </Link>
-                        <button
-                          onClick={() => handleToggleStatus(user.id, user.status)}
-                          className={`px-2.5 py-1 border text-[10px] font-semibold uppercase transition-colors ${
-                            user.status
-                              ? 'border-yellow-600/30 text-yellow-600/70 hover:border-yellow-600/60 hover:text-yellow-500'
-                              : 'border-green-600/30 text-green-600/70 hover:border-green-600/60 hover:text-green-500'
-                          }`}
-                          style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
-                          {user.status ? 'Disable' : 'Activate'}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteUser(user.id, user.name)}
-                          className="px-2.5 py-1 border border-red-600/20 text-red-600/60 text-[10px] font-semibold uppercase hover:border-red-600/50 hover:text-red-500 transition-colors"
-                          style={{ letterSpacing: '0.1em', fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
 
-      {/* Toast */}
-      {toast && (
-        <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
-          <div className={`flex items-center gap-3 px-5 py-3.5 border-l-2 min-w-[280px] bg-[#0c0c0c] border border-[#1e1e1e] ${
-            toast.type === 'success' ? 'border-l-green-500' : 'border-l-red-500'
-          }`}>
-            {toast.type === 'success'
-              ? <CheckCircle size={14} className="text-green-500 flex-shrink-0" />
-              : <XCircle size={14} className="text-red-500 flex-shrink-0" />}
-            <p className="text-white text-xs flex-1">{toast.message}</p>
-            <button onClick={() => setToast(null)} className="text-neutral-600 hover:text-white transition-colors text-xs">✕</button>
+        {filteredUsers.length === 0 && (
+          <div className="text-center py-8 text-neutral-400">
+            No users found
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
