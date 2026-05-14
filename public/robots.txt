@@ -2,8 +2,14 @@
 User-agent: *
 Allow: /
 
-# Disallow admin pages
+# Disallow admin, dashboard and auth pages (no SEO value)
 Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /membership-expired
+Disallow: /api/
 
 # Sitemap location
 Sitemap: https://www.zybodybuilding.space/sitemap.xml

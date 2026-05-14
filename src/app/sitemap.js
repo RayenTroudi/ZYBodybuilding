@@ -1,6 +1,6 @@
 export default function sitemap() {
   const baseUrl = 'https://www.zybodybuilding.space';
-  
+
   return [
     {
       url: baseUrl,
@@ -9,40 +9,19 @@ export default function sitemap() {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/#about`,
+      url: `${baseUrl}/gym-nabeul`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/marketplace`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/#schedule`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#pricing`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/#contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/register`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
+    // Note: /register and /login are noindex — excluded from sitemap intentionally.
+    // Note: fragment URLs (#about, #pricing, etc.) are not valid sitemap entries —
+    // Google does not crawl fragment-only URLs as separate pages.
   ];
 }

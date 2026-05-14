@@ -22,7 +22,7 @@ const CTA = () => {
 
           <Image
             src="/images/zy.jpg"
-            alt="Image CTA"
+            alt="Rejoignez ZY Bodybuilding — la meilleure salle de sport à Nabeul, Mrezga, Tunisie"
             fill
             style={{ objectFit: 'cover' }}
             className="w-full h-full opacity-50"

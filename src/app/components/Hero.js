@@ -13,9 +13,9 @@ const Hero = () => {
   const t = translations[lang];
 
   const images = [
-    { src: '/images/stronger.jpg', alt: 'Hero Image 1' },
-    { src: '/images/zy.jpg', alt: 'Hero Image 2' },
-    { src: '/images/2.jpg', alt: 'Hero Image 3' },
+    { src: '/images/stronger.jpg', alt: 'Salle de musculation ZY Bodybuilding — Gym Mrezga, Nabeul, Tunisie' },
+    { src: '/images/zy.jpg', alt: 'ZY Bodybuilding — Fitness et coaching personnel à Nabeul, Tunisie' },
+    { src: '/images/2.jpg', alt: 'Entraînement et remise en forme à ZY Bodybuilding, Mrezga Nabeul' },
   ];
 
   useEffect(() => {

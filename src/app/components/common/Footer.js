@@ -35,6 +35,9 @@ const Footer = () => {
               <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
                 {t.footer.tagline}
               </p>
+              <p className="text-sm text-neutral-500 mt-2">
+                Salle de sport à Mrezga, Nabeul — Gym & Fitness Tunisie
+              </p>
             </div>
 
             {/* Contact Info */}
@@ -62,7 +65,8 @@ const Footer = () => {
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors text-center sm:text-left"
                   >
-                    ZY Bodybuilding, Tunisia<br />
+                    ZY Bodybuilding<br />
+                    Mrezga, Nabeul 8000, Tunisie<br />
                     <span className="text-sm text-neutral-400">{t.footer.viewOnMap}</span>
                   </a>
                 </li>
