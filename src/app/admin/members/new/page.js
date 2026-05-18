@@ -33,6 +33,7 @@ export default function NewMemberPage() {
     initialPayment: '',
     paymentMethod: 'Cash',
     includeAssurance: false,
+    discountPercentage: '',
   });
   const router = useRouter();
 
@@ -40,6 +41,14 @@ export default function NewMemberPage() {
   const getAssuranceAmount = (plan) => {
     if (!plan) return 20;
     return plan.name.toLowerCase().includes('couple') ? 40 : 20;
+  };
+
+  // Calculate final payment after discount
+  const calcFinalAmount = (planPrice, assuranceFee, discountPct) => {
+    const base = planPrice + assuranceFee;
+    const pct = parseFloat(discountPct) || 0;
+    const discount = base * (pct / 100);
+    return Math.max(0, base - discount);
   };
 
   useEffect(() => {
@@ -79,6 +88,7 @@ export default function NewMemberPage() {
           ...formData,
           planName: selectedPlan.name,
           planDuration: selectedPlan.duration,
+          planPrice: selectedPlan.price,
         }),
       });
 
@@ -93,6 +103,9 @@ export default function NewMemberPage() {
         
         // Set receipt data
         const assuranceAmount = getAssuranceAmount(selectedPlan);
+        const discountPct = parseFloat(formData.discountPercentage) || 0;
+        const baseAmount = parseFloat(selectedPlan.price) + (formData.includeAssurance ? assuranceAmount : 0);
+        const discountAmount = baseAmount * (discountPct / 100);
         setReceiptData({
           member,
           plan: selectedPlan,
@@ -103,6 +116,9 @@ export default function NewMemberPage() {
           timestamp: new Date().toISOString(),
           includeAssurance: formData.includeAssurance,
           assuranceAmount: formData.includeAssurance ? assuranceAmount : 0,
+          discountPercentage: discountPct,
+          discountAmount: discountAmount,
+          originalAmount: baseAmount,
         });
         
         setShowReceipt(true);
@@ -191,6 +207,7 @@ export default function NewMemberPage() {
       initialPayment: '',
       paymentMethod: 'Cash',
       includeAssurance: false,
+      discountPercentage: '',
     });
   };
 
@@ -353,7 +370,7 @@ export default function NewMemberPage() {
                     <div className="flex justify-between">
                       <span className="text-neutral-600">Abonnement ({receiptData.plan.name}):</span>
                       <span className="font-semibold text-neutral-900">
-                        {(parseFloat(receiptData.payment) - (receiptData.includeAssurance ? receiptData.assuranceAmount : 0)).toFixed(2)} TND
+                        {parseFloat(receiptData.plan.price).toFixed(2)} TND
                       </span>
                     </div>
                     {receiptData.includeAssurance && (
@@ -361,6 +378,18 @@ export default function NewMemberPage() {
                         <span className="text-neutral-600">🛡️ Assurance:</span>
                         <span className="font-semibold text-blue-600">{receiptData.assuranceAmount.toFixed(2)} TND</span>
                       </div>
+                    )}
+                    {receiptData.discountPercentage > 0 && (
+                      <>
+                        <div className="flex justify-between text-neutral-500">
+                          <span>Subtotal:</span>
+                          <span className="font-semibold">{receiptData.originalAmount.toFixed(2)} TND</span>
+                        </div>
+                        <div className="flex justify-between text-yellow-600">
+                          <span>Réduction ({receiptData.discountPercentage}%):</span>
+                          <span className="font-semibold">-{receiptData.discountAmount.toFixed(2)} TND</span>
+                        </div>
+                      </>
                     )}
                   </div>
                   <div className="flex justify-between text-lg pt-2 border-t-2 border-green-300">
@@ -524,11 +553,11 @@ export default function NewMemberPage() {
                   const planPrice = plan ? parseFloat(plan.price) : 0;
                   const assuranceAmount = getAssuranceAmount(plan);
                   const assuranceFee = formData.includeAssurance ? assuranceAmount : 0;
-                  const totalAmount = planPrice + assuranceFee;
-                  setFormData({ 
-                    ...formData, 
+                  const final = calcFinalAmount(planPrice, assuranceFee, formData.discountPercentage);
+                  setFormData({
+                    ...formData,
                     planId: e.target.value,
-                    initialPayment: totalAmount > 0 ? totalAmount.toString() : ''
+                    initialPayment: planPrice > 0 ? final.toFixed(2) : ''
                   });
                 }}
                 required
@@ -638,11 +667,11 @@ export default function NewMemberPage() {
                     const planPrice = selectedPlan ? parseFloat(selectedPlan.price) : 0;
                     const assuranceAmount = getAssuranceAmount(selectedPlan);
                     const assuranceFee = checked ? assuranceAmount : 0;
-                    const totalAmount = planPrice + assuranceFee;
-                    setFormData({ 
-                      ...formData, 
+                    const final = calcFinalAmount(planPrice, assuranceFee, formData.discountPercentage);
+                    setFormData({
+                      ...formData,
                       includeAssurance: checked,
-                      initialPayment: totalAmount > 0 ? totalAmount.toString() : formData.initialPayment
+                      initialPayment: planPrice > 0 ? final.toFixed(2) : formData.initialPayment
                     });
                   }}
                   className="w-5 h-5 text-blue-600 bg-neutral-700 border-neutral-600 rounded focus:ring-2 focus:ring-blue-500"
@@ -661,6 +690,38 @@ export default function NewMemberPage() {
                   </span>
                 )}
               </label>
+            </div>
+
+            {/* Discount Percentage */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-neutral-300 mb-2">
+                Discount Percentage (%)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                value={formData.discountPercentage}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  // Reject values outside 0–100
+                  const pct = raw === '' ? '' : Math.min(100, Math.max(0, parseInt(raw, 10) || 0));
+                  const planPrice = selectedPlan ? parseFloat(selectedPlan.price) : 0;
+                  const assuranceFee = formData.includeAssurance ? getAssuranceAmount(selectedPlan) : 0;
+                  const final = calcFinalAmount(planPrice, assuranceFee, pct);
+                  setFormData({
+                    ...formData,
+                    discountPercentage: raw === '' ? '' : pct,
+                    initialPayment: planPrice > 0 ? final.toFixed(2) : formData.initialPayment,
+                  });
+                }}
+                className="w-full px-4 py-3 bg-neutral-700/50 border border-neutral-600 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                placeholder="0"
+              />
+              <p className="text-xs text-neutral-500 mt-2">
+                💡 Optional — enter a value between 0 and 100. Discount is applied to the base price before final total.
+              </p>
             </div>
 
             {/* Payment Summary */}
@@ -682,6 +743,24 @@ export default function NewMemberPage() {
                       <span className="text-blue-400 font-semibold">{getAssuranceAmount(selectedPlan).toFixed(2)} DT</span>
                     </div>
                   )}
+                  {parseFloat(formData.discountPercentage) > 0 && (() => {
+                    const planPrice = parseFloat(selectedPlan.price);
+                    const assuranceFee = formData.includeAssurance ? getAssuranceAmount(selectedPlan) : 0;
+                    const base = planPrice + assuranceFee;
+                    const discountAmt = base * (parseFloat(formData.discountPercentage) / 100);
+                    return (
+                      <>
+                        <div className="flex justify-between text-neutral-400">
+                          <span>Subtotal:</span>
+                          <span className="font-semibold">{base.toFixed(2)} DT</span>
+                        </div>
+                        <div className="flex justify-between text-yellow-400">
+                          <span>Discount ({formData.discountPercentage}%):</span>
+                          <span className="font-semibold">-{discountAmt.toFixed(2)} DT</span>
+                        </div>
+                      </>
+                    );
+                  })()}
                   <div className="pt-2 border-t border-green-500/30 flex justify-between">
                     <span className="text-white font-bold">Total Amount:</span>
                     <span className="text-green-400 font-bold text-lg">

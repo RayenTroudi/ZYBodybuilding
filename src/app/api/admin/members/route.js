@@ -129,10 +129,18 @@ export async function POST(request) {
     endDate.setDate(endDate.getDate() + parseInt(data.planDuration));
 
     // Remove fields that aren't part of the member schema
-    const { initialPayment, paymentMethod, planDuration, includeAssurance, ...memberFields } = data;
+    const { initialPayment, paymentMethod, planDuration, includeAssurance, discountPercentage, planPrice, ...memberFields } = data;
 
     // Calculate assurance amount based on plan name
     const assuranceAmount = data.planName && data.planName.toLowerCase().includes('couple') ? 40 : 20;
+
+    // Validate and clamp discount percentage
+    const discountPct = Math.min(100, Math.max(0, parseFloat(discountPercentage) || 0));
+    // Store discount metadata for record-keeping
+    const planPriceVal = parseFloat(planPrice || 0);
+    const assuranceFee = includeAssurance ? assuranceAmount : 0;
+    const originalAmount = planPriceVal > 0 ? planPriceVal + assuranceFee : parseFloat(initialPayment || 0);
+    const discountAmount = originalAmount * (discountPct / 100);
 
     const memberData = {
       ...memberFields,
@@ -141,6 +149,8 @@ export async function POST(request) {
       totalPaid: parseFloat(initialPayment || 0),
       hasAssurance: includeAssurance || false,
       assuranceAmount: includeAssurance ? assuranceAmount : 0,
+      discountPercentage: discountPct,
+      discountAmount: discountAmount,
     };
 
     const member = await databases.createDocument(
@@ -152,10 +162,10 @@ export async function POST(request) {
 
     // Create initial payment record if payment was made
     if (initialPayment && parseFloat(initialPayment) > 0) {
-      const paymentNotes = data.includeAssurance 
-        ? `Initial payment (includes ${assuranceAmount} DT assurance)`
-        : 'Initial payment';
-      
+      let paymentNotes = 'Initial payment';
+      if (data.includeAssurance) paymentNotes += ` (includes ${assuranceAmount} DT assurance)`;
+      if (discountPct > 0) paymentNotes += ` (${discountPct}% discount applied, saved ${discountAmount.toFixed(2)} DT)`;
+
       await databases.createDocument(
         appwriteConfig.databaseId,
         appwriteConfig.paymentsCollectionId,
@@ -172,6 +182,8 @@ export async function POST(request) {
           notes: paymentNotes,
           includesAssurance: data.includeAssurance || false,
           assuranceAmount: data.includeAssurance ? assuranceAmount : 0,
+          discountPercentage: discountPct,
+          discountAmount: discountAmount,
         }
       );
     }

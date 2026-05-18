@@ -440,6 +440,8 @@ const PDFReceipt = ({ data }) => {
     timestamp,
     includeAssurance = false,
     assuranceAmount = 0,
+    discountPercentage = 0,
+    discountAmount = 0,
   } = data;
 
   const formatDate = (dateString) => {
@@ -458,13 +460,7 @@ const PDFReceipt = ({ data }) => {
     })} TND`;
   };
 
-  const calculateTax = (amount) => {
-    return amount * 0.19; // 19% TVA
-  };
-
-  const membershipAmount = parseFloat(payment) - assuranceAmount;
-  const tax = calculateTax(parseFloat(payment));
-  const subtotal = parseFloat(payment) - tax;
+  const membershipAmount = parseFloat(plan.price);
 
   return (
     <Document>
@@ -608,6 +604,19 @@ const PDFReceipt = ({ data }) => {
                 <Text style={[styles.tableCell, styles.col2]}>1</Text>
                 <Text style={[styles.tableCell, styles.tableCellBold, styles.col3]}>
                   {formatPrice(assuranceAmount)}
+                </Text>
+              </View>
+            )}
+
+            {/* Discount Row */}
+            {discountPercentage > 0 && (
+              <View style={[styles.tableRow, styles.tableRowAlt]}>
+                <Text style={[styles.tableCell, styles.col1]}>
+                  Réduction ({discountPercentage}%)
+                </Text>
+                <Text style={[styles.tableCell, styles.col2]}>—</Text>
+                <Text style={[styles.tableCell, styles.tableCellBold, styles.col3, { color: '#f59e0b' }]}>
+                  -{formatPrice(discountAmount)}
                 </Text>
               </View>
             )}
