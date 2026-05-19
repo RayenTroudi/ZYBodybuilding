@@ -22,7 +22,7 @@ const AboutUs = () => {
           <div className="lg:w-1/2">
             <Image
               src="/images/3.jpg"
-              alt="Salle de sport"
+              alt="Salle de musculation ZY Bodybuilding — Mrezga, Nabeul, Tunisie"
               width={600}
               height={400}
               className="w-full h-full object-cover transform transition duration-500 hover:scale-105"
@@ -93,7 +93,7 @@ const AboutUs = () => {
           <div className="lg:w-1/2">
             <Image
               src="/images/2.jpg"
-              alt="Équipement de gym"
+              alt="Équipements de fitness professionnels — ZY Bodybuilding Nabeul"
               width={600}
               height={400}
               className="w-full h-full object-cover transform transition duration-500 hover:scale-105"

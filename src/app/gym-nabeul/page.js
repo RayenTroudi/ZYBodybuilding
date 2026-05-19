@@ -13,6 +13,10 @@ export const metadata = {
   ],
   alternates: {
     canonical: 'https://www.zybodybuilding.space/gym-nabeul',
+    languages: {
+      'fr-TN': 'https://www.zybodybuilding.space/gym-nabeul',
+      'en': 'https://www.zybodybuilding.space/en/gym-nabeul',
+    },
   },
   openGraph: {
     title: 'Gym Nabeul & Mrezga — ZY Bodybuilding | Salle de Sport Nabeul',

@@ -43,14 +43,14 @@ const Pricing = () => {
   if (loading) {
     return (
       <div id="pricing" className="bg-dark text-white flex flex-col items-center section-padding">
-        <motion.h1
+        <motion.h2
           className="section-header mb-4"
           initial={{ y: -50, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
           Tarifs
-        </motion.h1>
+        </motion.h2>
         <div className="divider-primary mb-12"></div>
         <div className="text-center text-neutral-400">
           Chargement des tarifs...
@@ -68,14 +68,14 @@ const Pricing = () => {
       transition={{ duration: 1 }}
     >
       {/* Section Header */}
-      <motion.h1
+      <motion.h2
         className="section-header text-3xl sm:text-4xl md:text-5xl mb-4"
         initial={{ y: -50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
         Tarifs
-      </motion.h1>
+      </motion.h2>
       <div className="divider-primary mb-8 sm:mb-10 md:mb-12"></div>
 
       {/* Pricing Cards Grid */}
@@ -101,9 +101,9 @@ const Pricing = () => {
             >
               <div className="p-4 flex-grow">
                 {/* Plan Title */}
-                <h2 className="text-xl font-bold mb-2 text-center text-white">
+                <h3 className="text-xl font-bold mb-2 text-center text-white">
                   {plan.name}
-                </h2>
+                </h3>
 
                 {/* Plan Description */}
                 {plan.description && (

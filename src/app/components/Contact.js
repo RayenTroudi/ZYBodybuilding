@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaGlobe, FaCheckCircle } from 'react-icons/fa';
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaGlobe, FaCheckCircle, FaWhatsapp } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const Contact = () => {
@@ -96,17 +96,20 @@ const Contact = () => {
           viewport={{ once: false, amount: 0.3 }} 
         >
           {[
-            { icon: <FaPhoneAlt />, text: "+216 58 800 554", label: "Téléphone" },
-            { icon: <FaEnvelope />, text: "zybodybuildingstudio@gmail.com", label: "Email" },
-            { icon: <FaMapMarkerAlt />, text: "Mrezga, Nabeul 8000, Tunisie", label: "Adresse" },
-            { icon: <FaGlobe />, text: "www.zybodybuilding.space", label: "Site Web" },
+            { icon: <FaPhoneAlt />, text: "+216 58 800 554", label: "Téléphone", href: "tel:+21658800554" },
+            { icon: <FaWhatsapp />, text: "WhatsApp", label: "WhatsApp", href: "https://wa.me/21658800554?text=Bonjour%20ZY%20Bodybuilding%2C%20je%20voudrais%20m%27inscrire" },
+            { icon: <FaEnvelope />, text: "zybodybuildingstudio@gmail.com", label: "Email", href: "mailto:zybodybuildingstudio@gmail.com" },
+            { icon: <FaMapMarkerAlt />, text: "Mrezga, Nabeul 8000, Tunisie", label: "Adresse", href: "https://www.google.com/maps/place/ZY.bodybuilding/@36.4272886,10.6763909,17z" },
           ].map((card, index) => (
-            <motion.div
+            <motion.a
               key={index}
+              href={card.href}
+              target={card.href.startsWith('http') ? '_blank' : undefined}
+              rel={card.href.startsWith('http') ? 'noopener noreferrer' : undefined}
               className="group card p-5 sm:p-6 md:p-8 transition duration-300 hover:shadow-lg min-h-[120px] sm:min-h-[140px] flex flex-col justify-center"
               variants={cardVariants}
               whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.8 }}  
+              transition={{ duration: 0.8 }}
             >
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 text-center sm:text-left">
                 <div className="text-3xl sm:text-4xl md:text-5xl text-primary group-hover:text-white transition duration-300 flex-shrink-0">
@@ -117,7 +120,7 @@ const Contact = () => {
                   <p className="text-sm sm:text-base md:text-lg font-medium break-words overflow-wrap-anywhere">{card.text}</p>
                 </div>
               </div>
-            </motion.div>
+            </motion.a>
           ))}
         </motion.div>
 

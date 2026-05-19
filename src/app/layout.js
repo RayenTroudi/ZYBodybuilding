@@ -31,7 +31,7 @@ export const metadata = {
     canonical: 'https://www.zybodybuilding.space',
     languages: {
       'fr-TN': 'https://www.zybodybuilding.space',
-      'en': 'https://www.zybodybuilding.space',
+      'en': 'https://www.zybodybuilding.space/en',
     },
   },
   openGraph: {
@@ -81,8 +81,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   // JSON-LD structured data for Google Search Console
-  const jsonLd = [
-    {
+  const jsonLdBusiness = {
       '@context': 'https://schema.org',
       '@type': ['HealthClub', 'LocalBusiness', 'SportsActivityLocation'],
       '@id': 'https://www.zybodybuilding.space/#gym',
@@ -140,6 +139,8 @@ export default function RootLayout({ children }) {
         { '@type': 'City', name: 'Nabeul' },
         { '@type': 'City', name: 'Mrezga' },
         { '@type': 'City', name: 'Hammamet' },
+        { '@type': 'City', name: 'Hammamet Nord' },
+        { '@type': 'City', name: 'Korba' },
         { '@type': 'AdministrativeArea', name: 'Gouvernorat de Nabeul' },
       ],
       sameAs: [
@@ -153,71 +154,96 @@ export default function RootLayout({ children }) {
         email: 'zybodybuildingstudio@gmail.com',
         availableLanguage: ['French', 'Arabic', 'English'],
       },
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: 'Où se trouve ZY Bodybuilding ?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'ZY Bodybuilding est situé à Mrezga, Nabeul, Tunisie. C\'est la meilleure salle de sport de la région de Nabeul.',
-          },
+  };
+
+  const jsonLdFaq = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Où se trouve ZY Bodybuilding ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding est situé à Mrezga, Nabeul, Tunisie. C\'est la meilleure salle de sport de la région de Nabeul.',
         },
-        {
-          '@type': 'Question',
-          name: 'Quels sont les tarifs de la salle de sport à Nabeul ?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'ZY Bodybuilding propose plusieurs formules d\'abonnement adaptées à tous les budgets à Nabeul. Consultez notre page tarifs ou contactez-nous au +216 58 800 554.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Est-ce qu\'il y a des cours collectifs à ZY Bodybuilding Nabeul ?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Oui, ZY Bodybuilding propose des cours collectifs animés par des coachs certifiés à Mrezga, Nabeul. Consultez notre planning hebdomadaire en ligne.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'What gym is near me in Nabeul Tunisia?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'ZY Bodybuilding is the top-rated gym in Mrezga, Nabeul, Tunisia. We offer weightlifting, fitness classes, and personal coaching. Located at Mrezga, Nabeul 8000, TN.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Comment contacter ZY Bodybuilding à Nabeul ?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Vous pouvez nous contacter par téléphone au +216 58 800 554 ou par email à zybodybuildingstudio@gmail.com. Notre salle est à Mrezga, Nabeul.',
-          },
-        },
-      ],
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      '@id': 'https://www.zybodybuilding.space/#website',
-      url: 'https://www.zybodybuilding.space',
-      name: 'ZY Bodybuilding — Gym Mrezga Nabeul Tunisie',
-      description: 'Site officiel de ZY Bodybuilding, salle de sport à Mrezga, Nabeul, Tunisie.',
-      inLanguage: ['fr-TN', 'en'],
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: 'https://www.zybodybuilding.space/?q={search_term_string}',
-        },
-        'query-input': 'required name=search_term_string',
       },
+      {
+        '@type': 'Question',
+        name: 'Quels sont les tarifs de la salle de sport à Nabeul ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding propose plusieurs formules d\'abonnement adaptées à tous les budgets à Nabeul. Consultez notre page tarifs ou contactez-nous au +216 58 800 554.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Est-ce qu\'il y a des cours collectifs à ZY Bodybuilding Nabeul ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Oui, ZY Bodybuilding propose des cours collectifs animés par des coachs certifiés à Mrezga, Nabeul. Consultez notre planning hebdomadaire en ligne.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What gym is near me in Nabeul Tunisia?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding is the top-rated gym in Mrezga, Nabeul, Tunisia. We offer weightlifting, fitness classes, and personal coaching. Located at Mrezga, Nabeul 8000, TN.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Comment contacter ZY Bodybuilding à Nabeul ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Vous pouvez nous contacter par téléphone au +216 58 800 554 ou par email à zybodybuildingstudio@gmail.com. Notre salle est à Mrezga, Nabeul.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Y a-t-il une salle de sport près de Hammamet ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Oui ! ZY Bodybuilding est situé à Mrezga, à quelques minutes de Hammamet. C\'est la salle de sport la plus proche et la mieux équipée pour les habitants de Hammamet, Tunisie.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the best gym near Hammamet Tunisia?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding in Mrezga is the closest and best-equipped gym near Hammamet, Tunisia. We offer weightlifting, fitness classes, and personal coaching just minutes from Hammamet.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Quelle est la meilleure salle de sport à Hammamet ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding à Mrezga est la meilleure salle de sport à proximité de Hammamet. Située à quelques minutes du centre de Hammamet, notre salle propose musculation, fitness, cardio et coaching personnalisé.',
+        },
+      },
+    ],
+  };
+
+  const jsonLdWebsite = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': 'https://www.zybodybuilding.space/#website',
+    url: 'https://www.zybodybuilding.space',
+    name: 'ZY Bodybuilding — Gym Mrezga Nabeul Tunisie',
+    description: 'Site officiel de ZY Bodybuilding, salle de sport à Mrezga, Nabeul, Tunisie.',
+    inLanguage: ['fr-TN', 'en'],
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://www.zybodybuilding.space/?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
     },
-  ];
+  };
 
   return (
     // suppressHydrationWarning silences browser-extension attribute injection.
@@ -228,10 +254,19 @@ export default function RootLayout({ children }) {
         <meta name="geo.placename" content="Mrezga, Nabeul, Tunisie" />
         <meta name="geo.position" content="36.4272843;10.673816" />
         <meta name="ICBM" content="36.4272843, 10.673816" />
-        {/* LocalBusiness + FAQPage + WebSite JSON-LD */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBusiness) }}
+          suppressHydrationWarning
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
+          suppressHydrationWarning
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebsite) }}
           suppressHydrationWarning
         />
       </head>
