@@ -43,12 +43,11 @@ export default function NewMemberPage() {
     return plan.name.toLowerCase().includes('couple') ? 40 : 20;
   };
 
-  // Calculate final payment after discount
+  // Calculate final payment after discount (discount applies to plan price only)
   const calcFinalAmount = (planPrice, assuranceFee, discountPct) => {
-    const base = planPrice + assuranceFee;
     const pct = parseFloat(discountPct) || 0;
-    const discount = base * (pct / 100);
-    return Math.max(0, base - discount);
+    const discount = planPrice * (pct / 100);
+    return Math.max(0, planPrice - discount + assuranceFee);
   };
 
   useEffect(() => {
@@ -104,8 +103,9 @@ export default function NewMemberPage() {
         // Set receipt data
         const assuranceAmount = getAssuranceAmount(selectedPlan);
         const discountPct = parseFloat(formData.discountPercentage) || 0;
-        const baseAmount = parseFloat(selectedPlan.price) + (formData.includeAssurance ? assuranceAmount : 0);
-        const discountAmount = baseAmount * (discountPct / 100);
+        const planPrice = parseFloat(selectedPlan.price);
+        const baseAmount = planPrice + (formData.includeAssurance ? assuranceAmount : 0);
+        const discountAmount = planPrice * (discountPct / 100);
         setReceiptData({
           member,
           plan: selectedPlan,
@@ -380,16 +380,10 @@ export default function NewMemberPage() {
                       </div>
                     )}
                     {receiptData.discountPercentage > 0 && (
-                      <>
-                        <div className="flex justify-between text-neutral-500">
-                          <span>Subtotal:</span>
-                          <span className="font-semibold">{receiptData.originalAmount.toFixed(2)} TND</span>
-                        </div>
-                        <div className="flex justify-between text-yellow-600">
-                          <span>Réduction ({receiptData.discountPercentage}%):</span>
-                          <span className="font-semibold">-{receiptData.discountAmount.toFixed(2)} TND</span>
-                        </div>
-                      </>
+                      <div className="flex justify-between text-yellow-600">
+                        <span>Réduction ({receiptData.discountPercentage}% sur abonnement):</span>
+                        <span className="font-semibold">-{receiptData.discountAmount.toFixed(2)} TND</span>
+                      </div>
                     )}
                   </div>
                   <div className="flex justify-between text-lg pt-2 border-t-2 border-green-300">
@@ -745,20 +739,12 @@ export default function NewMemberPage() {
                   )}
                   {parseFloat(formData.discountPercentage) > 0 && (() => {
                     const planPrice = parseFloat(selectedPlan.price);
-                    const assuranceFee = formData.includeAssurance ? getAssuranceAmount(selectedPlan) : 0;
-                    const base = planPrice + assuranceFee;
-                    const discountAmt = base * (parseFloat(formData.discountPercentage) / 100);
+                    const discountAmt = planPrice * (parseFloat(formData.discountPercentage) / 100);
                     return (
-                      <>
-                        <div className="flex justify-between text-neutral-400">
-                          <span>Subtotal:</span>
-                          <span className="font-semibold">{base.toFixed(2)} DT</span>
-                        </div>
-                        <div className="flex justify-between text-yellow-400">
-                          <span>Discount ({formData.discountPercentage}%):</span>
-                          <span className="font-semibold">-{discountAmt.toFixed(2)} DT</span>
-                        </div>
-                      </>
+                      <div className="flex justify-between text-yellow-400">
+                        <span>Discount ({formData.discountPercentage}%):</span>
+                        <span className="font-semibold">-{discountAmt.toFixed(2)} DT</span>
+                      </div>
                     );
                   })()}
                   <div className="pt-2 border-t border-green-500/30 flex justify-between">
