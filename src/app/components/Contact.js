@@ -136,7 +136,7 @@ const Contact = () => {
           {/* Contact Form */}
           <div className="w-full lg:w-1/2 space-y-6">
             <h2 className="section-header text-3xl sm:text-4xl md:text-5xl">
-              Contactez ZY Bodybuilding — Mrezga, Nabeul
+              Réservez chez ZY Bodybuilding — Mrezga, Nabeul
             </h2>
             <div className="divider-primary mb-6 sm:mb-8"></div>
             <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
@@ -217,7 +217,7 @@ const Contact = () => {
                   whileHover={!isSubmitting ? { scale: 1.05 } : {}}
                   whileTap={!isSubmitting ? { scale: 0.95 } : {}}
                 >
-                  {isSubmitting ? 'Envoi en cours...' : 'Envoyer'}
+                  {isSubmitting ? 'Envoi en cours...' : 'Réserver'}
                 </motion.button>
               </div>
             </form>

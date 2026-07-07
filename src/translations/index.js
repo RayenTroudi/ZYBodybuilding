@@ -19,7 +19,7 @@ const translations = {
       about: 'À propos',
       schedule: 'Programme',
       pricing: 'Tarifs',
-      contact: 'Contact',
+      contact: 'Réserver',
       login: 'Connexion',
       register: "S'inscrire",
       mySpace: 'Mon Espace',
@@ -90,8 +90,8 @@ const translations = {
       noPlans: 'Aucun forfait disponible pour le moment',
     },
     contact: {
-      label: 'Contactez-nous — Gym Nabeul',
-      title: 'Visitez-nous à Mrezga, Nabeul',
+      label: 'Réservez votre séance — Gym Nabeul',
+      title: 'Réservez à Mrezga, Nabeul',
       subtitle: "Nous sommes là pour répondre à toutes vos questions sur notre salle de sport à Nabeul et vous aider à démarrer votre transformation",
       form: {
         name: 'Nom complet',
@@ -549,7 +549,7 @@ const translations = {
       about: 'About',
       schedule: 'Schedule',
       pricing: 'Pricing',
-      contact: 'Contact',
+      contact: 'Reserve',
       login: 'Sign In',
       register: 'Sign Up',
       mySpace: 'My Space',
@@ -620,8 +620,8 @@ const translations = {
       noPlans: 'No plans available at the moment',
     },
     contact: {
-      label: 'Contact — Gym Nabeul Tunisia',
-      title: 'Visit Us in Mrezga, Nabeul',
+      label: 'Reserve Your Session — Gym Nabeul Tunisia',
+      title: 'Reserve in Mrezga, Nabeul',
       subtitle: "We're here to answer all your questions about our gym in Nabeul and help you start your fitness transformation",
       form: {
         name: 'Full Name',

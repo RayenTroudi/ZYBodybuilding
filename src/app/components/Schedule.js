@@ -118,61 +118,72 @@ const Schedule = () => {
                     key={classItem.$id}
                     variants={cardVariants}
                     layout
-                    className="bg-neutral-900 backdrop-blur-md rounded-2xl overflow-hidden border border-neutral-800 hover:border-primary/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-primary/20"
+                    className="group bg-neutral-900 backdrop-blur-md rounded-2xl overflow-hidden border border-neutral-800 hover:border-primary/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-primary/20"
                   >
-                    <div className="p-5 sm:p-6">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div className="p-4 sm:p-5 flex items-center gap-4 sm:gap-5">
 
-                        {/* Class Image */}
-                        {imageUrl && (
-                          <div className="flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden">
+                      {/* Coach Portrait — the dominant image */}
+                      {classItem.trainer ? (
+                        <div className="relative flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden ring-2 ring-primary/60 shadow-lg">
+                          {classItem.trainer.imageUrl ? (
                             <Image
-                              src={imageUrl}
-                              alt={classItem.title}
-                              width={96}
-                              height={96}
-                              className="object-cover w-full h-full"
+                              src={classItem.trainer.imageUrl}
+                              alt={classItem.trainer.name}
+                              fill
+                              sizes="(max-width: 640px) 96px, 144px"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
                             />
-                          </div>
-                        )}
+                          ) : (
+                            <div className="w-full h-full bg-primary flex items-center justify-center text-white font-bold text-3xl sm:text-4xl">
+                              {classItem.trainer.name.charAt(0)}
+                            </div>
+                          )}
 
-                        {/* Class Info */}
-                        <div className="flex-1">
-                          <div className="mb-2">
-                            <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">
-                              {classItem.title}
-                            </h3>
-                            <p className="text-neutral-400 text-sm">
-                              {classItem.startTime} - {classItem.endTime}
-                            </p>
-                          </div>
-
-                          {/* Trainer Info */}
-                          {classItem.trainer && (
-                            <div className="flex items-center gap-3 p-3 bg-neutral-800/50 rounded-lg border border-neutral-700/30">
-                              {classItem.trainer.imageUrl ? (
-                                <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary/50 flex-shrink-0">
-                                  <Image
-                                    src={classItem.trainer.imageUrl}
-                                    alt={classItem.trainer.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold flex-shrink-0">
-                                  {classItem.trainer.name.charAt(0)}
-                                </div>
-                              )}
-                              <div>
-                                <p className="text-white font-bold text-sm">{classItem.trainer.name}</p>
-                                {classItem.trainer.specialty && (
-                                  <p className="text-primary text-xs">{classItem.trainer.specialty}</p>
-                                )}
-                              </div>
+                          {/* Class Thumbnail — small badge in the corner */}
+                          {imageUrl && (
+                            <div className="absolute right-1.5 bottom-1.5 w-8 h-8 sm:w-10 sm:h-10 rounded-lg overflow-hidden ring-2 ring-neutral-900 shadow-md">
+                              <Image
+                                src={imageUrl}
+                                alt={classItem.title}
+                                fill
+                                sizes="40px"
+                                className="object-cover"
+                              />
                             </div>
                           )}
                         </div>
+                      ) : imageUrl && (
+                        <div className="relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden ring-2 ring-neutral-800">
+                          <Image
+                            src={imageUrl}
+                            alt={classItem.title}
+                            fill
+                            sizes="(max-width: 640px) 64px, 80px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+
+                      {/* Class Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="mb-2">
+                          <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 truncate">
+                            {classItem.title}
+                          </h3>
+                          <p className="text-neutral-400 text-sm">
+                            {classItem.startTime} - {classItem.endTime}
+                          </p>
+                        </div>
+
+                        {/* Trainer Info */}
+                        {classItem.trainer && (
+                          <div>
+                            <p className="text-white font-bold text-base sm:text-lg truncate">{classItem.trainer.name}</p>
+                            {classItem.trainer.specialty && (
+                              <p className="text-primary text-xs sm:text-sm uppercase tracking-wide truncate">{classItem.trainer.specialty}</p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </motion.div>
