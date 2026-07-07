@@ -1,26 +1,26 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Gym Hammamet — ZY Bodybuilding | Salle de Sport Hammamet Tunisie',
-  description: 'ZY Bodybuilding est la salle de sport la plus proche de Hammamet, à Mrezga, Nabeul. Musculation, fitness, cours collectifs et coaching personnalisé. Appelez le +216 58 800 554.',
+  title: 'Gym Hammamet Nord — ZY Bodybuilding | Salle de Sport près de Hammamet Nord',
+  description: 'ZY Bodybuilding est la salle de sport la plus proche de Hammamet Nord, à Mrezga, Nabeul. Musculation, fitness, cours collectifs et coaching personnalisé. Appelez le +216 58 800 554.',
   keywords: [
-    'gym hammamet', 'salle de sport hammamet', 'fitness hammamet',
-    'musculation hammamet', 'meilleur gym hammamet', 'club de fitness hammamet',
-    'bodybuilding hammamet', 'coaching sportif hammamet', 'salle de musculation hammamet',
-    'remise en forme hammamet', 'cours collectifs hammamet', 'personal trainer hammamet',
-    'gym près de hammamet', 'sport hammamet tunisie',
+    'gym hammamet nord', 'salle de sport hammamet nord', 'fitness hammamet nord',
+    'musculation hammamet nord', 'meilleur gym hammamet nord', 'club de fitness hammamet nord',
+    'bodybuilding hammamet nord', 'coaching sportif hammamet nord', 'salle de musculation hammamet nord',
+    'remise en forme hammamet nord', 'cours collectifs hammamet nord', 'personal trainer hammamet nord',
+    'gym près de hammamet nord', 'sport hammamet nord tunisie', 'yasmine hammamet gym',
   ],
   alternates: {
-    canonical: 'https://www.zybodybuilding.space/gym-hammamet',
+    canonical: 'https://www.zybodybuilding.space/gym-hammamet-nord',
     languages: {
-      'fr-TN': 'https://www.zybodybuilding.space/gym-hammamet',
-      'en': 'https://www.zybodybuilding.space/en/gym-hammamet',
+      'fr-TN': 'https://www.zybodybuilding.space/gym-hammamet-nord',
+      'en': 'https://www.zybodybuilding.space/en/gym-hammamet-nord',
     },
   },
   openGraph: {
-    title: 'Gym Hammamet — ZY Bodybuilding | Salle de Sport près de Hammamet',
-    description: 'La meilleure salle de sport à proximité de Hammamet, à Mrezga, Nabeul. Musculation, fitness, cours collectifs et coaching certifié. Rejoignez ZY Bodybuilding.',
-    url: 'https://www.zybodybuilding.space/gym-hammamet',
+    title: 'Gym Hammamet Nord — ZY Bodybuilding | Salle de Sport près de Hammamet Nord',
+    description: 'La meilleure salle de sport à proximité de Hammamet Nord, à Mrezga, Nabeul. Musculation, fitness, cours collectifs et coaching certifié. Rejoignez ZY Bodybuilding.',
+    url: 'https://www.zybodybuilding.space/gym-hammamet-nord',
     type: 'website',
     locale: 'fr_TN',
     images: [
@@ -28,7 +28,7 @@ export const metadata = {
         url: 'https://www.zybodybuilding.space/images/og-gym-nabeul.jpg',
         width: 1200,
         height: 630,
-        alt: 'ZY Bodybuilding — Gym près de Hammamet, Mrezga, Nabeul, Tunisie',
+        alt: 'ZY Bodybuilding — Gym près de Hammamet Nord, Mrezga, Nabeul, Tunisie',
       },
     ],
   },
@@ -38,10 +38,10 @@ const localJsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    '@id': 'https://www.zybodybuilding.space/gym-hammamet',
-    name: 'Gym Hammamet — ZY Bodybuilding Mrezga',
-    description: 'Page dédiée aux habitants de Hammamet cherchant une salle de sport. ZY Bodybuilding est situé à Mrezga, Nabeul, à quelques minutes de Hammamet.',
-    url: 'https://www.zybodybuilding.space/gym-hammamet',
+    '@id': 'https://www.zybodybuilding.space/gym-hammamet-nord',
+    name: 'Gym Hammamet Nord — ZY Bodybuilding Mrezga',
+    description: 'Page dédiée aux habitants de Hammamet Nord cherchant une salle de sport. ZY Bodybuilding est situé à Mrezga, Nabeul, à quelques minutes de Hammamet Nord.',
+    url: 'https://www.zybodybuilding.space/gym-hammamet-nord',
     inLanguage: 'fr-TN',
     about: {
       '@type': 'HealthClub',
@@ -64,7 +64,7 @@ const localJsonLd = [
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.zybodybuilding.space' },
-        { '@type': 'ListItem', position: 2, name: 'Gym Hammamet', item: 'https://www.zybodybuilding.space/gym-hammamet' },
+        { '@type': 'ListItem', position: 2, name: 'Gym Hammamet Nord', item: 'https://www.zybodybuilding.space/gym-hammamet-nord' },
       ],
     },
   },
@@ -74,34 +74,34 @@ const localJsonLd = [
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Quelle est la meilleure salle de sport à Hammamet ?',
+        name: 'Quelle est la meilleure salle de sport à Hammamet Nord ?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'ZY Bodybuilding à Mrezga est la salle de sport la plus proche et la mieux équipée pour les habitants de Hammamet. À seulement quelques minutes en voiture, elle propose musculation, fitness, cours collectifs et coaching personnalisé.',
+          text: 'ZY Bodybuilding à Mrezga est la salle de sport la plus proche et la mieux équipée pour les habitants de Hammamet Nord. À seulement quelques minutes en voiture, elle propose musculation, fitness, cours collectifs et coaching personnalisé.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Comment aller à ZY Bodybuilding depuis Hammamet ?',
+        name: 'Comment aller à ZY Bodybuilding depuis Hammamet Nord ?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'ZY Bodybuilding est situé à Mrezga, Nabeul, à quelques minutes de Hammamet. Retrouvez l\'itinéraire complet sur Google Maps en cherchant "ZY Bodybuilding Mrezga".',
+          text: 'ZY Bodybuilding est situé à Mrezga, Nabeul, à quelques minutes de Hammamet Nord. Retrouvez l\'itinéraire complet sur Google Maps en cherchant "ZY Bodybuilding Mrezga".',
         },
       },
       {
         '@type': 'Question',
-        name: 'Quels sont les horaires de la salle de sport près de Hammamet ?',
+        name: 'Quels sont les horaires de la salle de sport près de Hammamet Nord ?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'ZY Bodybuilding est ouvert du lundi au vendredi de 7h à 22h, le samedi de 8h à 20h, et le dimanche de 9h à 18h. Accessible facilement depuis Hammamet.',
+          text: 'ZY Bodybuilding est ouvert du lundi au vendredi de 7h à 22h, le samedi de 8h à 20h, et le dimanche de 9h à 18h. Accessible facilement depuis Hammamet Nord.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Est-ce qu\'il y a du coaching personnalisé pour les membres de Hammamet ?',
+        name: 'Est-ce qu\'il y a du coaching personnalisé pour les membres de Hammamet Nord ?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Oui, nos coachs certifiés créent des programmes d\'entraînement et de nutrition 100% personnalisés, disponibles pour tous les membres venant de Hammamet et de la région de Nabeul.',
+          text: 'Oui, nos coachs certifiés créent des programmes d\'entraînement et de nutrition 100% personnalisés, disponibles pour tous les membres venant de Hammamet Nord et de la région de Nabeul.',
         },
       },
     ],
@@ -111,17 +111,17 @@ const localJsonLd = [
 const services = [
   {
     title: 'Musculation & Bodybuilding',
-    description: 'Espace musculation professionnel avec haltères, barres olympiques, machines guidées et câbles. Idéal pour les habitants de Hammamet cherchant une salle complète.',
+    description: 'Espace musculation professionnel avec haltères, barres olympiques, machines guidées et câbles. Idéal pour les habitants de Hammamet Nord cherchant une salle complète.',
     icon: '💪',
   },
   {
     title: 'Fitness & Cardio',
-    description: 'Zone cardio équipée de tapis de course, vélos elliptiques et rameurs. Le meilleur espace fitness à proximité de Hammamet.',
+    description: 'Zone cardio équipée de tapis de course, vélos elliptiques et rameurs. Le meilleur espace fitness à proximité de Hammamet Nord.',
     icon: '🏃',
   },
   {
     title: 'Cours Collectifs',
-    description: 'Planning hebdomadaire de cours collectifs animés par des instructeurs certifiés : HIIT, stretching, abdos-fessiers. Accessible depuis Hammamet.',
+    description: 'Planning hebdomadaire de cours collectifs animés par des instructeurs certifiés : HIIT, stretching, abdos-fessiers. Accessible depuis Hammamet Nord.',
     icon: '🤸',
   },
   {
@@ -136,39 +136,39 @@ const services = [
   },
   {
     title: 'Suivi des Progrès',
-    description: 'Application de suivi intégrée pour tracker vos entraînements, mesures et objectifs. Disponible pour tous les membres, de Hammamet à Nabeul.',
+    description: 'Application de suivi intégrée pour tracker vos entraînements, mesures et objectifs. Disponible pour tous les membres, de Hammamet Nord à Nabeul.',
     icon: '📈',
   },
 ];
 
 const faqs = [
   {
-    q: 'Quelle est la meilleure salle de sport à Hammamet ?',
-    a: 'ZY Bodybuilding à Mrezga est la salle de sport la plus proche et la mieux équipée pour les habitants de Hammamet. Musculation, fitness, cours collectifs et coaching certifié à quelques minutes de Hammamet.',
+    q: 'Quelle est la meilleure salle de sport à Hammamet Nord ?',
+    a: 'ZY Bodybuilding à Mrezga est la salle de sport la plus proche et la mieux équipée pour les habitants de Hammamet Nord. Musculation, fitness, cours collectifs et coaching certifié à quelques minutes.',
   },
   {
-    q: 'Comment aller à ZY Bodybuilding depuis Hammamet ?',
-    a: 'ZY Bodybuilding est situé à Mrezga, Nabeul, à quelques minutes en voiture de Hammamet. Cherchez "ZY Bodybuilding Mrezga" sur Google Maps pour l\'itinéraire.',
+    q: 'Comment aller à ZY Bodybuilding depuis Hammamet Nord ?',
+    a: 'ZY Bodybuilding est situé à Mrezga, Nabeul, à quelques minutes en voiture de Hammamet Nord. Cherchez "ZY Bodybuilding Mrezga" sur Google Maps pour l\'itinéraire.',
   },
   {
-    q: 'Quels sont les horaires de la salle de sport près de Hammamet ?',
+    q: 'Quels sont les horaires de la salle de sport près de Hammamet Nord ?',
     a: 'Lundi–Vendredi : 07h00–22h00 | Samedi : 08h00–20h00 | Dimanche : 09h00–18h00.',
   },
   {
-    q: 'Quels types d\'abonnements sont disponibles pour les membres de Hammamet ?',
+    q: 'Quels types d\'abonnements sont disponibles pour les membres de Hammamet Nord ?',
     a: 'ZY Bodybuilding propose des abonnements hebdomadaires, mensuels, trimestriels et annuels à des tarifs accessibles. Appelez le +216 58 800 554 pour plus d\'informations.',
   },
   {
     q: 'Est-ce qu\'il y a du coaching personnalisé disponible ?',
-    a: 'Oui ! Nos coachs certifiés créent des programmes 100% personnalisés selon vos objectifs (prise de masse, perte de poids, remise en forme), disponibles pour tous les membres venant de Hammamet.',
+    a: 'Oui ! Nos coachs certifiés créent des programmes 100% personnalisés selon vos objectifs (prise de masse, perte de poids, remise en forme), disponibles pour tous les membres venant de Hammamet Nord.',
   },
   {
-    q: 'Y a-t-il des cours collectifs à la salle de sport près de Hammamet ?',
+    q: 'Y a-t-il des cours collectifs à la salle de sport près de Hammamet Nord ?',
     a: 'Absolument. Notre planning hebdomadaire propose des cours collectifs animés par des instructeurs certifiés. Consultez notre programme en ligne ou appelez-nous.',
   },
 ];
 
-export default function GymHammametPage() {
+export default function GymHammametNordPage() {
   return (
     <>
       {localJsonLd.map((schema, i) => (
@@ -189,19 +189,12 @@ export default function GymHammametPage() {
               <ol className="flex items-center justify-center gap-2">
                 <li><Link href="/" className="hover:text-red-500 transition-colors">Accueil</Link></li>
                 <li className="text-neutral-600">/</li>
-                <li className="text-neutral-300">Gym Hammamet</li>
+                <li className="text-neutral-300">Gym Hammamet Nord</li>
               </ol>
             </nav>
 
-            <p className="text-neutral-600 text-xs -mt-2">
-              Vous êtes à Hammamet Nord ?{' '}
-              <Link href="/gym-hammamet-nord" className="text-red-500 hover:underline">
-                Voir la page dédiée Hammamet Nord
-              </Link>
-            </p>
-
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
-              <span className="text-red-600">Gym Hammamet</span>
+              <span className="text-red-600">Gym Hammamet Nord</span>
               <br />
               <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-200">
                 ZY Bodybuilding — Salle de Sport à Mrezga
@@ -209,7 +202,7 @@ export default function GymHammametPage() {
             </h1>
 
             <p className="text-lg sm:text-xl text-neutral-300 max-w-2xl mx-auto">
-              La salle de sport la plus complète à proximité de <strong className="text-white">Hammamet</strong>, à Mrezga, Nabeul.
+              La salle de sport la plus complète à proximité de <strong className="text-white">Hammamet Nord</strong>, à Mrezga, Nabeul.
               Équipements professionnels, coachs certifiés et programmes personnalisés pour atteindre vos objectifs en Tunisie.
             </p>
 
@@ -241,7 +234,7 @@ export default function GymHammametPage() {
               <a href="tel:+21658800554" className="hover:text-red-500 transition-colors">
                 +216 58 800 554
               </a>
-              &nbsp;·&nbsp; À quelques minutes de Hammamet
+              &nbsp;·&nbsp; À quelques minutes de Hammamet Nord
             </p>
           </div>
         </section>
@@ -250,10 +243,10 @@ export default function GymHammametPage() {
         <section className="py-16 px-6 lg:px-16 bg-neutral-950">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
-              Votre Salle de Sport <span className="text-red-600">près de Hammamet</span>
+              Votre Salle de Sport <span className="text-red-600">près de Hammamet Nord</span>
             </h2>
             <p className="text-neutral-400 text-center text-lg mb-12 max-w-2xl mx-auto">
-              ZY Bodybuilding à Mrezga offre tout ce dont vous avez besoin pour atteindre vos objectifs fitness, à quelques minutes de Hammamet.
+              ZY Bodybuilding à Mrezga offre tout ce dont vous avez besoin pour atteindre vos objectifs fitness, à quelques minutes de Hammamet Nord.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service, i) => (
@@ -275,10 +268,10 @@ export default function GymHammametPage() {
           <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h2 className="text-3xl sm:text-4xl font-bold">
-                La Salle de Sport <span className="text-red-600">la Plus Proche de Hammamet</span>
+                La Salle de Sport <span className="text-red-600">la Plus Proche de Hammamet Nord</span>
               </h2>
               <p className="text-neutral-300 leading-relaxed">
-                Vous habitez à <strong>Hammamet</strong> et vous cherchez une salle de sport complète ?
+                Vous habitez à <strong>Hammamet Nord</strong> ou dans la zone de Yasmine Hammamet et vous cherchez une salle de sport complète ?
                 ZY Bodybuilding, situé à <strong>Mrezga, Nabeul</strong>, est à quelques minutes de votre domicile.
                 Accessible depuis Hammamet Nord, Hammamet Sud et toute la région de Nabeul.
               </p>
@@ -294,7 +287,7 @@ export default function GymHammametPage() {
                   'Ambiance motivante et bienveillante',
                   'Abonnements flexibles adaptés à tous les budgets',
                   'Application de suivi des progrès incluse',
-                  'Facilement accessible depuis Hammamet',
+                  'Facilement accessible depuis Hammamet Nord',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="text-red-600 font-bold mt-1">✓</span>
@@ -309,7 +302,7 @@ export default function GymHammametPage() {
                 <h3 className="text-xl font-bold text-red-600">Informations Pratiques</h3>
                 <div className="space-y-3 text-neutral-300 text-sm">
                   <p><strong className="text-white">Adresse :</strong> Mrezga, Nabeul 8000, Tunisie</p>
-                  <p><strong className="text-white">Distance :</strong> Quelques minutes depuis Hammamet</p>
+                  <p><strong className="text-white">Distance :</strong> Quelques minutes depuis Hammamet Nord</p>
                   <p>
                     <strong className="text-white">Téléphone :</strong>{' '}
                     <a href="tel:+21658800554" className="hover:text-red-500 transition-colors">+216 58 800 554</a>
@@ -345,7 +338,7 @@ export default function GymHammametPage() {
                 rel="noopener noreferrer"
                 className="block w-full text-center bg-neutral-900 hover:bg-red-600 border border-neutral-700 hover:border-red-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
               >
-                📍 Itinéraire depuis Hammamet — Google Maps
+                📍 Itinéraire depuis Hammamet Nord — Google Maps
               </a>
             </div>
           </div>
@@ -355,10 +348,10 @@ export default function GymHammametPage() {
         <section className="py-16 px-6 lg:px-16 bg-neutral-950">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
-              Questions Fréquentes — <span className="text-red-600">Gym Hammamet</span>
+              Questions Fréquentes — <span className="text-red-600">Gym Hammamet Nord</span>
             </h2>
             <p className="text-neutral-400 text-center mb-10">
-              Tout ce que vous devez savoir sur ZY Bodybuilding, votre salle de sport la plus proche de Hammamet.
+              Tout ce que vous devez savoir sur ZY Bodybuilding, votre salle de sport la plus proche de Hammamet Nord.
             </p>
             <div className="space-y-4">
               {faqs.map((faq, i) => (
@@ -381,10 +374,10 @@ export default function GymHammametPage() {
         <section className="py-16 px-6 lg:px-16 text-center">
           <div className="max-w-2xl mx-auto space-y-6">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              Rejoignez le meilleur <span className="text-red-600">gym près de Hammamet</span>
+              Rejoignez le meilleur <span className="text-red-600">gym près de Hammamet Nord</span>
             </h2>
             <p className="text-neutral-400 text-lg">
-              Inscrivez-vous dès aujourd&apos;hui à ZY Bodybuilding à Mrezga — quelques minutes de Hammamet —
+              Inscrivez-vous dès aujourd&apos;hui à ZY Bodybuilding à Mrezga — quelques minutes de Hammamet Nord —
               et commencez votre transformation avec des coachs certifiés et des équipements professionnels.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -402,7 +395,7 @@ export default function GymHammametPage() {
               </a>
             </div>
             <p className="text-neutral-600 text-sm">
-              ZY Bodybuilding — Mrezga, Nabeul 8000 · À quelques minutes de Hammamet, Tunisie
+              ZY Bodybuilding — Mrezga, Nabeul 8000 · À quelques minutes de Hammamet Nord, Tunisie
             </p>
           </div>
         </section>

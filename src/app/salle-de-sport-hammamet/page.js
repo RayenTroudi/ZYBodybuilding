@@ -265,6 +265,12 @@ export default function SalleDeSportHammametPage() {
                 >
                   → Voir aussi : Gym Nabeul
                 </Link>
+                <Link
+                  href="/gym-hammamet-nord"
+                  className="text-red-500 hover:text-red-400 transition-colors text-sm"
+                >
+                  → Voir aussi : Gym Hammamet Nord
+                </Link>
               </div>
             </div>
 

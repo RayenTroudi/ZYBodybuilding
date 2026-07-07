@@ -17,7 +17,12 @@ export const metadata = {
     'bodybuilding nabeul', 'coaching sportif nabeul', 'cours collectifs nabeul',
     'remise en forme nabeul', 'ZY Bodybuilding', 'salle de sport tunisie',
     'gym near me nabeul', 'personal trainer nabeul', 'fitness center nabeul',
-    'sport nabeul', 'entraînement nabeul', 'abonnement salle de sport nabeul'
+    'sport nabeul', 'entraînement nabeul', 'abonnement salle de sport nabeul',
+    'gym hammamet', 'salle de sport hammamet', 'fitness hammamet', 'musculation hammamet',
+    'gym hammamet nord', 'salle de sport hammamet nord', 'fitness hammamet nord',
+    'best gym hammamet', 'best gym nabeul', 'gym near hammamet', 'gym near nabeul',
+    'meilleure salle de sport hammamet', 'coaching sportif hammamet',
+    'yasmine hammamet gym', 'gym tunisia hammamet nabeul'
   ],
   authors: [{ name: 'ZY Bodybuilding' }],
   creator: 'Rayen Troudi',
@@ -128,6 +133,7 @@ export default function RootLayout({ children }) {
         { '@type': 'City', name: 'Mrezga' },
         { '@type': 'City', name: 'Hammamet' },
         { '@type': 'City', name: 'Hammamet Nord' },
+        { '@type': 'City', name: 'Yasmine Hammamet' },
         { '@type': 'City', name: 'Korba' },
         { '@type': 'AdministrativeArea', name: 'Gouvernorat de Nabeul' },
       ],
@@ -210,6 +216,30 @@ export default function RootLayout({ children }) {
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'ZY Bodybuilding à Mrezga est la meilleure salle de sport à proximité de Hammamet. Située à quelques minutes du centre de Hammamet, notre salle propose musculation, fitness, cardio et coaching personnalisé.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Y a-t-il une salle de sport près de Hammamet Nord ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Oui ! ZY Bodybuilding à Mrezga est la salle de sport la plus proche et la mieux équipée pour les habitants de Hammamet Nord et de Yasmine Hammamet, à quelques minutes en voiture.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is the best gym near Hammamet Nord Tunisia?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding in Mrezga is the closest and best-equipped gym near Hammamet Nord, Tunisia. We offer weightlifting, fitness classes, and personal coaching just minutes from Hammamet Nord and Yasmine Hammamet.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Quelle salle de musculation est la plus proche de Nabeul ?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'ZY Bodybuilding, situé à Mrezga, est la salle de musculation la plus proche et la mieux équipée de Nabeul et de sa région, avec des coachs certifiés et des équipements professionnels.',
         },
       },
     ],

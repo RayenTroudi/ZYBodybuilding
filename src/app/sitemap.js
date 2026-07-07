@@ -43,6 +43,18 @@ export default function sitemap() {
       },
     },
     {
+      url: `${baseUrl}/gym-hammamet-nord`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+      alternates: {
+        languages: {
+          'fr-TN': `${baseUrl}/gym-hammamet-nord`,
+          'en': `${baseUrl}/en/gym-hammamet-nord`,
+        },
+      },
+    },
+    {
       url: `${baseUrl}/fitness-hammamet`,
       lastModified: now,
       changeFrequency: 'weekly',
@@ -89,6 +101,18 @@ export default function sitemap() {
         languages: {
           'fr-TN': `${baseUrl}/gym-hammamet`,
           'en': `${baseUrl}/en/gym-hammamet`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/en/gym-hammamet-nord`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.90,
+      alternates: {
+        languages: {
+          'fr-TN': `${baseUrl}/gym-hammamet-nord`,
+          'en': `${baseUrl}/en/gym-hammamet-nord`,
         },
       },
     },

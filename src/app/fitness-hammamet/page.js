@@ -256,6 +256,9 @@ export default function FitnessHammametPage() {
                 <Link href="/salle-de-sport-hammamet" className="text-red-500 hover:text-red-400 transition-colors text-sm">
                   → Voir aussi : Salle de Sport Hammamet
                 </Link>
+                <Link href="/gym-hammamet-nord" className="text-red-500 hover:text-red-400 transition-colors text-sm">
+                  → Voir aussi : Gym Hammamet Nord
+                </Link>
               </div>
             </div>
 
