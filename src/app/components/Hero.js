@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import translations from '@/translations';
+import OpenStatus from './OpenStatus';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -96,6 +97,16 @@ const Hero = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
+        {/* Live Status Pill */}
+        <motion.div
+          className="flex justify-center mb-4 sm:mb-6"
+          initial={{ opacity: 0, y: -10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <OpenStatus />
+        </motion.div>
+
         {/* Responsive Heading */}
         <motion.h1
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight"
